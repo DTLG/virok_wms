@@ -1,0 +1,1 @@
+export 'barcode_generation.dart';

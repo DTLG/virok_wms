@@ -1,27 +1,36 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:equatable/equatable.dart';
 
-part 'order.g.dart';
+class Orders extends Equatable {
+  final List<Order> orders;
+  final int status;
 
-@JsonSerializable()
-class OrdersDTO {
-  @JsonKey(name: 'orders')
-  final List<OrderDTO> orders;
+  const Orders({required this.orders, required this.status});
 
-  OrdersDTO({required this.orders});
-   factory OrdersDTO.fromJson(Map<String, dynamic> json) =>
-      _$OrdersDTOFromJson(json);
+  @override
+  List<Object?> get props => [orders, status];
+
+  static const empty = Orders(orders: [], status: 1);
 }
 
-@JsonSerializable()
-class OrderDTO {
-  @JsonKey(name: 'number')
-  final String? docId;
-  @JsonKey(name: 'date')
-  final String? date;
-  final String? client;
+class Order extends Equatable {
+  final String docId;
+  final String date;
+  final List<Bascet> baskets;
 
-  OrderDTO({required this.docId, required this.date, required this.client});
+  const Order({required this.docId, required this.date, required this.baskets});
 
-   factory OrderDTO.fromJson(Map<String, dynamic> json) =>
-      _$OrderDTOFromJson(json);
+  @override
+  List<Object?> get props => [docId, date, baskets];
+
+  static const empty = Order(docId: '', date: '', baskets: []);
+}
+
+class Bascet extends Equatable {
+  final String bascet;
+
+  const Bascet({required this.bascet});
+  static const empty = Bascet(bascet: '');
+
+  @override
+  List<Object?> get props => [bascet];
 }

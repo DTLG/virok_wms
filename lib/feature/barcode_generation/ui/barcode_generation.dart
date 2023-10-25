@@ -118,7 +118,7 @@ class NomsList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(noms.noms[index].article),
-                    Text(noms.noms[index].barcode.trim())
+                    Text(noms.noms[index].barcode.first.barcode.trim())
                   ],
                 ),
               ),
@@ -212,7 +212,7 @@ class _NewBarcodeInputState extends State<NewBarcodeInput> {
       actions: [
         ElevatedButton(
             onPressed: () {
-              if (widget.nom.barcode == controller.text) {
+              if (widget.nom.barcode.first.barcode == controller.text) {
                 Alerts(msg: "Штрихкод вже існує", context: context).showError();
               } else {
                 if (_switchValue == true) {

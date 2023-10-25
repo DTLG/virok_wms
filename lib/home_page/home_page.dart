@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/const.dart';
 import 'package:virok_wms/home_page/cubit/home_page_cubit.dart';
 
@@ -35,6 +34,8 @@ class HomeView extends StatelessWidget {
         .select((HomePageCubit cubit) => cubit.state.barcodeLablePrintButton);
     final bool cellInfoButton =
         context.select((HomePageCubit cubit) => cubit.state.cellInfoButton);
+    final bool basketInfoButton =
+        context.select((HomePageCubit cubit) => cubit.state.basketInfoButton);
 
     final theme = Theme.of(context);
 
@@ -51,6 +52,7 @@ class HomeView extends StatelessWidget {
               if (state.status.isInitial) {
                 context.read<HomePageCubit>().getUser();
                 context.read<HomePageCubit>().getActivButton();
+                context.read<HomePageCubit>().checkTsdType();
               }
               if (state.status.isSuccess) {
                 return Padding(
@@ -104,17 +106,24 @@ class HomeView extends StatelessWidget {
                       Navigator.pushNamed(context, '/barcode_Lable_print');
                     })
                 : const SizedBox(),
-            // GeneralButton(lable: 'Переміщення', onPressed: () {}),
-            // GeneralButton(
-            //     lable: 'Завдання на відбір',
-            //     onPressed: () {
-            //       Navigator.pushNamed(context, '/selection_head');
-            //     }),
-            // GeneralButton(
-            //     lable: 'Відгрузка по замовленнях',
-            //     onPressed: () {
-            //       Navigator.pushNamed(context, '/shipment_orders');
-            // }),
+            GeneralButton(
+                lable: 'Завдання на відбір',
+                onPressed: () {
+                  bool itsMezonine =
+                      context.read<HomePageCubit>().state.itsMezonine;
+                  itsMezonine == false
+                      ? Navigator.pushNamed(context, '/selection_P',
+                          arguments: {"": ""})
+                      : Navigator.pushNamed(context, '/selection_M');
+                }),
+            basketInfoButton
+                ? GeneralButton(
+                    lable: 'Кошик',
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/check_basket');
+                    })
+                : const SizedBox(),
+
             GeneralButton(
                 lable: 'Налаштування',
                 onPressed: () {

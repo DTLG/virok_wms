@@ -14,10 +14,11 @@ class LoginCubit extends Cubit<LoginState> {
 
       final res = await LoginApi().logIn(username, password);
       if (res == 200) {
-        emit(state.copyWith(status: LoginStatus.login));
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('username', username);
         await prefs.setString('password', password);
+        emit(state.copyWith(status: LoginStatus.login));
+        
       } else if (res >= 400 && res < 500) {
         emit(state.copyWith(status: LoginStatus.loading));
 

@@ -13,6 +13,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     final generationButton = prefs.getBool('generation_bar_button') ?? false;
     final printButton = prefs.getBool('barcode_print_lable_button') ?? false;
     final cellInfoButton = prefs.getBool('cell_info_button') ?? false;
+    final basketInfoButton = prefs.getBool('basket_info_button') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -23,6 +24,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         generationButton: generationButton,
         printButton: printButton,
         cellInfoButton: cellInfoButton,
+        basketInfoButton: basketInfoButton,
         printerHost: printerHost,
         printerPort: printerPort));
   }

@@ -39,7 +39,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
     BarcodesNoms noms = BarcodesNoms.empty;
     emit(state.copyWith(
         cellIsEmpty:
-            state.cell.cell.first.barcode.first.isEmpty ? true : false));
+            state.cell.cell.first.barcodes.first.isEmpty ? true : false));
 
     if (state.nom == BarcodesNom.empty) {
       noms = await PlacementWritingOffRepo()
@@ -71,7 +71,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
           emit(state.copyWith(cellStatus: 1));
         }
       } else {
-        for (var element in state.cell.cell.first.barcode) {
+        for (var element in state.cell.cell.first.barcodes) {
           if (element == nomBarcode) {
             isEqual = true;
             count++;

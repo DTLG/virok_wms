@@ -17,8 +17,10 @@ dependencies:
   fluttertoast: ^8.2.2
   http: ^1.1.0
   json_annotation: ^4.8.1
+  path: ^1.8.3
   pinput: ^3.0.1
   shared_preferences: ^2.2.1
+  sqflite: ^2.3.0
 
 dev_dependencies:
   flutter_test:

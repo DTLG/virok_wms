@@ -49,7 +49,7 @@ class CellData extends Equatable{
   final dynamic quantity;
   final String nameCell;
   final String codeCell;
-  final List<String> barcode;
+  final List<String> barcodes;
   final String article;
 
   final int status;
@@ -60,11 +60,11 @@ class CellData extends Equatable{
       required this.nameCell,
       required this.codeCell,
       required this.article,
-      required this.barcode,
+      required this.barcodes,
       required this.status});
         @override
-  List<Object?> get props => [name, quantity, barcode,  status, nameCell, codeCell,article ];
+  List<Object?> get props => [name, quantity, barcodes,  status, nameCell, codeCell,article ];
 
-    static const empty = CellData(name: '', quantity: 0, nameCell: '', codeCell: '', article: '', barcode: [], status: 1);
+    static const empty = CellData(name: '', quantity: 0, nameCell: '', codeCell: '', article: '', barcodes: [], status: 1);
 
 }

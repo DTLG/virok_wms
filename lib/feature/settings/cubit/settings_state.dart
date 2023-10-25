@@ -9,13 +9,11 @@ extension SettingsStatusX on SettingsStatus {
 
 class SettingsState extends Equatable {
   final SettingsStatus status;
-
   final String dbPath;
-
   final bool generationButton;
   final bool printButton;
   final bool cellInfoButton;
-
+  final bool basketInfoButton;
   final String printerHost;
   final String printerPort;
 
@@ -25,6 +23,7 @@ class SettingsState extends Equatable {
       this.generationButton = false,
       this.printButton = false,
       this.cellInfoButton = false,
+      this.basketInfoButton = false,
       this.printerHost = '',
       this.printerPort = ''});
 
@@ -34,6 +33,7 @@ class SettingsState extends Equatable {
       bool? generationButton,
       bool? printButton,
       bool? cellInfoButton,
+      bool? basketInfoButton,
       String? printerHost,
       String? printerPort}) {
     return SettingsState(
@@ -42,6 +42,7 @@ class SettingsState extends Equatable {
         generationButton: generationButton ?? this.generationButton,
         printButton: printButton ?? this.printButton,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
+        basketInfoButton: basketInfoButton ?? this.basketInfoButton,
         printerHost: printerHost ?? this.printerHost,
         printerPort: printerPort ?? this.printerPort);
   }
@@ -54,6 +55,7 @@ class SettingsState extends Equatable {
         printButton,
         printerHost,
         printerPort,
-        cellInfoButton
+        cellInfoButton,
+        basketInfoButton
       ];
 }

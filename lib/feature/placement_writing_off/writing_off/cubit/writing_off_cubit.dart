@@ -36,7 +36,7 @@ class WritingOffCubit extends Cubit<WritingOffState> {
     bool isEqual = false;
 
     if (state.cell.zone == 1) {
-      for (var element in state.cell.cell.first.barcode) {
+      for (var element in state.cell.cell.first.barcodes) {
         if (element == nomBarcode) {
           isEqual = true;
           break;
@@ -65,7 +65,7 @@ class WritingOffCubit extends Cubit<WritingOffState> {
       String name = '';
       double qty = 0;
       for (final barcodes in state.cell.cell) {
-        for (final barcode in barcodes.barcode) {
+        for (final barcode in barcodes.barcodes) {
           if (barcode == nomBarcode) {
             name = barcodes.name;
             qty = double.parse(barcodes.quantity.toString());
@@ -122,7 +122,7 @@ class WritingOffCubit extends Cubit<WritingOffState> {
         count: 1,
         name: cell.name,
         qty: double.parse(cell.quantity.toString()),
-        nomBarcode: cell.barcode.first));
+        nomBarcode: cell.barcodes.first));
   }
 
   void manualCountIncrement(String nomBarcode, String count) {

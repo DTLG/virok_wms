@@ -26,7 +26,7 @@ class CellData {
   final String? nameCell;
   @JsonKey(name: 'code_cell')
   final String? codeCell;
-  final List<String?>? barcode;
+  final List<BarcodeDTO> barcodes;
   final String? article;
 
   final int? status;
@@ -38,9 +38,25 @@ class CellData {
       required this.nameCell,
             required this.codeCell,
 required this.article,
-      required this.barcode,
+      required this.barcodes,
       required this.status});
 
   factory CellData.fromJson(Map<String, dynamic> json) =>
       _$CellDataFromJson(json);
+}
+
+
+@JsonSerializable()
+class BarcodeDTO{
+  final String? barcode;
+  final int? ratio;
+
+  BarcodeDTO({required this.barcode, required this.ratio});
+
+    factory BarcodeDTO.fromJson(Map<String, dynamic> json) => _$BarcodeDTOFromJson(json);
+
+
+
+   
+
 }

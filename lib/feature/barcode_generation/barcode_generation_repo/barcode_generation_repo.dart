@@ -15,10 +15,13 @@ class BarcodeGenerationRepo {
         .map((nom) => Nom(
             name: nom.name ?? '',
             article: nom.article ?? '',
-            barcode: nom.barcode ?? '',
+            barcode: nom.barcodes.map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1)).toList(),
+            basckets: [],
             nameCell: '',
             codeCell: '',
-            docId: '',
+            docNumber: '',
+            isMyne: 0,
+            table: '',
             qty: 0,
             count: 0))
         .toList();

@@ -56,6 +56,7 @@ class SettingsView extends StatelessWidget {
                   generationButton: state.generationButton,
                   printButton: state.printButton,
                   cellInfoButton: state.cellInfoButton,
+                  basketInfoButton: state.basketInfoButton,
                 ),
                 const PrinterSettingsWidget(),
                 const LogOutWidget()
@@ -120,11 +121,14 @@ class HomePageSettingsWidhet extends StatefulWidget {
       {super.key,
       required this.generationButton,
       required this.printButton,
-      required this.cellInfoButton});
+      required this.cellInfoButton,
+      required this.basketInfoButton});
 
   bool generationButton;
   bool printButton;
   bool cellInfoButton;
+  bool basketInfoButton;
+
 
   @override
   State<HomePageSettingsWidhet> createState() => _HomePageSettingsWidhetState();
@@ -169,6 +173,17 @@ class _HomePageSettingsWidhetState extends State<HomePageSettingsWidhet> {
 
                   prefs.setBool('cell_info_button', value);
                   setState(() => widget.cellInfoButton = value);
+                }),
+          ),
+          ListTile(
+            title: const Text('Кошик'),
+            trailing: Switch(
+                value: widget.basketInfoButton,
+                onChanged: (value) async {
+                  final prefs = await SharedPreferences.getInstance();
+
+                  prefs.setBool('basket_info_button', value);
+                  setState(() => widget.basketInfoButton = value);
                 }),
           )
         ],

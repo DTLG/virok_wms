@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_beep/flutter_beep.dart';
+import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 
+import '../../models/noms_model.dart';
 import '../custom_keyboard/keyboard.dart';
 
 class Alerts {
@@ -27,7 +30,6 @@ class Alerts {
   }
 
   showError() {
-
     showDialog(
       context: context,
       builder: (context) {
@@ -54,17 +56,15 @@ class Alerts {
         );
       },
     );
-            FlutterBeep.beep(false);
-
+    FlutterBeep.beep(false);
   }
 }
 
 class InputCountAlert extends StatefulWidget {
-  const InputCountAlert(
-      {super.key, required this.onPressed, required this.onChanged});
+  const InputCountAlert({super.key, required this.onChanged, required this.nom});
 
-  final VoidCallback onPressed;
   final ValueChanged<String>? onChanged;
+  final Nom nom;
 
   @override
   State<InputCountAlert> createState() => _InputCountAlertState();
@@ -118,19 +118,24 @@ class _InputCountAlertState extends State<InputCountAlert> {
           actionsAlignment: MainAxisAlignment.center,
           actions: [
             ElevatedButton(
-                onPressed: widget.onPressed,
+                onPressed: () {
+                  context
+                      .read<SelectionOrderDataCubit>()
+                      .manualCountIncrement(controller.text,widget.nom.qty);
+                      Navigator.pop(context);
+                },
                 child: const Text(
                   'Додати',
                 ))
           ],
-        ),BottomSheet(
-                  onClosing: () {},
-                  builder: (context) =>  Keyboard(controller: controller,),
-                )
-
+        ),
+        BottomSheet(
+          onClosing: () {},
+          builder: (context) => Keyboard(
+            controller: controller,
+          ),
+        )
       ],
     );
   }
 }
-
-

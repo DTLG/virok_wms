@@ -96,9 +96,10 @@ class CellInfoAlert extends StatelessWidget {
           : SizedBox(
               height: cell.cell.length * 70,
               child: ListView.separated(
+               
                 itemCount: cell.cell.length,
                 separatorBuilder: (context, index) => const Divider(
-                  height: 0,
+                  height: 1,
                 ),
                 itemBuilder: (context, index) {
                   return SizedBox(

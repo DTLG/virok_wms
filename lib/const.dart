@@ -1,0 +1,1 @@
+const settingsPin = '2408';

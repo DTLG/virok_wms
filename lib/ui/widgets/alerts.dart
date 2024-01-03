@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+// import 'package:flutter_beep/flutter_beep.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 
 import '../../models/noms_model.dart';
@@ -18,11 +18,11 @@ class Alerts {
       this.color = const Color.fromARGB(255, 47, 46, 46),
       required this.context,
       this.icon = false});
-  showNotFoundAlert() {
+  showToast() {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.SNACKBAR,
+      gravity: ToastGravity.BOTTOM,
       backgroundColor: color,
       textColor: Colors.white,
       fontSize: 16.0,
@@ -56,7 +56,7 @@ class Alerts {
         );
       },
     );
-    FlutterBeep.beep(false);
+    // FlutterBeep.beep(false);
   }
 }
 

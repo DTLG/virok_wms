@@ -11,6 +11,7 @@ class PlacementWritingOffClient {
 
   Future<CellDTO> getCeel(String barcode) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String username = prefs.getString('username') ?? '';
     String password = prefs.getString('password') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
@@ -19,6 +20,7 @@ class PlacementWritingOffClient {
     final basicAuth = base64.encode(utf8.encode('$username:$password'));
 
     try {
+
       final response = await client.post(
         Uri.parse(url),
         headers: {
@@ -26,6 +28,7 @@ class PlacementWritingOffClient {
           'Accept': 'application/json',
         },
       );
+
 
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -41,16 +44,18 @@ class PlacementWritingOffClient {
     }
   }
 
-  Future<CellDTO> sendNom(String query, String cell, String barcode, String count) async {
+  Future<CellDTO> sendNom(
+      String query, String cell, String barcode, String count) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String username = prefs.getString('username') ?? '';
     String password = prefs.getString('password') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
-    final url =
-        '$baseUrl$query $cell $barcode $count';
+    final url = '$baseUrl$query $cell $barcode $count';
     final basicAuth = base64.encode(utf8.encode('$username:$password'));
 
     try {
+
       final response = await client.post(
         Uri.parse(url),
         headers: {
@@ -58,6 +63,7 @@ class PlacementWritingOffClient {
           'Accept': 'application/json',
         },
       );
+
 
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -74,8 +80,9 @@ class PlacementWritingOffClient {
     }
   }
 
-   Future<BarcodesNomsDTO> getNom(String query, String body) async {
+  Future<BarcodesNomsDTO> getNom(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String username = prefs.getString('username') ?? '';
     String password = prefs.getString('password') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
@@ -83,6 +90,7 @@ class PlacementWritingOffClient {
     final basicAuth = base64.encode(utf8.encode('$username:$password'));
 
     try {
+
       final response = await client.post(
         Uri.parse(url),
         headers: {
@@ -90,7 +98,7 @@ class PlacementWritingOffClient {
           'Accept': 'application/json',
         },
       );
-
+    
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
         return BarcodesNomsDTO.fromJson(json);

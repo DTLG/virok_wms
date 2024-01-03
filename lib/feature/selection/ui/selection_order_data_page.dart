@@ -5,7 +5,6 @@ import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dar
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
-import '../../home_page/cubit/home_page_cubit.dart';
 import '../cubit/selection_order_head_cubit.dart';
 import 'ui.dart';
 
@@ -31,9 +30,10 @@ class SelectionOrderDataView extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final String docId = argument['docId'] ?? '';
     final SelectionOrdersHeadCubit selectionOrderHeadCubit = argument['cubit'];
+    final String basket = argument['basket'];
+    final bool itsMezonine = argument['itsMezonine'];
     //----
 
-    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -44,9 +44,8 @@ class SelectionOrderDataView extends StatelessWidget {
         ),
         leading: IconButton(
             onPressed: () {
-                selectionOrderHeadCubit.getOrders();
-                                  Navigator.pop(context);
-
+              selectionOrderHeadCubit.getOrders();
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
         actions: [
@@ -62,8 +61,7 @@ class SelectionOrderDataView extends StatelessWidget {
         },
         child: Stack(
           children: [
-                        WatermarkWidget(itsMezonine: itsMezonine),
-
+            WatermarkWidget(itsMezonine: itsMezonine),
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
               child: Column(
@@ -73,7 +71,11 @@ class SelectionOrderDataView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const TableInfo(),
-                      itsMezonine ? const BascketInfo() : const SizedBox()
+                      itsMezonine
+                          ? BascketInfo(
+                              docId: docId,
+                            )
+                          : const SizedBox()
                     ],
                   ),
                   const TableHead(),
@@ -87,7 +89,12 @@ class SelectionOrderDataView extends StatelessWidget {
                     },
                     builder: (context, state) {
                       if (state.status.isInitial) {
+                        context
+                            .read<SelectionOrderDataCubit>()
+                            .writeBasket(basket);
                         context.read<SelectionOrderDataCubit>().getNoms(docId);
+                        return  const Expanded(
+                            child: Center(child: CircularProgressIndicator()));
                       }
                       if (state.status.isLoading) {
                         return const Expanded(
@@ -110,7 +117,6 @@ class SelectionOrderDataView extends StatelessWidget {
                 ],
               ),
             ),
-            
           ],
         ),
       ),
@@ -135,21 +141,19 @@ class WatermarkWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Center(
-              child: Transform.rotate(
-                angle: -math.pi / 4,
-                child:  Text(
-                  itsMezonine?
-                  'Мезонін':'Палетний склад',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 70,
-                      
-                      color: Color.fromARGB(6, 17, 29, 57),
-                      fontWeight: FontWeight.w800),
-                ),
-              ),
-            );
+    return Center(
+      child: Transform.rotate(
+        angle: -math.pi / 4,
+        child: Text(
+          itsMezonine ? 'Мезонін' : 'Палетний склад',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 70,
+              color: Color.fromARGB(6, 17, 29, 57),
+              fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
   }
 }
 
@@ -183,8 +187,10 @@ class TableInfo extends StatelessWidget {
                       width: 8,
                     ),
                     Text(
-                      state.noms.noms.isNotEmpty? state.noms.noms.first.table:'',
-                      style: theme.textTheme.titleLarge,
+                      state.noms.noms.isNotEmpty
+                          ? state.noms.noms.first.table
+                          : '',
+                      style: theme.textTheme.titleLarge!.copyWith(color: Colors.black),
                     )
                   ],
                 ),
@@ -197,8 +203,9 @@ class TableInfo extends StatelessWidget {
 }
 
 class BascketInfo extends StatelessWidget {
-  const BascketInfo({super.key});
+  const BascketInfo({super.key, required this.docId});
 
+  final String docId;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -207,37 +214,119 @@ class BascketInfo extends StatelessWidget {
       buildWhen: (previous, current) => !current.status.isLoading,
       builder: (context, state) {
         if (state.status.isSuccess) {
-          final baskets = state.noms.noms.isEmpty?[Bascket.empty]:state.noms.noms.first.baskets;
+          final baskets = state.noms.noms.isEmpty
+              ? [Bascket.empty]
+              : state.noms.noms.first.baskets;
 
-          return Card(
-            color: const Color.fromARGB(255, 219, 219, 219),
-            margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
-            shape: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(15)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icons/basket_icon.png',
-                    width: 25,
-                    height: 25,
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Text(
-                    baskets.isNotEmpty ? baskets.first.name : '',
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ],
+          return SizedBox(
+            width: 230,
+            height: 45,
+            child: ListView.separated(
+              reverse: true,
+              separatorBuilder: (context, index) => const SizedBox(
+                width: 5,
               ),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<SelectionOrderDataCubit>(),
+                      child: SetBuscetDialog(
+                        docId: docId,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  color: const Color.fromARGB(255, 219, 219, 219),
+                  margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
+                  shape: OutlineInputBorder(
+                      borderSide: index == 0?const BorderSide(): BorderSide.none,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/basket_icon.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          baskets[index].name,
+                          style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              itemCount: baskets.length,
             ),
           );
         }
         return const SizedBox();
       },
+    );
+  }
+}
+
+class SetBuscetDialog extends StatefulWidget {
+  const SetBuscetDialog({super.key, required this.docId});
+
+  final String docId;
+
+  @override
+  State<SetBuscetDialog> createState() => _SetBuscetDialogState();
+}
+
+class _SetBuscetDialogState extends State<SetBuscetDialog> {
+  final controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      iconPadding: EdgeInsets.zero,
+      icon: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const SizedBox(width: 50),
+          const Text(
+            'Присвоєння кошика',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close))
+        ],
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        decoration: const InputDecoration(hintText: "Відскануйте кошик"),
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actionsPadding: EdgeInsets.zero,
+      actions: [
+        GeneralButton(
+            lable: 'Присвоїти',
+            onPressed: () async {
+              if (controller.text.isNotEmpty) {
+                Navigator.pop(context);
+                context
+                    .read<SelectionOrderDataCubit>()
+                    .setBasketToOrder(controller.text, widget.docId);
+              }
+            })
+      ],
     );
   }
 }

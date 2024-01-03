@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/admission_placement/placement_repository/model/admission_nom.dart';
+import 'package:virok_wms/feature/admission_placement/cubit/placement_cubit.dart';
+import 'package:virok_wms/feature/admission_placement/ui/widgets/widgets.dart';
+
+
+
+class PlacementBarcodeInput extends StatefulWidget {
+  const PlacementBarcodeInput({
+    super.key,
+  });
+
+  @override
+  State<PlacementBarcodeInput> createState() =>
+      _PlacementBarcodeInputState();
+}
+
+class _PlacementBarcodeInputState extends State<PlacementBarcodeInput> {
+  final controller = TextEditingController();
+  final focusNode = FocusNode();
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: TextField(
+        autofocus: true,
+        controller: controller,
+        focusNode: focusNode,
+        textAlignVertical: TextAlignVertical.bottom,
+        onSubmitted: (value) {
+          if (controller.text.isNotEmpty) {
+
+            
+            final AdmissionNom nom =
+                context.read<PlacementCubit>().search(value);
+            if (nom != AdmissionNom.empty) {
+              
+             showPlacementNomScanDialog(context, nom);
+            }
+
+            controller.clear();
+          }
+          focusNode.requestFocus();
+        },
+        decoration: const InputDecoration(hintText: 'Відскануйте штрихкод'),
+      ),
+    );
+  }
+}

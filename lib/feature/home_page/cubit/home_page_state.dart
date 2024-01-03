@@ -15,60 +15,63 @@ extension HomePageStatusX on HomePageStatus {
 }
 
 final class HomePageState extends Equatable {
-  const HomePageState(
-      {this.username = '',
-      this.status = HomePageStatus.initial,
-      this.genBarButton = false,
-      this.cellInfoButton = false,
-      this.basketInfoButton = false,
-      this.itsMezonine = true,
-      this.barcodeLablePrintButton = false,
-            this.cellGeneratorButton = false,
-});
+  const HomePageState({
+    this.username = '',
+    this.status = HomePageStatus.initial,
+    this.selectionButton = false,
+    this.admissionButton = false,
+    this.movingButton = false,
+    this.returningButton = false,
+    this.rechargeButton = false,
+    this.itsMezonine = true,
+    this.cameraScaner = false
+  });
 
   final String username;
   final HomePageStatus status;
-  final bool genBarButton;
-  final bool barcodeLablePrintButton;
-  final bool cellInfoButton;
-  final bool basketInfoButton;
-final bool cellGeneratorButton;
+  final bool selectionButton;
+  final bool admissionButton;
+  final bool movingButton;
+    final bool returningButton;
 
+  final bool rechargeButton;
+
+  final bool cameraScaner;
 
   final bool itsMezonine;
 
   HomePageState copyWith(
       {String? username,
       HomePageStatus? status,
-      bool? genBarButton,
-      bool? barcodeLablePrintButton,
-      bool? cellInfoButton,
-      bool? basketInfoButton,
-bool? cellGeneratorButton,
-
-      bool? itsMezonine}) {
+      bool? selectionButton,
+      bool? admissionButton,
+      bool? movingButton,
+      bool? returningButton,
+      bool? rechargeButton,
+      bool? itsMezonine,
+      bool? cameraScaner}) {
     return HomePageState(
         username: username ?? this.username,
         status: status ?? this.status,
-        genBarButton: genBarButton ?? this.genBarButton,
-        cellInfoButton: cellInfoButton ?? this.cellInfoButton,
-        barcodeLablePrintButton:
-            barcodeLablePrintButton ?? this.barcodeLablePrintButton,
-        basketInfoButton: basketInfoButton ?? this.basketInfoButton,
-cellGeneratorButton: cellGeneratorButton ?? this.cellGeneratorButton,
-
-        itsMezonine: itsMezonine ?? this.itsMezonine);
+        selectionButton: selectionButton ?? this.selectionButton,
+        admissionButton: admissionButton ?? this.admissionButton,
+        movingButton: movingButton ?? this.movingButton,
+        returningButton:returningButton ?? this.returningButton,
+        rechargeButton: rechargeButton ?? this.rechargeButton,
+        itsMezonine: itsMezonine ?? this.itsMezonine,
+        cameraScaner:  cameraScaner ?? this.cameraScaner);
   }
 
   @override
   List<Object?> get props => [
         username,
         status,
-        genBarButton,
-        barcodeLablePrintButton,
-        cellInfoButton,
-        basketInfoButton,
-cellGeneratorButton,
-        itsMezonine
+        selectionButton,
+        admissionButton,
+        movingButton,
+        returningButton,
+        rechargeButton,
+        itsMezonine,
+        cameraScaner
       ];
 }

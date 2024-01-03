@@ -16,7 +16,7 @@ class SelectionOrderHeadRepository {
             docId: e.docId ?? '',
             date: e.date ?? '',
             baskets:
-                e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList()))
+                e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList(),fullOrder: e.fullOrdfer ?? 0),)
         .toList();
     return Orders(orders: orders, status: listNom.status ?? 1);
   }

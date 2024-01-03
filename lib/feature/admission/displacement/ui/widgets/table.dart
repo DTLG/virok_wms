@@ -1,102 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/admission/displacement/cubits/displacement_order_data_cubit.dart';
+import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
+import 'package:virok_wms/ui/ui.dart';
+import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../displacement_repository/models/noms_model.dart';
 import 'dialog/count_input.dart';
 
 class DisplacementTable extends StatelessWidget {
-  const DisplacementTable({
-    super.key,
-    required this.noms,
-  });
+  const DisplacementTable({super.key, required this.noms, required this.order});
 
   final DisplacementNoms noms;
+  final DisplacementOrder order;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: noms.noms.length,
         itemBuilder: (context, index) {
-          return InkWell(
+          return TableElement(
+            dataLenght: noms.noms.length,
+            rowElement: [
+              RowElement(
+                flex: 2,
+                value: (index + 1).toString(),
+                textStyle: theme.textTheme.titleSmall?.copyWith(fontSize: 13),
+              ),
+              RowElement(
+                flex: 6,
+                value: noms.noms[index].name,
+                textStyle: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 0.5,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 9),
+              ),
+              RowElement(
+                flex: 4,
+                value: noms.noms[index].article,
+                textStyle: theme.textTheme.labelMedium
+                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
+              ),
+              RowElement(
+                flex: 2,
+                value: noms.noms[index].qty.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+              RowElement(
+                flex: 2,
+                value: noms.noms[index].count.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+            ],
+            index: index,
             onTap: () {
+              final barcode = noms.noms[index].barcode.isEmpty
+                  ? ''
+                  : noms.noms[index].barcode.first.barcode;
+
+              if (barcode.isEmpty) {
+                Alerts(
+                        msg: 'Вибраному товару не присвоєний штрихкод',
+                        context: context)
+                    .showError();
+                return;
+              }
               showManualCountIncrementAlert(
-                  context, noms.noms[index], noms.invoice);
+                  context, barcode, noms.invoice, noms.noms[index]);
+              context.read<DisplacementOrderDataCubit>().getNoms(order);
             },
-            child: CustomTableRow(
-              index: index,
-              lastIndex: noms.noms.length - 1,
-              nom: noms.noms[index],
-            ),
+            color: noms.noms[index].qty == 0 ||
+                    noms.noms[index].count > noms.noms[index].qty
+                ? myColors.tableYellow
+                : noms.noms[index].count < noms.noms[index].qty &&
+                        noms.noms[index].count != 0
+                    ? myColors.tableRed
+                    : noms.noms[index].count == noms.noms[index].qty
+                        ? myColors.tableGreen
+                        : index % 2 != 0
+                            ? myColors.tableDarkColor
+                            : myColors.tableLightColor,
           );
         },
-      ),
-    );
-  }
-}
-
-class CustomTableRow extends StatelessWidget {
-  const CustomTableRow({
-    super.key,
-    required this.index,
-    required this.lastIndex,
-    required this.nom,
-  });
-  final DisplacementNom nom;
-  final int index;
-  final int lastIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-      height: 45,
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-          color: nom.qty == 0 || nom.count > nom.qty
-              ? const Color.fromARGB(248, 255, 255, 159)
-              : nom.count < nom.qty && nom.count != 0
-                  ? const Color.fromARGB(248, 255, 149, 149)
-                  : nom.count == nom.qty
-                      ? const Color.fromARGB(255, 132, 255, 142)
-                      : index % 2 == 0
-                          ? Colors.grey[200]
-                          : Colors.white,
-          border: const Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-              bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-      child: Row(
-        children: [
-          RowElement(
-            flex: 6,
-            value: nom.name,
-            textStyle: theme.textTheme.labelSmall?.copyWith(
-                letterSpacing: 0.5,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 9),
-          ),
-          RowElement(
-            flex: 4,
-            value: nom.article,
-            textStyle: theme.textTheme.labelMedium
-                ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
-          ),
-          RowElement(
-            flex: 2,
-            value: nom.qty.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),
-          RowElement(
-            flex: 2,
-            value: nom.count.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),
-        ],
       ),
     );
   }

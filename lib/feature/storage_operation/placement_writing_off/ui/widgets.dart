@@ -62,6 +62,7 @@ class CellInfoAlert extends StatelessWidget {
       {super.key, required this.cell, required this.tap, required this.cubit});
   final Cell cell;
   final bool tap;
+  // ignore: prefer_typing_uninitialized_variables
   final cubit;
 
   @override

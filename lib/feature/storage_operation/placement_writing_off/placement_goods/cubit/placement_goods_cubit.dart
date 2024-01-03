@@ -22,6 +22,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
             status: PlacementGoodsStatus.success,
             cell: cell,
             cellBarcode: barcode,
+            qty: cell.cell.first.quantity.toString(),
             cellStatus: 1,
             zoneStatus: cell.zone));
       }
@@ -38,7 +39,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
     double count = state.count;
     final zone = state.cell.zone;
     bool isEqual = false;
-    
+
     BarcodesNoms noms = BarcodesNoms.empty;
     emit(state.copyWith(
         cellIsEmpty:
@@ -47,8 +48,9 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
     if (state.nom == BarcodesNom.empty) {
       noms = await PlacementWritingOffRepo()
           .getNom('get_from_barcode', nomBarcode);
-          
-      emit(state.copyWith(nom: noms.noms.isEmpty?BarcodesNom.empty:noms.noms.first));
+
+      emit(state.copyWith(
+          nom: noms.noms.isEmpty ? BarcodesNom.empty : noms.noms.first));
     }
 
     if (zone == 1) {
@@ -99,32 +101,40 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
     } else {
       // zone_2  - - - - - - - - - - - - - - - - - - - -
 
-        for (var element in state.nom.barodes) {
-          if (nomBarcode == element.barcode) {
-            isEqual = true;
-            count++;
-            emit(state.copyWith(
-                status: PlacementGoodsStatus.success,
-                count: count,
-                cellStatus: 1,
-                name: state.nom.name,
-                article: state.nom.article,
-                nomBarcode: nomBarcode));
+      double qty = 0;
+      for (final cell in state.cell.cell) {
+        for (final barcode in cell.barcodes) {
+          if (barcode == nomBarcode) {
+            qty = double.parse(cell.quantity.toString());
             break;
-          } else {
-            isEqual = false;
           }
         }
-        if (isEqual == false) {
+      }
+
+      for (var element in state.nom.barodes) {
+        if (nomBarcode == element.barcode) {
+          isEqual = true;
+          count++;
           emit(state.copyWith(
-              status: PlacementGoodsStatus.notFound, cellStatus: 6));
-          emit(state.copyWith(cellStatus: 1));
+              status: PlacementGoodsStatus.success,
+              count: count,
+              cellStatus: 1,
+              name: state.nom.name,
+              qty: qty.toStringAsFixed(0),
+              article: state.nom.article,
+              nomBarcode: nomBarcode));
+          break;
+        } else {
+          isEqual = false;
         }
-     
+      }
+      if (isEqual == false) {
+        emit(state.copyWith(
+            status: PlacementGoodsStatus.notFound, cellStatus: 6));
+        emit(state.copyWith(cellStatus: 1));
+      }
     }
   }
-
-  
 
   void manualAddNom(String nomBarcode, String count) {
     emit(state.copyWith(cellStatus: 1));
@@ -146,6 +156,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
             status: PlacementGoodsStatus.success,
             cell: cell,
             count: 0,
+            qty: cell.cell.first.quantity.toString(),
             nomBarcode: '',
             cellStatus: cell.cell.first.status));
       } else if (cell.cell.first.status == 4) {
@@ -174,6 +185,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
         nomBarcode: '',
         cellBarcode: '',
         count: 0,
+        qty: '0',
         cell: Cell.empty,
         nom: BarcodesNom.empty,
         cellIsEmpty: true,

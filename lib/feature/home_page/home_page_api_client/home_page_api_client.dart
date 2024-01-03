@@ -27,7 +27,7 @@ class HomePageApiCLient{
       });
 
       if (response.statusCode == 200) {
-        return response.body == '0'?false:true;
+        return response.body == '1'?true:false;
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');

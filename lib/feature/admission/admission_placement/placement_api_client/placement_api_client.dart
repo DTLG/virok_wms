@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'models/admission_nom_dto.dart';
+import 'models/placement_nom_dto.dart';
 
 class PlacementApiClient {
   final client = http.Client();
 
-  Future<AdmissionNomsDTO> getNoms(String query, String body) async {
+ 
+
+  Future<PlacementNomsDTO> getNoms(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String username = prefs.getString('username') ?? '';
@@ -20,26 +22,28 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       });
+
+      client.close();
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
-        return AdmissionNomsDTO.fromJson(json);
+        return PlacementNomsDTO.fromJson(json);
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error sending request: $e');
-    } finally {
-      client.close();
     }
   }
 
-  Future<int> checkCell(String query, String body) async {
+  Future<PlacementNomDTO> getNom(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String username = prefs.getString('username') ?? '';
@@ -51,21 +55,26 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       });
 
+  
+
+      client.close();
+
       if (response.statusCode == 200) {
-        return int.parse(response.body);
+        Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
+        return PlacementNomDTO.fromJson(json);
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error sending request: $e');
-    } finally {
-      client.close();
     }
   }
 }

@@ -22,7 +22,7 @@ class DisplacementNomDTO {
   @JsonKey(name: 'tovar')
   final String? name;
   final String? article;
-  final List<BarcodeDTO> barcodes;
+  final List<BarcodeDTO>? barcodes;
   final double? qty;
   final double? count;
 

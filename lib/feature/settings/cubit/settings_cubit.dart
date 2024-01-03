@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +8,8 @@ part 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit() : super(const SettingsState());
+
+
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -18,6 +22,14 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     final placementButton = prefs.getBool('placement_button') ?? false;
     final writeOffButton = prefs.getBool('writing_off_button') ?? false;
+
+    final selectionButton = prefs.getBool('selection_button') ?? false;
+    final admissionButton = prefs.getBool('admission_button') ?? false;
+    final movingButton = prefs.getBool('moving_button') ?? false;
+    final returningButton = prefs.getBool('returning_button') ?? false;
+
+    final rechargeButton = prefs.getBool('recharge_button') ?? false;
+    final cameraScaner = prefs.getBool('camera_scaner') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -32,8 +44,14 @@ class SettingsCubit extends Cubit<SettingsState> {
         cellGeneratorButton: cellGeneratorButton,
         placementButton: placementButton,
         writeOffButton: writeOffButton,
+        selectionButton: selectionButton,
+        admissionButton: admissionButton,
+        movingButton: movingButton,
+        returningButton: returningButton,
+        rechargeButton: rechargeButton,
         printerHost: printerHost,
-        printerPort: printerPort));
+        printerPort: printerPort,
+        cameraScaner: cameraScaner));
   }
 
   Future<void> writeToSP(String key, bool value) async {
@@ -50,11 +68,22 @@ class SettingsCubit extends Cubit<SettingsState> {
         return emit(state.copyWith(cellGeneratorButton: value));
       case 'generation_bar_button':
         return emit(state.copyWith(generationButton: value));
-         case 'placement_button':
+      case 'placement_button':
         return emit(state.copyWith(placementButton: value));
       case 'writing_off_button':
         return emit(state.copyWith(writeOffButton: value));
-    
+      case 'selection_button':
+        return emit(state.copyWith(selectionButton: value));
+      case 'admission_button':
+        return emit(state.copyWith(admissionButton: value));
+      case 'moving_button':
+        return emit(state.copyWith(movingButton: value));
+      case 'recharge_button':
+        return emit(state.copyWith(rechargeButton: value));
+      case 'camera_scaner':
+        return emit(state.copyWith(cameraScaner: value));
+      case 'returning_button':
+        return emit(state.copyWith(returningButton: value));
     }
   }
 }

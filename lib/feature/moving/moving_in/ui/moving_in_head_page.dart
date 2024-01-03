@@ -6,6 +6,7 @@ import 'package:virok_wms/ui/widgets/row_element.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
+import '../../../../ui/theme/theme.dart';
 import '../cubits/moving_in_head_cubit.dart';
 import '../moving_in_repository/models/order.dart';
 
@@ -43,8 +44,7 @@ class MovingInHeadView extends StatelessWidget {
         child: Column(
           children: [
             const _TableHead(),
-            BlocConsumer<MovingInHeadCubit,
-                MovingInHeadState>(
+            BlocConsumer<MovingInHeadCubit, MovingInHeadState>(
               listener: (context, state) {
                 if (state.status.isNotFound) {
                   Alerts(msg: state.errorMassage, context: context).showError();
@@ -61,9 +61,8 @@ class MovingInHeadView extends StatelessWidget {
                 if (state.status.isFailure) {
                   return Expanded(
                     child: WentWrong(
-                      onPressed: () => context
-                          .read<MovingInHeadCubit>()
-                          .getOrders(),
+                      onPressed: () =>
+                          context.read<MovingInHeadCubit>().getOrders(),
                       errorDescription: state.errorMassage,
                     ),
                   );
@@ -100,12 +99,37 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: orders.orders.length,
         itemBuilder: (context, index) {
-          return InkWell(
+          final order = orders.orders[index];
+          return TableElement(
+            dataLenght: orders.orders.length,
+            rowElement: [
+              RowElement(
+                  flex: 1,
+                  value: (index + 1).toString(),
+                  textStyle: theme.textTheme.titleSmall),
+              RowElement(
+                  flex: 3,
+                  value: order.docId,
+                  textStyle: theme.textTheme.titleSmall),
+              RowElement(
+                flex: 6,
+                value: order.customer,
+                textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
+              ),
+              RowElement(
+                  flex: 4,
+                  value: order.date,
+                  textStyle: theme.textTheme.titleSmall),
+            ],
+            index: index,
             onTap: () {
               if (orders.orders[index].invoice == '0') {
                 showStartReceivingDialog(context, orders.orders[index]);
@@ -117,67 +141,87 @@ class _CustomTable extends StatelessWidget {
                     });
               }
             },
-            child: _CustomTableRow(
-              index: index,
-              lastIndex: orders.orders.length - 1,
-              order: orders.orders[index],
-            ),
+            color: order.invoice != '0'
+                ? myColors.tableYellow
+                : index % 2 != 0
+                    ? myColors.tableDarkColor
+                    : myColors.tableLightColor,
           );
+
+          // InkWell(
+          //   onTap: () {
+          //     if (orders.orders[index].invoice == '0') {
+          //       showStartReceivingDialog(context, orders.orders[index]);
+          //     } else {
+          //       Navigator.pushNamed(context, AppRoutes.movingInDataPage,
+          //           arguments: {
+          //             'order': orders.orders[index],
+          //             'cubit': context.read<MovingInHeadCubit>()
+          //           });
+          //     }
+          //   },
+          //   child: _CustomTableRow(
+          //     index: index,
+          //     lastIndex: orders.orders.length - 1,
+          //     order: orders.orders[index],
+          //   ),
+          // );
         },
       ),
     );
   }
 }
 
-class _CustomTableRow extends StatelessWidget {
-  const _CustomTableRow(
-      {required this.index, required this.lastIndex, required this.order});
-  final MovingInOrder order;
-  final int index;
-  final int lastIndex;
+// class _CustomTableRow extends StatelessWidget {
+//   const _CustomTableRow(
+//       {required this.index, required this.lastIndex, required this.order});
+//   final MovingInOrder order;
+//   final int index;
+//   final int lastIndex;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-      height: 45,
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-          color: order.invoice != '0'?const Color.fromARGB(255, 255, 245, 151):
-          
-          index % 2 == 0 ? Colors.grey[200] : Colors.white,
-          border: const Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-              bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-      child: Row(
-        children: [
-          RowElement(
-              flex: 1,
-              value: (index + 1).toString(),
-              textStyle: theme.textTheme.titleSmall),
-          RowElement(
-              flex: 3,
-              value: order.docId,
-              textStyle: theme.textTheme.titleSmall
-              ),
-          RowElement(
-              flex: 6,
-              value: order.customer,
-              textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
-              ),
-          RowElement(
-              flex: 4,
-              value: order.date,
-              textStyle: theme.textTheme.titleSmall),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     return Container(
+//       margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
+//       height: 45,
+//       padding: const EdgeInsets.all(3),
+//       decoration: BoxDecoration(
+//           color: order.invoice != '0'
+//               ? const Color.fromARGB(255, 255, 245, 151)
+//               : index % 2 == 0
+//                   ? Colors.grey[200]
+//                   : Colors.white,
+//           border: const Border.symmetric(
+//               vertical: BorderSide(width: 1),
+//               horizontal: BorderSide(width: 0.5)),
+//           borderRadius: BorderRadius.only(
+//               bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
+//               bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
+//       child: Row(
+//         children: [
+//           RowElement(
+//               flex: 1,
+//               value: (index + 1).toString(),
+//               textStyle: theme.textTheme.titleSmall),
+//           RowElement(
+//               flex: 3,
+//               value: order.docId,
+//               textStyle: theme.textTheme.titleSmall),
+//           RowElement(
+//             flex: 6,
+//             value: order.customer,
+//             textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
+//           ),
+//           RowElement(
+//               flex: 4,
+//               value: order.date,
+//               textStyle: theme.textTheme.titleSmall),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _TableHead extends StatelessWidget {
   const _TableHead();
@@ -185,43 +229,32 @@ class _TableHead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      height: 45,
-      decoration: const BoxDecoration(
-          border: Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Row(
-        children: [
-          RowElement(
-            flex: 1,
-            value: "№",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 3,
-            value: "№ док.",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 6,
-            value: "Постачальник",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 4,
-            value: "Дата",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-        ],
-      ),
+    return TableHeads(
+      children: [
+        RowElement(
+          flex: 1,
+          value: "№",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+        RowElement(
+          flex: 3,
+          value: "№ док.",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+        RowElement(
+          flex: 6,
+          value: "Постачальник",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+        RowElement(
+          flex: 4,
+          value: "Дата",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+      ],
     );
   }
 }
-
-
 
 showStartReceivingDialog(BuildContext context, MovingInOrder order) {
   showDialog(

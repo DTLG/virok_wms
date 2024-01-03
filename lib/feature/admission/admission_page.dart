@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virok_wms/route/app_routes.dart';
+import 'package:virok_wms/ui/theme/app_color.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 class AdmissionPage extends StatelessWidget {
@@ -11,22 +12,23 @@ class AdmissionPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Поступлення'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GeneralButton(
-                lable: 'Прийом товару',
-                onPressed: () {
-                  Navigator.pushNamed(context,AppRoutes.displacementOrderHeadPage);
-                }),
-            GeneralButton(
-                lable: 'Розміщення товару',
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.admissionPlacementPage);
-                })
-          ],
-        ),
+      body: GridButton(
+        children: [
+          SquareButton(
+            lable: 'Прийом товару',
+                      color: AppColors.lightGrey,
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.displacementOrderHeadPage);
+            },
+          ),
+          SquareButton(
+            lable: 'Розміщення товару',
+                      color: AppColors.darkRed,
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.admissionOlacementOrderHeadPage);
+            },
+          )
+        ],
       ),
     );
   }

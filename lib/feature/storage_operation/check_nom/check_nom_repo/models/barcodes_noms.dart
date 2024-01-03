@@ -14,7 +14,7 @@ class BarcodesNoms extends Equatable {
 class BarcodesNom extends Equatable {
   final String name;
   final String article;
-  final List<Barcode> barodes;
+  final List<Barcodee> barodes;
   final List<Cell> cells;
 
   const BarcodesNom(
@@ -30,12 +30,12 @@ class BarcodesNom extends Equatable {
       BarcodesNom(name: '', article: '', barodes: [], cells: []);
 }
 
-class Barcode extends Equatable {
+class Barcodee extends Equatable {
   final String barcode;
   final int count;
   final int ratio;
 
-  const Barcode(
+  const Barcodee(
       {required this.barcode, required this.count, required this.ratio});
 
   @override

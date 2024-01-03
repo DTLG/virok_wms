@@ -81,7 +81,6 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
 
   clear() {
     emit(state.copyWith(
-        noms: MovingInNoms.empty,
         status: MovingInDataStatus.success));
   }
 }

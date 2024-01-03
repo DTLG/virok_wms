@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:virok_wms/route/app_routes.dart';
+import 'package:virok_wms/ui/theme/app_color.dart';
 
-import '../../ui/widgets/general_button.dart';
+import '../../ui/widgets/widgets.dart';
 
 class MovingPage extends StatelessWidget {
   const MovingPage({super.key});
@@ -10,26 +10,34 @@ class MovingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Поступлення'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GeneralButton(
-                lable: 'Переміщення на склад',
-                onPressed: () {
-                  Navigator.pushNamed(context,AppRoutes.movingInHeadPage);
-                }),
-            GeneralButton(
-                lable: 'Переміщення з складу',
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.movingOutHeadPage);
-                })
-          ],
+        appBar: AppBar(
+          title: const Text('Переміщення'),
         ),
-      ),
-    );
+        body: GridButton(
+          children: [
+            SquareButton(
+              lable: 'Переміщення на склад',
+                      color: AppColors.lightGrey,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.movingInHeadPage);
+              },
+            ),
+             SquareButton(
+              lable: 'Переміщення з складу',
+                      color: AppColors.darkRed,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.movingOutHeadPage);
+              },
+            ) ,
+            SquareButton(
+              lable: 'Переміщення біля воріт',
+                      color: AppColors.darkRed,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.movingGateHeadPage);
+              },
+            ),
+            
+          ],
+        ));
   }
 }

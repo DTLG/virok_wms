@@ -35,194 +35,198 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-          ),
-          onPressed: () {
-            final count = context.read<PlacementGoodsCubit>().state.count;
-            if (count > 0) {
-              showClosingCheck(
-                context,
-                AppColors.darkRed,
-                "Ви дійсно хочете завершити дії",
-                () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.homePage, (route) => false);
-                },
-                () {
-                  Navigator.pop(context);
-                },
-              );
-            } else {
-              Navigator.pop(context);
-            }
-          },
-        ),
-        title: const Text(
-          'Розміщення товарів',
-          style: TextStyle(fontSize: 18),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(7),
-            child: ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                      Color.fromARGB(255, 91, 79, 179)),
-                  maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
-                  padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
-              child: Text('Очистити',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .copyWith(color: Colors.white)),
-              onPressed: () {
-                context.read<PlacementGoodsCubit>().clear();
-              },
+    return GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
             ),
-          )
-        ],
-      ),
-      body: BlocBuilder<PlacementGoodsCubit, PlacementGoodsState>(
-        builder: (context, state) {
-          if (state.status.isFailure) {
-            return SizedBox(
-              height: 400,
-              child: WentWrong(
-                errorDescription: state.error,
+            onPressed: () {
+              final count = context.read<PlacementGoodsCubit>().state.count;
+              if (count > 0) {
+                showClosingCheck(
+                  context,
+                  AppColors.darkRed,
+                  "Ви дійсно хочете завершити дії",
+                  () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, AppRoutes.homePage, (route) => false);
+                  },
+                  () {
+                    Navigator.pop(context);
+                  },
+                );
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          title: const Text(
+            'Розміщення товарів',
+            style: TextStyle(fontSize: 18),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(7),
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Color.fromARGB(255, 91, 79, 179)),
+                    maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
+                child: Text('Очистити',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(color: Colors.white)),
                 onPressed: () {
-                  Navigator.popAndPushNamed(context, '/placementGoodsPage');
+                  context.read<PlacementGoodsCubit>().clear();
                 },
               ),
-            );
-          }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                const CellInput(),
-                InkWell(
-                  onTap: () {
-                    if (state.status.isSuccess && state.cell.zone == 2) {
-                      _showCellInfoDialog(context, state.cell, false,
-                          context.read<PlacementGoodsCubit>());
-                    }
+            )
+          ],
+        ),
+        body: BlocBuilder<PlacementGoodsCubit, PlacementGoodsState>(
+          builder: (context, state) {
+            if (state.status.isFailure) {
+              return SizedBox(
+                height: 400,
+                child: WentWrong(
+                  errorDescription: state.error,
+                  onPressed: () {
+                    Navigator.popAndPushNamed(context, '/placementGoodsPage');
                   },
-                  child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        children: [
-                          const CeelInfo(),
-                          BlocConsumer<PlacementGoodsCubit,
-                              PlacementGoodsState>(
-                            listener: (context, state) {
-                              if (state.cellStatus == 0) {
-                                Alerts(
-                                        msg: 'Комірку не знайдено',
-                                        context: context)
-                                    .showError();
-                              }
-                              if (state.cellStatus == 3) {
-                                Alerts(
-                                        msg: 'Товар не належить цій комірці',
-                                        context: context)
-                                    .showError();
-                              }
-                              if (state.cellStatus == 4) {
-                                Alerts(
-                                        msg: 'Товар не знайдено',
-                                        context: context)
-                                    .showError();
-                              }
-                              if (state.cellStatus == 6) {
-                                Alerts(
-                                        msg: "Відсканований не той товар",
-                                        context: context)
-                                    .showError();
-                              }
-                              if (state.cellStatus == 5) {
-                                Alerts(
-                                        msg: "Розміщено",
-                                        context: context,
-                                        color: Colors.green)
-                                    .showNotFoundAlert();
-                              }
-                            },
-                            buildWhen: (previous, current) {
-                              return current.status.isNotFound ? false : true;
-                            },
-                            builder: (context, state) {
-                              if (state.status.isFailure) {
-                                return Center(
-                                  child: WentWrong(
-                                    errorDescription: state.error,
-                                    onPressed: () {
-                                      Navigator.popAndPushNamed(
-                                          context, '/placementGoodsPage');
-                                    },
-                                  ),
-                                );
-                              }
-                              if (state.status.isSuccess ) {
-                                return const Column(
-                                  children: [
-                                    QuantityInfo(),
-                                    NomInfo(),
-                                    NomNameInfo(),
-                                  ],
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                          )
-                        ],
-                      )),
                 ),
-                const CountInfo(),
-              ],
-            ),
-          );
-        },
-      ),
-      bottomSheet: BlocBuilder<PlacementGoodsCubit, PlacementGoodsState>(
-        builder: (context, state) {
-          if (state.count > 0) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GeneralButton(
-                    lable: 'Розмістити',
-                    onPressed: () {
-                      showClosingCheck(
-                        context,
-                        AppColors.darkRed,
-                        "Ви дійсно хочете розмістити товар",
-                        () {
-                          context.read<PlacementGoodsCubit>().sendNom(
-                              state.cellBarcode,
-                              state.nomBarcode,
-                              state.count.toString());
-                          focusNode.requestFocus();
-                          Navigator.pop(context);
-                        },
-                        () {
-                          Navigator.pop(context);
-                        },
-                      );
-                    })
-              ],
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const BarcodeInputs(),
+                  InkWell(
+                    onTap: () {
+                      if (state.status.isSuccess && state.cell.zone == 2) {
+                        _showCellInfoDialog(context, state.cell, false,
+                            context.read<PlacementGoodsCubit>());
+                      }
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Column(
+                          children: [
+                            const CeelInfo(),
+                            BlocConsumer<PlacementGoodsCubit,
+                                PlacementGoodsState>(
+                              listener: (context, state) {
+                                if (state.cellStatus == 0) {
+                                  Alerts(
+                                          msg: 'Комірку не знайдено',
+                                          context: context)
+                                      .showError();
+                                }
+                                if (state.cellStatus == 3) {
+                                  Alerts(
+                                          msg: 'Товар не належить цій комірці',
+                                          context: context)
+                                      .showError();
+                                }
+                                if (state.cellStatus == 4) {
+                                  Alerts(
+                                          msg: 'Товар не знайдено',
+                                          context: context)
+                                      .showError();
+                                }
+                                if (state.cellStatus == 6) {
+                                  Alerts(
+                                          msg: "Відсканований не той товар",
+                                          context: context)
+                                      .showError();
+                                }
+                                if (state.cellStatus == 5) {
+                                  Alerts(
+                                          msg: "Розміщено",
+                                          context: context,
+                                          color: Colors.green)
+                                      .showToast();
+                                }
+                              },
+                              buildWhen: (previous, current) {
+                                return current.status.isNotFound ? false : true;
+                              },
+                              builder: (context, state) {
+                                if (state.status.isFailure) {
+                                  return Center(
+                                    child: WentWrong(
+                                      errorDescription: state.error,
+                                      onPressed: () {
+                                        Navigator.popAndPushNamed(
+                                            context, '/placementGoodsPage');
+                                      },
+                                    ),
+                                  );
+                                }
+                                if (state.status.isSuccess ) {
+                                  return const Column(
+                                    children: [
+                                      QuantityInfo(),
+                                      NomInfo(),
+                                      NomNameInfo(),
+                                    ],
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              },
+                            )
+                          ],
+                        )),
+                  ),
+                  const CountInfo(),
+                ],
+              ),
             );
-          }
-          return const SizedBox();
-        },
+          },
+        ),
+        bottomSheet: BlocBuilder<PlacementGoodsCubit, PlacementGoodsState>(
+          builder: (context, state) {
+            if (state.count > 0) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GeneralButton(
+                      lable: 'Розмістити',
+                      onPressed: () {
+                        showClosingCheck(
+                          context,
+                          AppColors.darkRed,
+                          "Ви дійсно хочете розмістити товар",
+                          () {
+                            context.read<PlacementGoodsCubit>().sendNom(
+                                state.cellBarcode,
+                                state.nomBarcode,
+                                state.count.toString());
+                            focusNode.requestFocus();
+                            Navigator.pop(context);
+                          },
+                          () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      })
+                ],
+              );
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }
@@ -309,7 +313,7 @@ class QuantityInfo extends StatelessWidget {
             return previous != current;
           },
           builder: (context, state) {
-            return rowValue(state.cell.cell.first.quantity.toString());
+            return rowValue(state.qty);
           },
         )
       ],

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../cubit/placement_goods_cubit.dart';
 
-class CellInput extends StatefulWidget {
-  const CellInput({
+class BarcodeInputs extends StatefulWidget {
+  const BarcodeInputs({
     super.key,
   });
 
   @override
-  State<CellInput> createState() => _CellInputState();
+  State<BarcodeInputs> createState() => _BarcodeInputsState();
 }
 
-class _CellInputState extends State<CellInput> {
+class _BarcodeInputsState extends State<BarcodeInputs> {
   final TextEditingController controller = TextEditingController();
   final TextEditingController nomController = TextEditingController();
   final TextEditingController countController = TextEditingController();
@@ -27,13 +29,16 @@ class _CellInputState extends State<CellInput> {
         context.select((PlacementGoodsCubit cubit) => cubit.state.status);
     final count =
         context.select((PlacementGoodsCubit cubit) => cubit.state.count);
-
-    if (status == PlacementGoodsStatus.initial) {
-      controller.clear();
-      nomController.clear();
-      countController.clear();
-      focusNode.requestFocus();
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+    if (cameraScaner != true) {
+      if (status == PlacementGoodsStatus.initial) {
+        controller.clear();
+        nomController.clear();
+        countController.clear();
+        focusNode.requestFocus();
+      }
     }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -42,13 +47,14 @@ class _CellInputState extends State<CellInput> {
             height: 50,
             child: TextField(
               textAlignVertical: TextAlignVertical.bottom,
-              autofocus: true,
+              autofocus: cameraScaner ? false : true,
               focusNode: focusNode,
               controller: controller,
               textInputAction: TextInputAction.next,
               onSubmitted: (value) async {
                 if (value.isNotEmpty) {
-                  final status = await context.read<PlacementGoodsCubit>().getCeel(value);
+                  final status =
+                      await context.read<PlacementGoodsCubit>().getCeel(value);
                   if (status == 0) {
                     controller.clear();
                     focusNode.requestFocus();
@@ -57,8 +63,14 @@ class _CellInputState extends State<CellInput> {
                   focusNode.requestFocus();
                 }
               },
-              decoration:  const InputDecoration(
-                
+              decoration: InputDecoration(
+                suffixIcon: cameraScaner
+                    ? CameraScanerButton(
+                        scan: (value) {
+                          context.read<PlacementGoodsCubit>().getCeel(value);
+                        },
+                      )
+                    : null,
                 hintText: 'Відскануйте комірку',
               ),
             ),
@@ -80,8 +92,16 @@ class _CellInputState extends State<CellInput> {
                       nomController.clear();
                       focusNode1.requestFocus();
                     },
-                    decoration: const InputDecoration(
-                      
+                    decoration: InputDecoration(
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  context
+                                      .read<PlacementGoodsCubit>()
+                                      .addNom(value);
+                                },
+                              )
+                            : null,
                         hintText: 'Відскануйте товар'),
                   ),
                 ),
@@ -90,9 +110,9 @@ class _CellInputState extends State<CellInput> {
                 ),
                 ElevatedButton(
                     style: ButtonStyle(
-
-                        backgroundColor: MaterialStatePropertyAll(
-                            count == 0 ? Colors.grey : Colors.green),),
+                      backgroundColor: MaterialStatePropertyAll(
+                          count == 0 ? Colors.grey : Colors.green),
+                    ),
                     onPressed: () {
                       if (count == 0) {
                       } else {
@@ -116,7 +136,6 @@ class _CellInputState extends State<CellInput> {
                                           controller: countController,
                                           keyboardType: TextInputType.number,
                                           textAlign: TextAlign.center,
-                                          
                                         ),
                                       ),
                                     ],
@@ -131,7 +150,8 @@ class _CellInputState extends State<CellInput> {
                                               .nomBarcode;
                                           context
                                               .read<PlacementGoodsCubit>()
-                                              .manualAddNom(nomBarcode,countController.text);
+                                              .manualAddNom(nomBarcode,
+                                                  countController.text);
                                           Navigator.pop(context);
                                           countController.clear();
                                         },
@@ -150,7 +170,7 @@ class _CellInputState extends State<CellInput> {
                         child: Text(
                           'Ввести кількість',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 15),
                         )))
               ],
             ),

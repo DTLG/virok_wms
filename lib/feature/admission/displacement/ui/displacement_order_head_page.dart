@@ -6,6 +6,7 @@ import 'package:virok_wms/ui/widgets/row_element.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
+import '../../../../ui/theme/theme.dart';
 import '../cubits/displacement_order_head_cubit.dart';
 import '../displacement_repository/models/order.dart';
 
@@ -53,6 +54,8 @@ class DisplacementOrdersHeadView extends StatelessWidget {
               builder: (context, state) {
                 if (state.status.isInitial) {
                   context.read<DisplacementOrdersHeadCubit>().getOrders();
+                  return const Expanded(
+                      child: Center(child: CircularProgressIndicator()));
                 }
                 if (state.status.isLoading) {
                   return const Expanded(
@@ -100,28 +103,54 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    orders.orders.sort((a, b) => b.date.compareTo(a.date));
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: orders.orders.length,
         itemBuilder: (context, index) {
-          return InkWell(
+          return TableElement(
+            dataLenght: orders.orders.length,
+            rowElement: [
+              RowElement(
+                  flex: 2,
+                  value: (index + 1).toString(),
+                  textStyle: theme.textTheme.titleSmall!.copyWith()),
+              RowElement(
+                  flex: 3,
+                  value: orders.orders[index].docId,
+                  textStyle: theme.textTheme.titleSmall),
+              RowElement(
+                flex: 6,
+                value: orders.orders[index].customer,
+                textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
+              ),
+              RowElement(
+                  flex: 4,
+                  value: orders.orders[index].date,
+                  textStyle: theme.textTheme.titleSmall),
+            ],
+            index: index,
             onTap: () {
               if (orders.orders[index].invoice == '0') {
                 showStartReceivingDialog(context, orders.orders[index]);
               } else {
-                Navigator.pushNamed(context, AppRoutes.displacementorderDataPage,
+                Navigator.pushNamed(
+                    context, AppRoutes.displacementorderDataPage,
                     arguments: {
                       'order': orders.orders[index],
                       'cubit': context.read<DisplacementOrdersHeadCubit>()
                     });
               }
             },
-            child: _CustomTableRow(
-              index: index,
-              lastIndex: orders.orders.length - 1,
-              order: orders.orders[index],
-            ),
+            color: orders.orders[index].invoice != '0'
+                ? myColors.tableYellow
+                : index % 2 != 0
+                    ? myColors.tableDarkColor
+                    : myColors.tableLightColor,
           );
         },
       ),
@@ -129,54 +158,8 @@ class _CustomTable extends StatelessWidget {
   }
 }
 
-class _CustomTableRow extends StatelessWidget {
-  const _CustomTableRow(
-      {required this.index, required this.lastIndex, required this.order});
-  final DisplacementOrder order;
-  final int index;
-  final int lastIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-      height: 45,
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-          color: order.invoice != '0'?const Color.fromARGB(255, 255, 245, 151):
-          
-          index % 2 == 0 ? Colors.grey[200] : Colors.white,
-          border: const Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-              bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-      child: Row(
-        children: [
-          RowElement(
-              flex: 1,
-              value: (index + 1).toString(),
-              textStyle: theme.textTheme.titleSmall),
-          RowElement(
-              flex: 3,
-              value: order.docId,
-              textStyle: theme.textTheme.titleSmall
-              ),
-          RowElement(
-              flex: 6,
-              value: order.customer,
-              textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
-              ),
-          RowElement(
-              flex: 4,
-              value: order.date,
-              textStyle: theme.textTheme.titleSmall),
-        ],
-      ),
-    );
-  }
+TextStyle colorStyle(TextStyle? style, bool arg) {
+  return style!.copyWith(color: arg ? Colors.black : Colors.white);
 }
 
 class _TableHead extends StatelessWidget {
@@ -185,43 +168,30 @@ class _TableHead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      height: 45,
-      decoration: const BoxDecoration(
-          border: Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Row(
-        children: [
-          RowElement(
-            flex: 1,
-            value: "№",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 3,
-            value: "№ док.",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 6,
-            value: "Постачальник",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 4,
-            value: "Дата",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-        ],
+    return TableHeads(children: [
+      RowElement(
+        flex: 2,
+        value: "№",
+        textStyle: theme.textTheme.titleSmall,
       ),
-    );
+      RowElement(
+        flex: 3,
+        value: "№ док.",
+        textStyle: theme.textTheme.titleSmall,
+      ),
+      RowElement(
+        flex: 6,
+        value: "Постачальник",
+        textStyle: theme.textTheme.titleSmall,
+      ),
+      RowElement(
+        flex: 4,
+        value: "Дата",
+        textStyle: theme.textTheme.titleSmall,
+      ),
+    ]);
   }
 }
-
-
 
 showStartReceivingDialog(BuildContext context, DisplacementOrder order) {
   showDialog(

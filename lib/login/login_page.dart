@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => LoginCubit(),
-      child: BlocListener<LoginCubit, LoginState>(
+      child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state.status.isLogin) {
             context.read<HomePageCubit>().getUser();
@@ -25,17 +26,30 @@ class LoginPage extends StatelessWidget {
           }
           if (state.status.isUnknown) {
             Alerts(msg: 'Користувача не знайдено', context: context)
-                .showNotFoundAlert();
+                .showToast();
           }
           if (state.status.isFailure) {
             Alerts(
                     msg: 'Не має звязку з сервером',
                     color: const Color.fromARGB(255, 165, 11, 0),
                     context: context)
-                .showNotFoundAlert();
+                .showToast();
           }
         },
-        child: const LoginView(),
+        buildWhen: (previous, current) =>
+            !current.status.isSaccsses || !current.status.isFailure,
+        builder: (context, state) {
+          if (state.status.isInitial) {
+            context.read<LoginCubit>().writeDbPath();
+          }
+          if (state.status.a) {
+            if (state.dbPath.isNotEmpty) {
+              context.read<LoginCubit>().getUsers(state.dbPath);
+            }
+          }
+
+          return const LoginView();
+        },
       ),
     );
   }
@@ -51,14 +65,15 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
-  final passController = TextEditingController();
+  final pathController = TextEditingController();
 
   final passFocus = FocusNode();
   bool _passVisible = true;
 
-  bool isEnamled() {
+  bool isEnabled() {
     bool res;
-    if (loginController.text.isEmpty || passwordController.text.isEmpty) {
+    final zone = context.read<LoginCubit>().state.zone;
+    if (zone.isEmpty || passwordController.text.isEmpty) {
       res = false;
     } else {
       res = true;
@@ -70,6 +85,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = context.select((LoginCubit cubit) => cubit.state);
+    state.status.a ? pathController.text = state.dbPath : pathController;
+            final themeMode = AdaptiveTheme.of(context).mode;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -88,39 +107,48 @@ class _LoginViewState extends State<LoginView> {
               height: 30,
             ),
             TextField(
-              onChanged: (value) async {
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                prefs.setString('api', value);
+              onSubmitted: (value) async {
+                if (value.isNotEmpty) {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setString('api', value);
+                  if (context.mounted) {
+                    context.read<LoginCubit>().getUsers(value);
+                  }
+                }
               },
-              textInputAction: TextInputAction.next,
-              controller: passController,
+              controller: pathController,
               style: const TextStyle(fontSize: 13),
-              decoration: const InputDecoration(hintText: 'Шлях до бази'),
+              decoration:  InputDecoration(hintText: 'Шлях до бази',hintStyle: TextStyle(color:  themeMode.isDark ? Colors.white : Colors.black)),
+              
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            const LoginPopupButton(),
+
+            // TextField(
+            //   onChanged: (value) {
+            //     isEnamled();
+            //   },
+            //   textInputAction: TextInputAction.next,
+            //   controller: loginController,
+            //   decoration: const InputDecoration(hintText: 'Логін'),
+            // ),
             const SizedBox(
               height: 10,
             ),
             TextField(
               onChanged: (value) {
-                isEnamled();
-              },
-              textInputAction: TextInputAction.next,
-              controller: loginController,
-              decoration: const InputDecoration(hintText: 'Логін'),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            TextField(
-              onChanged: (value) {
-                isEnamled();
+                isEnabled();
               },
               onSubmitted: (value) {
-                isEnamled()
+                final String zone = context.read<LoginCubit>().state.zone;
+
+                isEnabled()
                     ? context
                         .read<LoginCubit>()
-                        .login(loginController.text, passwordController.text)
+                        .login(zone, passwordController.text)
                     : () {};
               },
               textInputAction: TextInputAction.search,
@@ -129,6 +157,7 @@ class _LoginViewState extends State<LoginView> {
               obscuringCharacter: '●',
               decoration: InputDecoration(
                   hintText: 'Пароль',
+                  hintStyle: TextStyle(color:  themeMode.isDark ? Colors.white : Colors.black),
                   suffixIcon: IconButton(
                       onPressed: () {
                         _passVisible = !_passVisible;
@@ -150,17 +179,18 @@ class _LoginViewState extends State<LoginView> {
             ),
             ElevatedButton(
               onPressed: () {
-                isEnamled()
+                final String zone = context.read<LoginCubit>().state.zone;
+                isEnabled()
                     ? context
                         .read<LoginCubit>()
-                        .login(loginController.text, passwordController.text)
+                        .login(zone, passwordController.text)
                     : () {};
               },
               style: theme.elevatedButtonTheme.style!.copyWith(
                   fixedSize: const MaterialStatePropertyAll(
                       Size.fromWidth(double.infinity)),
                   backgroundColor: MaterialStatePropertyAll(
-                      isEnamled() ? const Color(0xFFB10000) : Colors.grey)),
+                      isEnabled() ? const Color(0xFFB10000) : Colors.grey)),
               child: const Text('Увійти'),
             ),
             const SizedBox(
@@ -182,6 +212,64 @@ class _LoginViewState extends State<LoginView> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class LoginPopupButton extends StatelessWidget {
+  const LoginPopupButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<PopupMenuItem> popupItem = [];
+    final users = context.select((LoginCubit cubit) => cubit.state.users.users);
+    if (users.isEmpty) {
+      popupItem.add(const PopupMenuItem(child: Text('Зону не знайдено')));
+    }
+    for (var name in users) {
+      popupItem.add(PopupMenuItem(
+        value: name.user,
+        child: Text(name.user),
+      ));
+    }
+
+    return BlocBuilder<LoginCubit, LoginState>(
+      builder: (context, state) {
+        final themeMode = AdaptiveTheme.of(context).mode;
+        return Container(
+            width: double.infinity,
+            height: 55,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: PopupMenuButton(
+                offset: const Offset(0, 38),
+                elevation: 5,
+                onSelected: (value) {
+                  context.read<LoginCubit>().writeZone(value);
+                },
+                itemBuilder: (context) => popupItem,
+                child: Row(
+                  children: [
+                    Text(
+                      state.zone.isEmpty ? 'Зона складу' : state.zone,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color:
+                              themeMode.isDark ? Colors.white : Colors.black),
+                    ),
+                    Icon(Icons.keyboard_arrow_down_rounded,
+                        color: themeMode.isDark ? Colors.white : Colors.black)
+                  ],
+                ),
+              ),
+            ));
+      },
     );
   }
 }

@@ -7,20 +7,18 @@ import '../displacement_repository/models/order.dart';
 
 part 'displacement_order_data_state.dart';
 
-class DisplacementOrderDataCubit extends Cubit<DiplacementOrderDataState> {
-  DisplacementOrderDataCubit() : super(DiplacementOrderDataState());
+class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
+  DisplacementOrderDataCubit() : super(DisplacementOrderDataState());
 
   Future<void> getNoms(DisplacementOrder order) async {
     try {
-      emit(state.copyWith(status: DisplacementOrderDataStatus.loading));
-
-      final orders = order.invoice == '0'
+      final noms = order.invoice == '0'
           ? await DisplacementOrderDataRepository()
-              .displacementRepo('StartInvoice', order.docId)
+              .getNoms('StartInvoice', order.docId)
           : await DisplacementOrderDataRepository()
-              .displacementRepo('Invoice_data', order.invoice);
+              .getNoms('Invoice_data', order.invoice);
       emit(state.copyWith(
-          status: DisplacementOrderDataStatus.success, noms: orders));
+          status: DisplacementOrderDataStatus.success, noms: noms));
     } catch (e) {
       emit(state.copyWith(status: DisplacementOrderDataStatus.success));
 
@@ -30,12 +28,48 @@ class DisplacementOrderDataCubit extends Cubit<DiplacementOrderDataState> {
     }
   }
 
-  Future<void> scan(String barcode, String invoice, double count) async {
+  Future<void> getNom(String invoice, String barcode) async {
+    try {
+      final nom = await DisplacementOrderDataRepository()
+          .getNom('Invoice_sku_data', '$invoice $barcode');
+      emit(state.copyWith(
+          status: DisplacementOrderDataStatus.success, nom: nom));
+    } catch (e) {
+      emit(state.copyWith(
+          status: DisplacementOrderDataStatus.failure,
+          errorMassage: e.toString()));
+    }
+  }
+
+  DisplacementNom scan(String barcode) {
+    DisplacementNom nom = DisplacementNom.empty;
+    for (var nome in state.noms.noms) {
+      for (var bar in nome.barcode) {
+        if (bar.barcode == barcode) {
+          nom = nome;
+          break;
+        }
+      }
+    }
+    if (nom.name.isEmpty && nom.article.isEmpty) {
+      emit(state.copyWith(
+          errorMassage: "Товар не знайдено, або штрихкод не належить товару",
+          time: DateTime.now().millisecondsSinceEpoch,
+          status: DisplacementOrderDataStatus.notFound));
+    }
+
+    return nom;
+  }
+
+  Future<void> addNom(String barcode, String invoice, double count) async {
     try {
       final noms = await DisplacementOrderDataRepository()
-          .displacementRepo('Invoice_scan', '$barcode $count $invoice');
+          .getNoms('Invoice_scan', '$barcode $count $invoice');
       noms.errorMassage != "OK"
-          ? emit(state.copyWith(errorMassage: noms.errorMassage,  time: DateTime.now().millisecondsSinceEpoch, status: DisplacementOrderDataStatus.notFound))
+          ? emit(state.copyWith(
+              errorMassage: noms.errorMassage,
+              time: DateTime.now().millisecondsSinceEpoch,
+              status: DisplacementOrderDataStatus.notFound))
           : emit(state.copyWith(
               status: DisplacementOrderDataStatus.success, noms: noms));
     } catch (e) {
@@ -61,13 +95,15 @@ class DisplacementOrderDataCubit extends Cubit<DiplacementOrderDataState> {
     return res;
   }
 
-  Future<void> closeOrder(String invoice,) async {
- try {
+  Future<void> closeOrder(
+    String invoice,
+  ) async {
+    try {
       emit(state.copyWith(status: DisplacementOrderDataStatus.loading));
+      await Future.delayed(const Duration(seconds: 1), () {});
 
-      final orders = 
-          await DisplacementOrderDataRepository()
-              .displacementRepo('Close_invoice', invoice);
+      final orders = await DisplacementOrderDataRepository()
+          .getNoms('Close_invoice', invoice);
       emit(state.copyWith(
           status: DisplacementOrderDataStatus.success, noms: orders));
     } catch (e) {
@@ -79,9 +115,10 @@ class DisplacementOrderDataCubit extends Cubit<DiplacementOrderDataState> {
     }
   }
 
+
   clear() {
     emit(state.copyWith(
-        noms: DisplacementNoms.empty,
+        nom: DisplacementNom.empty,
         status: DisplacementOrderDataStatus.success));
   }
 }

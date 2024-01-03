@@ -11,7 +11,7 @@ extension CheckCellStatusX on CheckCellStatus {
 }
 
 final class CheckCellState extends Equatable {
-   CheckCellState({
+  CheckCellState({
     this.status = CheckCellStatus.initial,
     this.errorMassage = '',
     this.time = 0,
@@ -24,7 +24,11 @@ final class CheckCellState extends Equatable {
   final String errorMassage;
 
   CheckCellState copyWith(
-      {CheckCellStatus? status, CheckCell? cell, String? errorMassage, int? time}) {
+      {CheckCellStatus? status,
+      CheckCell? cell,
+      String? errorMassage,
+      int? time,
+}) {
     return CheckCellState(
         status: status ?? this.status,
         cell: cell ?? this.cell,
@@ -33,5 +37,5 @@ final class CheckCellState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, cell, errorMassage];
+  List<Object?> get props => [status, cell, errorMassage, ];
 }

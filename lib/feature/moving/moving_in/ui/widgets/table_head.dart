@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
 class MovingInTableHead extends StatelessWidget {
   const MovingInTableHead({super.key, });
@@ -9,15 +10,8 @@ class MovingInTableHead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      height: 45,
-      decoration: const BoxDecoration(
-          border: Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Row(
+    return TableHeads(
+   
         children: [
            RowElement(
             flex: 6,
@@ -40,7 +34,6 @@ class MovingInTableHead extends StatelessWidget {
             textStyle: theme.textTheme.labelMedium,
           ),
         ],
-      ),
     );
   }
 }

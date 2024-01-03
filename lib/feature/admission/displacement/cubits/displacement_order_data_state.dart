@@ -1,6 +1,12 @@
 part of 'displacement_order_data_cubit.dart';
 
-enum DisplacementOrderDataStatus { initial, loading, success, failure, notFound }
+enum DisplacementOrderDataStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  notFound
+}
 
 extension DiplacementOrderDataStatusX on DisplacementOrderDataStatus {
   bool get isInitial => this == DisplacementOrderDataStatus.initial;
@@ -10,37 +16,39 @@ extension DiplacementOrderDataStatusX on DisplacementOrderDataStatus {
   bool get isNotFound => this == DisplacementOrderDataStatus.notFound;
 }
 
-final class DiplacementOrderDataState extends Equatable {
-  DiplacementOrderDataState(
-      {this.status = DisplacementOrderDataStatus.initial,
-      this.time = 0,
-      DisplacementNoms? noms,
-      this.errorMassage = '',
-})
-      : noms = noms ?? DisplacementNoms.empty;
-      
+final class DisplacementOrderDataState extends Equatable {
+  DisplacementOrderDataState({
+    this.status = DisplacementOrderDataStatus.initial,
+    this.time = 0,
+    DisplacementNoms? noms,
+    DisplacementNom? nom,
+    this.errorMassage = '',
+  })  : noms = noms ?? DisplacementNoms.empty,
+        nom = nom ?? DisplacementNom.empty;
 
   final DisplacementOrderDataStatus status;
   final DisplacementNoms noms;
+  final DisplacementNom nom;
+
   final String errorMassage;
   final int time;
 
-
-
-  DiplacementOrderDataState copyWith(
-      {DisplacementOrderDataStatus? status,
-      DisplacementNoms? noms,
-      int? time,
-      String? errorMassage,
-    }) {
-    return DiplacementOrderDataState(
-        status: status ?? this.status,
-        noms: noms ?? this.noms,
-        time: time ?? this.time,
-        errorMassage: errorMassage ?? this.errorMassage,
-);
+  DisplacementOrderDataState copyWith({
+    DisplacementOrderDataStatus? status,
+    DisplacementNoms? noms,
+    DisplacementNom? nom,
+    int? time,
+    String? errorMassage,
+  }) {
+    return DisplacementOrderDataState(
+      status: status ?? this.status,
+      noms: noms ?? this.noms,
+      nom: nom ?? this.nom,
+      time: time ?? this.time,
+      errorMassage: errorMassage ?? this.errorMassage,
+    );
   }
 
   @override
-  List<Object?> get props => [status, noms, errorMassage, time];
+  List<Object?> get props => [status, noms, errorMassage, time, nom];
 }

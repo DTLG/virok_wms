@@ -27,8 +27,8 @@ DisplacementNomDTO _$DisplacementNomDTOFromJson(Map<String, dynamic> json) =>
     DisplacementNomDTO(
       name: json['tovar'] as String?,
       article: json['article'] as String?,
-      barcodes: (json['barcodes'] as List<dynamic>)
-          .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
+      barcodes: (json['barcodes'] as List<dynamic>?)
+          ?.map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       number: json['number'] as String?,
       qty: (json['qty'] as num?)?.toDouble(),

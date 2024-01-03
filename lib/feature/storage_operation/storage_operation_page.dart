@@ -37,73 +37,70 @@ class StorageOperationView extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Складські операції'),
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                placementButton
-                    ? GeneralButton(
-                        lable: 'Розміщення товарів',
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, AppRoutes.placementGoodsPage);
-                        })
-                    : const SizedBox(),
-                writingOffButton
-                    ? GeneralButton(
-                        lable: 'Списання',
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.writingOff);
-                        })
-                    : const SizedBox(),
-                cellInfoButton
-                    ? GeneralButton(
-                        lable: 'Комірка',
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.checkCell);
-                        })
-                    : const SizedBox(),
-                // genBarButton
-                //     ? GeneralButton(
-                //         lable: 'Генерація штрихкоду',
-                //         onPressed: () {
-                //           Navigator.pushNamed(
-                //               context, AppRoutes.barcodeGeneration);
-                //         })
-                //     : const SizedBox(),
-                // barcodeLablePrintButton
-                //     ? GeneralButton(
-                //         lable: 'Друк етикетки',
-                //         onPressed: () {
-                //           Navigator.pushNamed(
-                //               context, AppRoutes.barcodeLablePrint);
-                //         })
-                //     : const SizedBox(),
-                basketInfoButton
-                    ? GeneralButton(
-                        lable: 'Кошик',
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.checkBasket);
-                        })
-                    : const SizedBox(),
-                cellGenerationButton
-                    ? GeneralButton(
-                        lable: 'Друк етикетки комірки',
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, AppRoutes.cellGeneratorPage);
-                        })
-                    : const SizedBox(),
-                GeneralButton(
-                    lable: 'Перевірка номенклатури',
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.checkNomListPage);
-                    })
-              ],
-            ),
-          ),
+          body: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: GridButton(
+                children: buildButtons(placementButton, writingOffButton, cellInfoButton, basketInfoButton, cellGenerationButton, context)
+               
+              )
+
+          )
         );
       },
     );
+  }
+}
+
+List<Widget> buildButtons(
+    placement, writingOff, cell, basket, lablePrint, context) {
+  List<Map<String, String>> a = [];
+
+  if (placement) a.add({'name': 'РОЗМІЩЕННЯ ТОВАРІВ', 'path': 'placement'});
+  if (writingOff) a.add({'name': 'СПИСАННЯ ТОВАРІВ', 'path': 'writing_off'});
+  if (cell) a.add({'name': 'КОМІРКА', 'path': 'cell'});
+  if (basket) a.add({'name': 'КОШИК', 'path': 'basket'});
+  if (lablePrint) a.add({'name': 'ДРУК ЕТИКЕТКИ КОМІРКИ', 'path': 'lable_print'});
+    a.add({'name': 'ПЕРЕВІРКА НОМЕНКЛАТУРИ', 'path': 'check_nom'});
+
+
+  List<Widget> buttons = [];
+
+  for (var i = 0; i < a.length; i++) {
+    buttons.add(SquareButton(
+      lable: a[i]['name'].toString(),
+      color: i.buttonColor == 'r'
+          ? const Color.fromRGBO(148, 39, 32, 1)
+          : const Color.fromRGBO(217, 219, 218, 1),
+      imagePath: 'assets/image/${a[i]['path']}_${i.buttonColor}.png',
+      lableWidth: 180,
+      onTap: () {
+        Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
+      },
+    ));
+  }
+
+
+  return buttons;
+}
+
+
+
+extension on String {
+  get toAppRoutes {
+    switch (this) {
+      case 'placement':
+        return AppRoutes.placementGoodsPage;
+      case 'writing_off':
+        return AppRoutes.writingOff;
+      case 'cell':
+        return AppRoutes.checkCell;
+      case 'basket':
+        return AppRoutes.checkBasket;
+      case 'lable_print':
+        return AppRoutes.cellGeneratorPage;
+      case 'check_nom':
+        return AppRoutes.checkNomListPage;
+      
+    }
   }
 }

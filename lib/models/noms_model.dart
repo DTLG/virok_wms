@@ -1,3 +1,4 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:virok_wms/models/barcode_model.dart';
 
 class Noms {
@@ -9,7 +10,7 @@ class Noms {
   static final empty = Noms(noms: [], status: 1);
 }
 
-class Nom {
+class  Nom {
   final String name;
   final String article;
   final List<Barcode> barcode;
@@ -56,6 +57,7 @@ class Nom {
 
 class Bascket {
   final String bascket;
+  @JsonKey(name: 'basket_name')
   final String name;
 
   Bascket({required this.bascket, required this.name});

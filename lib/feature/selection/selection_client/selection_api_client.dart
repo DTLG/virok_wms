@@ -8,6 +8,8 @@ import 'package:virok_wms/models/order_dto.dart';
 class SelectionOrderDataClient {
   final client = http.Client();
 
+
+
   Future<NomsDTO> selectionApi(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -20,10 +22,15 @@ class SelectionOrderDataClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       });
+  
+
+      client.close();
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -34,11 +41,41 @@ class SelectionOrderDataClient {
       }
     } catch (e) {
       throw Exception('Error sending request: $e');
-    } finally {
-      client.close();
     }
   }
 
+  Future<NomDTO> getNom(String query, String body) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String username = prefs.getString('username') ?? '';
+    String password = prefs.getString('password') ?? '';
+    String baseUrl = prefs.getString('api') ?? '';
+
+    final url = '$baseUrl$query $body';
+    final basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+    try {
+
+      final response = await http.post(Uri.parse(url), headers: {
+        'Authorization': basicAuth,
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      });
+    
+      client.close();
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
+        return NomDTO.fromJson(json);
+      } else {
+        throw Exception(
+            'HTTP request failed with status ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error sending request: $e');
+    }
+  }
 
   Future<void> closeOrder(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,10 +89,15 @@ class SelectionOrderDataClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       });
+
+
+      client.close();
 
       if (response.statusCode == 200) {
       } else {
@@ -64,11 +106,8 @@ class SelectionOrderDataClient {
       }
     } catch (e) {
       throw Exception('Error sending request: $e');
-    } finally {
-      client.close();
     }
   }
- 
 
   Future<OrdersDTO> getOrders(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -81,11 +120,16 @@ class SelectionOrderDataClient {
     final basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-    try {
+    try {      
+
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
+        'Content-type': 'application/json',
         'Accept': 'application/json',
       });
+ 
+      client.close();
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -96,41 +140,8 @@ class SelectionOrderDataClient {
       }
     } catch (e) {
       throw Exception('Error sending request: $e');
-    } finally {
-      client.close();
     }
   }
-
-  // Future<BasketsDTO> getOrderBasket(String docId)async{
-  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  //   String username = prefs.getString('username') ?? '';
-  //   String password = prefs.getString('password') ?? '';
-  //   String baseUrl = prefs.getString('api') ?? '';
-
-  //   final url = '${baseUrl}get_order_baskets $docId';
-  //   final basicAuth =
-  //       'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-  //   try {
-  //     final response = await http.post(Uri.parse(url), headers: {
-  //       'Authorization': basicAuth,
-  //       'Accept': 'application/json',
-  //     });
-
-  //     if (response.statusCode == 200) {
-  //       Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
-  //       return BasketsDTO.fromJson(json);
-  //     } else {
-  //       throw Exception(
-  //           'HTTP request failed with status ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error sending request: $e');
-  //   } finally {
-  //     client.close();
-  //   }
-  // }
 
   Future<String> setBasketToOrder(String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -144,13 +155,47 @@ class SelectionOrderDataClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
+
+      final response = await http.post(Uri.parse(url), headers: {
+        'Authorization': basicAuth,
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      });
+
+      client.close();
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        throw Exception(
+            'HTTP request failed with status ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error sending request: $e');
+    }
+  }
+
+  Future<bool> checkTsdType() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String baseUrl = prefs.getString('api') ?? '';
+
+    String username = prefs.getString('username') ?? '';
+    String password = prefs.getString('password') ?? '';
+
+    final url = '${baseUrl}its_mezonine';
+    final basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+    try {
+
       final response = await http.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
+   
 
       if (response.statusCode == 200) {
-        return response.body;
+        return response.body == '1' ? true : false;
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');
@@ -162,5 +207,8 @@ class SelectionOrderDataClient {
     }
   }
 }
+
+
+
 
 

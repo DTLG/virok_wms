@@ -58,6 +58,7 @@ class NomDTO {
 @JsonSerializable()
 class BascketDTO {
   final String? basket;
+  @JsonKey(name: 'basket_name')
   final String? basketName;
 
   BascketDTO({required this.basket, required this.basketName});

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/noms_model.dart';
+import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
+import 'package:virok_wms/feature/admission/displacement/ui/widgets/dialog/count_input.dart';
 
 import '../../cubits/displacement_order_data_cubit.dart';
 
 class DisplacementBarcodeInput extends StatefulWidget {
-  const DisplacementBarcodeInput({super.key,});
+  const DisplacementBarcodeInput({super.key, required this.order});
 
+  final DisplacementOrder order;
 
   @override
   State<DisplacementBarcodeInput> createState() =>
@@ -25,11 +29,17 @@ class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
         focusNode: focusNode,
         textAlignVertical: TextAlignVertical.bottom,
         onSubmitted: (value) {
-          final String invoice = context.read<DisplacementOrderDataCubit>().state.noms.invoice;
+          final String invoice =
+              context.read<DisplacementOrderDataCubit>().state.noms.invoice;
           if (controller.text.isNotEmpty) {
-            context
-                .read<DisplacementOrderDataCubit>()
-                .scan(value,invoice, 0);
+            context.read<DisplacementOrderDataCubit>().getNoms(widget.order);
+            final DisplacementNom nom =
+                context.read<DisplacementOrderDataCubit>().scan(value);
+            if (nom != DisplacementNom.empty) {
+              showManualCountIncrementAlert(
+                  context, nom.barcode.first.barcode, invoice, nom);
+            }
+
             controller.clear();
           }
           focusNode.requestFocus();

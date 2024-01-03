@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:virok_wms/feature/admission/admission_placement/ui/admission/admission_placement_page.dart';
+import 'package:virok_wms/feature/admission_placement/ui/placement_data_page.dart';
+import 'package:virok_wms/feature/admission_placement/ui/placement_head_page.dart';
+import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_data_page.dart';
+import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_page.dart';
+
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_head_page.dart';
-import 'package:virok_wms/feature/moving/moving_out/ui/moving_out_order_data_page.dart';
-import 'package:virok_wms/feature/moving/moving_out/ui/moving_out_order_head_page.dart';
+
 import 'package:virok_wms/feature/moving/moving_page.dart';
-import 'package:virok_wms/feature/recharge/ui/recharge_page.dart';
+import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_page.dart';
+import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
+import 'package:virok_wms/feature/returning/returning_in/ui/returning_in_head_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/home_page/home_page.dart';
 
 import 'package:virok_wms/feature/settings/settings_page.dart';
 import 'package:virok_wms/login/login_page.dart';
 import '../feature/admission/admission_page.dart';
-import '../feature/admission/admission_placement/ui/placement_page.dart';
 import '../feature/admission/displacement/ui/diplacement_order_data_page.dart';
 import '../feature/admission/displacement/ui/displacement_order_head_page.dart';
 
+import '../feature/moving/moving_out/ui/moving_out_order_data_page.dart';
+import '../feature/moving/moving_out/ui/moving_out_order_head_page.dart';
+import '../feature/recharging/recharge/ui/recharge_page.dart';
+import '../feature/returning/returning_in/ui/returning_in_data_page.dart';
+import '../feature/returning/returning_out/ui/returning_out_order_data_page.dart';
+import '../feature/returning/returning_out/ui/returning_out_order_head_page.dart';
+import '../feature/returning/returning_page.dart';
 import '../feature/selection/ui/selection_order_data_page.dart';
 import '../feature/selection/ui/selection_order_head_page.dart';
 import '../feature/storage_operation/barcode_generation/ui/barcode_generation.dart';
@@ -45,19 +58,42 @@ class RouteGenerator {
         return buildRoute(const SelectionOrdersHeadPage(), settings: settings);
       case AppRoutes.selectionOrderDataPage:
         return buildRoute(const SelectionOrderDataPage(), settings: settings);
-              case AppRoutes.movingPage:
+      case AppRoutes.movingPage:
         return buildRoute(const MovingPage(), settings: settings);
       case AppRoutes.movingOutHeadPage:
         return buildRoute(const MovingOutHeadPage(), settings: settings);
       case AppRoutes.movingOutDataPage:
         return buildRoute(const MovingOutDataPage(), settings: settings);
 
+      case AppRoutes.movingGateHeadPage:
+        return buildRoute(const MovingGateHeadPage(), settings: settings);
+      case AppRoutes.movingGateDataPage:
+        return buildRoute(const MovingGateDataPage(), settings: settings);
+
       case AppRoutes.movingInHeadPage:
         return buildRoute(const MovingInHeadPage(), settings: settings);
       case AppRoutes.movingInDataPage:
         return buildRoute(const MovingInDataPage(), settings: settings);
+
+      case AppRoutes.returningPage:
+        return buildRoute(const ReturningPage(), settings: settings);
+      case AppRoutes.returningOutHeadPage:
+        return buildRoute(const ReturningOutHeadPage(), settings: settings);
+      case AppRoutes.returningOutDataPage:
+        return buildRoute(const ReturningOutDataPage(), settings: settings);
+
+      case AppRoutes.returningInHeadPage:
+        return buildRoute(const ReturningInHeadPage(), settings: settings);
+      case AppRoutes.returningInDataPage:
+        return buildRoute(const ReturningInDataPage(), settings: settings);
+
+
       case AppRoutes.rechargePage:
         return buildRoute(const RechargePage(), settings: settings);
+           case AppRoutes.rechargingMenuPage:
+        return buildRoute(const RechargingMenuPage(), settings: settings);
+             case AppRoutes.movingInCells:
+        return buildRoute(const MovingInCellsPage(), settings: settings);
 
       case AppRoutes.admissionPage:
         return buildRoute(const AdmissionPage(), settings: settings);
@@ -66,6 +102,10 @@ class RouteGenerator {
             settings: settings);
       case AppRoutes.displacementorderDataPage:
         return buildRoute(const DiplacementOrderDataPage(), settings: settings);
+
+      case AppRoutes.admissionOlacementOrderHeadPage:
+      return buildRoute(const PlacementOrdersHeadPage(), settings: settings);
+
       case AppRoutes.admissionPlacementPage:
         return buildRoute(const AdmissingPlacementPage(), settings: settings);
       case AppRoutes.barcodeGeneration:
@@ -84,6 +124,9 @@ class RouteGenerator {
         return buildRoute(const CheckNomListPage(), settings: settings);
       case AppRoutes.checkNomPage:
         return buildRoute(const CheckNomPage(), settings: settings);
+
+      case AppRoutes.placementPage:
+        return buildRoute(const AdmissingPlacementPage1(), settings: settings);
       default:
         return buildRoute(const HomePage(), settings: settings);
     }

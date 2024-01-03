@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/const.dart';
 
@@ -15,6 +16,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = context.select((HomePageCubit cubit) => cubit.state);
+    final selectionButton = state.selectionButton;
+    final admissionButton = state.admissionButton;
+    final movinButton = state.movingButton;
+    final rechargeButton = state.rechargeButton;
+    final returninigButton = state.returningButton;
 
     return WillPopScope(
         onWillPop: () async {
@@ -23,9 +30,59 @@ class HomePage extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            leading: const SizedBox(),
-            centerTitle: true,
-            title: const Text('Virok WMS 1.5.1'),
+            leadingWidth: 120,
+            leading:
+             Align(
+                    alignment: const Alignment(-0.5, 0),
+                    child: SizedBox(
+                      width: 50,
+                      child: Text(
+                        '2.1.2',
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          fontSize: 12,
+                            color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                    )),
+            
+            //  Row(
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: [
+            //     const SizedBox(width: 3),
+            //     CircleAvatar(
+            //       backgroundColor: Colors.black,
+            //       radius: 25,
+            //         child: ClipOval(
+            //             child: Image.asset('assets/image/vasul.jpeg',width: 40,))),
+            //             const SizedBox(width: 5,),
+            //     Align(
+            //         alignment: const Alignment(-0.5, 0),
+            //         child: SizedBox(
+            //           width: 50,
+            //           child: Text(
+            //             'Vasul Edition',
+            //             style: theme.textTheme.titleMedium!.copyWith(
+            //               fontSize: 12,
+            //                 color: Colors.white, fontWeight: FontWeight.w500),
+            //           ),
+            //         )),
+            //   ],
+            // ),
+            titleSpacing: 0,
+            title: const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(6.0),
+                  child: Text('Virok WMS'),
+                ),
+                Text(
+                  'Designed by Bodya',
+                  style: TextStyle(
+                    fontSize: 6,
+                  ),
+                )
+              ],
+            ),
             actions: [
               BlocConsumer<HomePageCubit, HomePageState>(
                 listener: (context, state) {},
@@ -33,65 +90,37 @@ class HomePage extends StatelessWidget {
                   if (state.status.isInitial) {
                     context.read<HomePageCubit>().getUser();
                     context.read<HomePageCubit>().checkTsdType();
+                    context.read<HomePageCubit>().getActivButton();
                   }
-                  if (state.status.isSuccess) {
-                    return Padding(
+
+                  return InkWell(
+                    onTap: () {
+                      checkLogoutDialog(context);
+                    },
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(state.username,
-                            style: theme.textTheme.titleMedium!.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500)),
+                      child: SizedBox(
+                        width: 110,
+                        height: 40,
+                        child: Center(
+                          child: Text(state.username,
+                              textAlign: TextAlign.end,
+                              style: theme.textTheme.titleMedium!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500)),
+                        ),
                       ),
-                    );
-                  }
-                  return const Center();
+                    ),
+                  );
                 },
               ),
             ],
           ),
-          body: Center(
-            child: SingleChildScrollView(
-                child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GeneralButton(
-                      lable: 'Складські операції',
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRoutes.storageOperations);
-                      }),
-                  GeneralButton(
-                      lable: 'Завдання на відбір',
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppRoutes.selectionOrderHeadPage);
-                      }),
-                  GeneralButton(
-                      lable: 'Поступлення',
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.admissionPage);
-                      }),
-                  GeneralButton(
-                      lable: 'Переміщення',
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.movingPage);
-                      }),
-                  GeneralButton(
-                      lable: 'Підпитка',
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.rechargePage);
-                      }),
-                  GeneralButton(
-                      lable: 'Налаштування',
-                      onPressed: () {
-                        showPinDialog(context);
-                      }),
-                ],
-              ),
-            )),
-          ),
+          body: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: GridButton(
+                  children: buildButtons(selectionButton, admissionButton,
+                      movinButton, returninigButton, rechargeButton, context))),
         ));
   }
 }
@@ -122,7 +151,7 @@ class _PinDialogState extends State<PinDialog> {
       height: 56,
       textStyle: const TextStyle(
         fontSize: 22,
-        color: Color.fromRGBO(30, 60, 87, 1),
+  
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(19),
@@ -143,6 +172,8 @@ class _PinDialogState extends State<PinDialog> {
               listenForMultipleSmsOnAndroid: false,
               closeKeyboardWhenCompleted: false,
               forceErrorState: true,
+              obscureText: true,
+              obscuringCharacter: "1",
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: 8),
               validator: (value) {
@@ -177,6 +208,7 @@ class _PinDialogState extends State<PinDialog> {
                 ],
               ),
               focusedPinTheme: defaultPinTheme.copyWith(
+                
                 decoration: defaultPinTheme.decoration!.copyWith(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: focusedBorderColor),
@@ -200,5 +232,111 @@ class _PinDialogState extends State<PinDialog> {
         )
       ],
     );
+  }
+}
+
+checkLogoutDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => const CheckLogoutDialog(),
+  );
+}
+
+class CheckLogoutDialog extends StatelessWidget {
+  const CheckLogoutDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: const Text(
+        'Змінити користувача',
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: GeneralButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  lable: 'Ні'),
+            ),
+            Expanded(
+              child: GeneralButton(
+                onPressed: () async {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, AppRoutes.login, (route) => false);
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.remove('password');
+                  prefs.remove('username');
+                },
+                lable: 'Так',
+              ),
+            ),
+          ],
+        )
+      ],
+      actionsAlignment: MainAxisAlignment.spaceAround,
+    );
+  }
+}
+
+List<Widget> buildButtons(
+    selection, admission, moving, returning, recharge, context) {
+  List<Map<String, String>> a = [];
+
+  a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
+  if (selection) a.add({'name': 'ЗАВДАННЯ НА ВІДБІР', 'path': 'selection'});
+  if (admission) a.add({'name': 'ПОСТУПЛЕННЯ', 'path': 'admission'});
+  if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
+  if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
+  if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
+
+  List<Widget> buttons = [];
+
+  for (var i = 0; i < a.length; i++) {
+    buttons.add(SquareButton(
+      lable: a[i]['name'].toString(),
+      color: i.buttonColor == 'r'
+          ? const Color.fromRGBO(148, 39, 32, 1)
+          : const Color.fromRGBO(217, 219, 218, 1),
+      imagePath: 'assets/image/${a[i]['path']}_${i.buttonColor}.png',
+      onTap: () {
+        Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
+      },
+    ));
+  }
+  buttons.add(SquareButton(
+    lable: 'НАЛАШТУВАННЯ',
+    color: const Color.fromARGB(255, 96, 96, 96),
+    imagePath: 'assets/image/settings.png',
+    onTap: () {
+      showPinDialog(context);
+    },
+  ));
+
+  return buttons;
+}
+
+extension on String {
+  get toAppRoutes {
+    switch (this) {
+      case 'storage_operation':
+        return AppRoutes.storageOperations;
+      case 'selection':
+        return AppRoutes.selectionOrderHeadPage;
+      case 'admission':
+        return AppRoutes.admissionPage;
+      case 'moving':
+        return AppRoutes.movingPage;
+      case 'returning':
+        return AppRoutes.returningPage;
+      case 'rechargin':
+        return AppRoutes.rechargingMenuPage;
+      case 'settings':
+        return AppRoutes.settings;
+    }
   }
 }

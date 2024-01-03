@@ -17,9 +17,21 @@ class SettingsState extends Equatable {
   final bool cellGeneratorButton;
   final bool placementButton;
   final bool writeOffButton;
+  final bool selectionButton;
+  final bool admissionButton;
+  final bool movingButton;
+  final bool returningButton;
+
+  final bool rechargeButton;
 
   final String printerHost;
   final String printerPort;
+
+  final bool cameraScaner;
+  final String errorCounter;
+  final String errorCounterH;
+  final String scanH;
+  final String scan;
 
   const SettingsState(
       {this.status = SettingsStatus.initial,
@@ -31,8 +43,18 @@ class SettingsState extends Equatable {
       this.cellGeneratorButton = false,
       this.placementButton = false,
       this.writeOffButton = false,
+      this.selectionButton = false,
+      this.admissionButton = false,
+      this.movingButton = false,
+      this.rechargeButton = false,
+      this.returningButton = false,
       this.printerHost = '',
-      this.printerPort = ''});
+      this.printerPort = '',
+      this.cameraScaner = false,
+      this.errorCounter = '',
+      this.errorCounterH = '',
+      this.scan = '',
+      this.scanH = ''});
 
   SettingsState copyWith(
       {SettingsStatus? status,
@@ -44,8 +66,18 @@ class SettingsState extends Equatable {
       bool? cellGeneratorButton,
       bool? placementButton,
       bool? writeOffButton,
+      bool? selectionButton,
+      bool? admissionButton,
+      bool? movingButton,
+      bool? returningButton,
+      bool? rechargeButton,
       String? printerHost,
-      String? printerPort}) {
+      String? printerPort,
+      bool? cameraScaner,
+      String? errorCounter,
+      String? errorCounterH,
+      String? scan,
+      String? scanH}) {
     return SettingsState(
         status: status ?? this.status,
         dbPath: dbPath ?? this.dbPath,
@@ -56,8 +88,19 @@ class SettingsState extends Equatable {
         cellGeneratorButton: cellGeneratorButton ?? this.cellGeneratorButton,
         placementButton: placementButton ?? this.placementButton,
         writeOffButton: writeOffButton ?? this.writeOffButton,
+        selectionButton: selectionButton ?? this.selectionButton,
+        admissionButton: admissionButton ?? this.admissionButton,
+        movingButton: movingButton ?? this.movingButton,
+        returningButton: returningButton ?? this.returningButton,
+        rechargeButton: rechargeButton ?? this.rechargeButton,
         printerHost: printerHost ?? this.printerHost,
-        printerPort: printerPort ?? this.printerPort);
+        printerPort: printerPort ?? this.printerPort,
+        cameraScaner: cameraScaner ?? this.cameraScaner,
+        errorCounter: errorCounter ?? this.errorCounter,
+                errorCounterH: errorCounterH ?? this.errorCounterH,
+
+        scan: scan ?? this.scan,
+        scanH: scanH ?? this.scanH);
   }
 
   @override
@@ -72,6 +115,15 @@ class SettingsState extends Equatable {
         cellGeneratorButton,
         placementButton,
         writeOffButton,
-        basketInfoButton
+        basketInfoButton,
+        selectionButton,
+        admissionButton,
+        movingButton,
+        returningButton,
+        rechargeButton,
+        cameraScaner,
+        errorCounter,
+        errorCounterH,
+        scan,scanH
       ];
 }

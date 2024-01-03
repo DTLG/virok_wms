@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
 
 import 'package:virok_wms/ui/widgets/alerts.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../check_nom_repo/models/barcodes_noms.dart';
-import '../cubit/check_nom_list_cubit.dart';
 import '../cubit/nom_operations_cubit.dart';
 
 class CheckNomPage extends StatelessWidget {
@@ -17,14 +20,12 @@ class CheckNomPage extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final BarcodesNom nom = arguments['nom'] as BarcodesNom;
 
-    final CheckNomListCubit checkNomListCubit =
-        arguments['cubit'] as CheckNomListCubit;
+  
 
     return BlocProvider(
       create: (context) => NomOperationsCubit(),
       child: CheckNomView(
         nom: nom,
-        checkNomListCubit: checkNomListCubit,
       ),
     );
   }
@@ -32,10 +33,9 @@ class CheckNomPage extends StatelessWidget {
 
 class CheckNomView extends StatelessWidget {
   const CheckNomView(
-      {super.key, required this.nom, required this.checkNomListCubit});
+      {super.key, required this.nom});
 
   final BarcodesNom nom;
-  final CheckNomListCubit checkNomListCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -60,50 +60,50 @@ class CheckNomView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(
-                nom.name,
-                style: theme.textTheme.titleLarge,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              BlocConsumer<NomOperationsCubit, NomOperationsState>(
-                listener: (context, state) {
-                  if (state.status.isError) {
-                    Alerts(msg: state.errorMassage, context: context)
-                        .showError();
-                  }
-                },
-                buildWhen: (previous, current) =>
-                    current.status.isSuccess && previous.status.isSuccess,
-                builder: (context, state) {
-                  context.read<NomOperationsCubit>().getActivButton();
-                  if (state.status.isInitial) {
-                    return BarcodesCard(
-                      nom: nom,
-                    );
-                  }
-                  if (state.status.isSuccess) {
-                    return BarcodesCard(
-                      nom: state.nom,
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              CellsCard(
+        child: Column(
+          children: [
+            Text(
+              nom.name,
+              style: theme.textTheme.titleLarge,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            BlocConsumer<NomOperationsCubit, NomOperationsState>(
+              listener: (context, state) {
+                if (state.status.isError) {
+                  Alerts(msg: state.errorMassage, context: context)
+                      .showError();
+                }
+              },
+              buildWhen: (previous, current) =>
+                  current.status.isSuccess && previous.status.isSuccess,
+              builder: (context, state) {
+                context.read<NomOperationsCubit>().getActivButton();
+                if (state.status.isInitial) {
+                  return BarcodesCard(
+                    nom: nom,
+                  );
+                }
+                if (state.status.isSuccess) {
+                  return BarcodesCard(
+                    nom: state.nom,
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: CellsCard(
                 nom: nom,
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -127,7 +127,7 @@ class BarcodesCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
       decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 235, 235, 235),
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(20)),
       height: nom.barodes.length > 5
           ? 225
@@ -163,7 +163,7 @@ class BarcodesCard extends StatelessWidget {
                                       context,
                                       nom,
                                       nom.barodes[index].barcode,
-                                      nom.barodes[index].ratio)
+                                    )
                                   : () {};
                             },
                             child: SizedBox(
@@ -220,7 +220,7 @@ class CellsCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 235, 235, 235),
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(20)),
       height: nom.cells.length > 5
           ? 225
@@ -306,99 +306,130 @@ class _NewBarcodeInputState extends State<NewBarcodeInput> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      icon: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(_switchValue ? 'Штука' : 'Упаковка'),
-        Switch(
-          value: _switchValue,
-          onChanged: (value) {
-            setState(() => _switchValue = value);
-          },
-        )
-      ]),
-      iconPadding: const EdgeInsets.fromLTRB(20, 5, 5, 0),
-      contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            autofocus: true,
-            controller: controller,
-            focusNode: focusNode,
-            onSubmitted: (value) {
-              focusNode.nextFocus();
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: AlertDialog(
+        insetPadding: const EdgeInsets.all(0),
+        icon: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(_switchValue ? 'Штука' : 'Упаковка'),
+          Switch(
+            value: _switchValue,
+            onChanged: (value) {
+              setState(() => _switchValue = value);
             },
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-                hintText: 'Згенерувати штрихкод',
-                suffixIcon: GenerationButoon(
-                  controller: controller,
-                )),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          _switchValue
-              ? const SizedBox()
-              : TextField(
-                  autofocus: true,
-                  controller: ratioController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    hintText: 'Кратність',
+          )
+        ]),
+        iconPadding: const EdgeInsets.fromLTRB(20, 5, 5, 0),
+        contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 45,
+              child: TextField(
+                autofocus: cameraScaner ? false : true,
+                controller: controller,
+                focusNode: focusNode,
+                onSubmitted: (value) {
+                  focusNode.nextFocus();
+                },
+                textAlignVertical: TextAlignVertical.bottom,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                    hintText: 'Згенерувати штрихкод',
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  controller.text = value;
+                                },
+                              )
+                            : const SizedBox(),
+                        GenerationButoon(
+                          controller: controller,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        )
+                      ],
+                    )),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            _switchValue
+                ? const SizedBox()
+                : SizedBox(
+                    height: 45,
+                    child: TextField(
+                      autofocus: true,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: ratioController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        hintText: 'Кратність',
+                      ),
+                    ),
                   ),
-                ),
-        ],
-      ),
-      actionsAlignment: MainAxisAlignment.center,
-      actions: [
-        ElevatedButton(
-            onPressed: () {
-              bool barThisNom = false;
-              if (controller.text.isEmpty) return;
-              for (var bar in widget.nom.barodes) {
-                if (bar.barcode == controller.text) {
-                  barThisNom = true;
+          ],
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                bool barThisNom = false;
+                if (controller.text.isEmpty) return;
+                for (var bar in widget.nom.barodes) {
+                  if (bar.barcode == controller.text) {
+                    barThisNom = true;
+                  }
                 }
-              }
-              if (barThisNom) {
-                Alerts(msg: "Штрихкод вже існує", context: context).showError();
-                return;
-              }
-              if (widget.nom.article.isEmpty) {
-                Alerts(msg: "Відсутній артикул", context: context).showError();
-                return;
-              }
-              if (_switchValue == true) {
-                context.read<NomOperationsCubit>().sendBar(
-                    'send_barcode',
-                    '${widget.nom.article} ${controller.text}',
-                    widget.nom.article);
-                Navigator.pop(context);
-              } else {
-                if (ratioController.text.isNotEmpty) {
+                if (barThisNom) {
+                  Alerts(msg: "Штрихкод вже існує", context: context)
+                      .showError();
+                  return;
+                }
+                if (widget.nom.article.isEmpty) {
+                  Alerts(msg: "Відсутній артикул", context: context)
+                      .showError();
+                  return;
+                }
+                if (_switchValue == true) {
                   context.read<NomOperationsCubit>().sendBar(
-                      'send_pack_barcode',
-                      '${widget.nom.article} ${controller.text} ${ratioController.text}',
+                      'send_barcode',
+                      '${widget.nom.article} ${controller.text}',
                       widget.nom.article);
                   Navigator.pop(context);
                 } else {
-                  Alerts(msg: "Введіть кратність", context: context)
-                      .showError();
+                  if (ratioController.text.isNotEmpty) {
+                    context.read<NomOperationsCubit>().sendBar(
+                        'send_pack_barcode',
+                        '${widget.nom.article} ${controller.text} ${ratioController.text}',
+                        widget.nom.article);
+                    Navigator.pop(context);
+                  } else {
+                    Alerts(msg: "Введіть кратність", context: context)
+                        .showError();
+                  }
                 }
-              }
-            },
-            child: const SizedBox(
-              height: 50,
-              child: Center(
-                child: Text(
-                  'Підвердити',
-                  style: TextStyle(fontSize: 22),
-                  textAlign: TextAlign.center,
+              },
+              child: const SizedBox(
+                height: 50,
+                child: Center(
+                  child: Text(
+                    'Підвердити',
+                    style: TextStyle(fontSize: 22),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ))
-      ],
+              ))
+        ],
+      ),
     );
   }
 }
@@ -412,7 +443,10 @@ class GenerationButoon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return IconButton(
+        alignment: const Alignment(2, 0),
+        constraints: const BoxConstraints(),
+        padding: EdgeInsets.zero,
         onPressed: () {
           final DateTime now = DateTime.now();
 
@@ -421,7 +455,9 @@ class GenerationButoon extends StatelessWidget {
               .replaceFirst(RegExp(r'1'), '', 0);
           controller.text = genBar.checkDigitCalculation;
         },
-        child: const Icon(Icons.add));
+        icon: const Icon(
+          Icons.add,
+        ));
   }
 }
 
@@ -442,8 +478,7 @@ extension on String {
   }
 }
 
-showPrintAlertAlert(
-    BuildContext context, BarcodesNom nom, String barcode, int ratio) {
+showPrintAlertAlert(BuildContext context, BarcodesNom nom, String barcode) {
   showDialog(
     context: context,
     builder: (_) {
@@ -452,87 +487,154 @@ showPrintAlertAlert(
         child: PrintAlert(
           nom: nom,
           barcode: barcode,
-          ratio: ratio,
         ),
       );
     },
   );
 }
 
-class PrintAlert extends StatelessWidget {
-  const PrintAlert(
-      {super.key,
-      required this.nom,
-      required this.barcode,
-      required this.ratio});
+class PrintAlert extends StatefulWidget {
+  const PrintAlert({
+    super.key,
+    required this.nom,
+    required this.barcode,
+  });
 
   final BarcodesNom nom;
   final String barcode;
-  final int ratio;
 
+  @override
+  State<PrintAlert> createState() => _PrintAlertState();
+}
+
+class _PrintAlertState extends State<PrintAlert> {
+  final controller = TextEditingController();
+  bool countButton = false;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return AlertDialog(
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            nom.name,
-            textAlign: TextAlign.center,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Артикул:'),
-                SizedBox(
-                    width: 150,
-                    child: Text(nom.article,
-                        textAlign: TextAlign.end,
-                        style:
-                            theme.textTheme.titleSmall!.copyWith(fontSize: 18)))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Штрихкод:'),
-                SizedBox(
-                  width: 150,
-                  child: Text(barcode,
-                      textAlign: TextAlign.end,
-                      style:
-                          theme.textTheme.titleSmall!.copyWith(fontSize: 18)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-      actionsAlignment: MainAxisAlignment.center,
-      actions: [
-        ElevatedButton(
-            onPressed: () {
-              context
-                  .read<NomOperationsCubit>()
-                  .printLable(nom, barcode, ratio);
-            },
-            child: const SizedBox(
-              height: 50,
-              child: Center(
-                child: Text(
-                  'Друк',
-                  style: TextStyle(fontSize: 22),
-                  textAlign: TextAlign.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        countButton ? const Spacer() : const SizedBox(),
+        AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.nom.name,
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Артикул:'),
+                    SizedBox(
+                        width: 150,
+                        child: Text(widget.nom.article,
+                            textAlign: TextAlign.end,
+                            style: theme.textTheme.titleSmall!
+                                .copyWith(fontSize: 18)))
+                  ],
                 ),
               ),
-            ))
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Штрихкод:'),
+                    SizedBox(
+                      width: 150,
+                      child: Text(widget.barcode,
+                          textAlign: TextAlign.end,
+                          style: theme.textTheme.titleSmall!
+                              .copyWith(fontSize: 18)),
+                    ),
+                  ],
+                ),
+              ),
+              countButton
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 60,
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 20),
+                            controller: controller,
+                            autofocus: true,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r"[1-90]"))
+                            ],
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text('Введіть кількість'),
+                      ],
+                    )
+                  : const SizedBox()
+            ],
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  controller.clear();
+                  countButton = countButton == false ? true : false;
+                  setState(() {});
+                },
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.grey)),
+                child: const SizedBox(
+                  height: 50,
+                  width: 95,
+                  child: Center(
+                    child: Text(
+                      'Кількість',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )),
+            ElevatedButton(
+                onPressed: () {
+                  int count = controller.text.isEmpty
+                      ? 1
+                      : int.parse(
+                          controller.text.isEmpty ? '1' : controller.text);
+
+                  if (count > 99) {
+                    Alerts(msg: 'Максемальне кількість друку 99', context: context).showError();
+                    return;
+                  }
+                  context
+                      .read<NomOperationsCubit>()
+                      .printLable(widget.nom, widget.barcode, count);
+                  Navigator.pop(context);
+                },
+                child: const SizedBox(
+                  height: 50,
+                  width: 95,
+                  child: Center(
+                    child: Text(
+                      'Друк',
+                      style: TextStyle(fontSize: 22),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ))
+          ],
+        ),
+        countButton ? Keyboard(controller: controller) : const SizedBox()
       ],
     );
   }

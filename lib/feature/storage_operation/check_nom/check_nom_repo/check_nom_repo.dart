@@ -16,7 +16,7 @@ class ChackNomRepository {
               name: nom.name ?? '',
               article: nom.article ?? '',
               barodes: nom.barcodes
-                  .map((bar) => Barcode(
+                  .map((bar) => Barcodee(
                       barcode: bar.barcode ?? '',
                       count: bar.count ?? 1,
                       ratio: bar.ratio ?? 1))

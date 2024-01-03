@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/selection/selection_repository/selection_order_head_repository.dart';
 import 'package:virok_wms/models/order.dart';
 
@@ -12,17 +13,12 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
 
   Future<void> getOrders() async {
     try {
-          await Future<void>.delayed(const Duration(microseconds: 1));
-
-      emit(state.copyWith(status: SelectioOrdersHeadStatus.loading));
-                await Future<void>.delayed(const Duration(seconds: 1));
-
-
-
-      final orders = await SelectionOrderHeadRepository()
-          .getOrders('get_orders_list', '');
+            await Future.delayed(const Duration(seconds: 1),()async{ final orders =
+          await SelectionOrderHeadRepository().getOrders('get_orders_list', '');
       emit(state.copyWith(
-          status: SelectioOrdersHeadStatus.success, orders: orders));
+          status: SelectioOrdersHeadStatus.success, orders: orders));});
+
+     
     } catch (e) {
       emit(state.copyWith(
           status: SelectioOrdersHeadStatus.failure,
@@ -70,12 +66,15 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
         buskeStatus: false));
   }
 
-   
-// Future<void>getOrderBusket(String docId)async{
-//   final basket = await SelectionOrderHeadRepository().getOrderBaskets(docId);
-//   print(basket);
-// }
-
-
-   
+  Future<void> checkTsdType() async {
+    try {
+      bool itsMezonine = await SelectionOrderDataClient().checkTsdType();
+      emit(state.copyWith(
+          itsMezonine: itsMezonine, status: SelectioOrdersHeadStatus.success));
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('its_mezonine', itsMezonine);
+    } catch (e) {
+      emit(state.copyWith(status: SelectioOrdersHeadStatus.failure));
+    }
+  }
 }

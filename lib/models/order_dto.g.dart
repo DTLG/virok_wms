@@ -24,12 +24,14 @@ OrderDTO _$OrderDTOFromJson(Map<String, dynamic> json) => OrderDTO(
       baskets: (json['baskets'] as List<dynamic>)
           .map((e) => BasketDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      fullOrdfer: json['full_order'] as int?,
     );
 
 Map<String, dynamic> _$OrderDTOToJson(OrderDTO instance) => <String, dynamic>{
       'number': instance.docId,
       'date': instance.date,
       'baskets': instance.baskets,
+      'full_order': instance.fullOrdfer,
     };
 
 BasketDTO _$BasketDTOFromJson(Map<String, dynamic> json) => BasketDTO(

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../cubit/writing_off_cubit.dart';
 
-class CellInput extends StatefulWidget {
-  const CellInput({
+class BarcodeInputs extends StatefulWidget {
+  const BarcodeInputs({
     super.key,
   });
 
   @override
-  State<CellInput> createState() => _CellInputState();
+  State<BarcodeInputs> createState() => _BarcodeInputsState();
 }
 
-class _CellInputState extends State<CellInput> {
+class _BarcodeInputsState extends State<BarcodeInputs> {
   final TextEditingController controller = TextEditingController();
   final TextEditingController nomController = TextEditingController();
   final TextEditingController countController = TextEditingController();
@@ -28,12 +30,17 @@ class _CellInputState extends State<CellInput> {
     final count =
         context.select((WritingOffCubit cubit) => cubit.state.count);
 
-    if (status == WritingOffStatus.initial) {
+            final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
+if(cameraScaner !=true){
+  if (status == WritingOffStatus.initial) {
       controller.clear();
       nomController.clear();
       countController.clear();
       focusNode.requestFocus();
     }
+}
+    
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -42,7 +49,7 @@ class _CellInputState extends State<CellInput> {
             height: 50,
             child: TextField(
               textAlignVertical: TextAlignVertical.bottom,
-              autofocus: true,
+              autofocus: cameraScaner ? false : true,
               focusNode: focusNode,
               controller: controller,
               textInputAction: TextInputAction.next,
@@ -58,7 +65,10 @@ class _CellInputState extends State<CellInput> {
                   focusNode.requestFocus();
                 }
               },
-              decoration:  const InputDecoration(
+              decoration:  InputDecoration(
+                suffixIcon: cameraScaner? CameraScanerButton(scan: (value){
+                  context.read<WritingOffCubit>().getCeel(value);
+                },) : null,
                 
                 hintText: 'Відскануйте комірку',
               ),
@@ -81,13 +91,11 @@ class _CellInputState extends State<CellInput> {
                       nomController.clear();
                       focusNode1.requestFocus();
                     },
-                    decoration: const InputDecoration(
-                        // suffixIcon: IconButton(
-                        //     onPressed: () {
-                        //       nomController.clear();
-                        //       focusNode1.requestFocus();
-                        //     },
-                        //     icon: const Icon(Icons.close)),
+                    decoration:  InputDecoration(
+                         suffixIcon: cameraScaner? CameraScanerButton(scan: (value){
+                  context.read<WritingOffCubit>().addNom(value);
+                },) : null,
+                
                         hintText: 'Відскануйте товар'),
                   ),
                 ),

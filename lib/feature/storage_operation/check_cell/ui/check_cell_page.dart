@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/storage_operation/check_cell/cubit/check_cell_cubit.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_repo/models/barcodes_noms.dart';
+import 'package:virok_wms/models/check_cell.dart';
+import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/custom_keyboard/keyboard.dart';
-import '../check_cell_repository/model/check_cell_model.dart';
 
 class CheckCellPage extends StatelessWidget {
   const CheckCellPage({super.key});
@@ -25,69 +28,72 @@ class CheckCellView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Комірка'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(7),
-            child: ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                      Color.fromARGB(255, 91, 79, 179)),
-                  maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
-                  padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
-              child: Text('Очистити',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .copyWith(color: Colors.white)),
-              onPressed: () {
-                context.read<CheckCellCubit>().clear();
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Комірка'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(7),
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Color.fromARGB(255, 91, 79, 179)),
+                    maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
+                child: Text('Очистити',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(color: Colors.white)),
+                onPressed: () {
+                  context.read<CheckCellCubit>().clear();
+                },
+              ),
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            const BarcodeInput(),
+            BlocConsumer<CheckCellCubit, CheckCellState>(
+              listener: (context, state) {
+                if (state.status.isNotFound) {
+                  Alerts(msg: state.errorMassage, context: context).showError();
+                }
               },
-            ),
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          const BarcodeInput(),
-          BlocConsumer<CheckCellCubit, CheckCellState>(
-            listener: (context, state) {
-              if(state.status.isNotFound){
-                Alerts(msg: state.errorMassage, context: context).showError();
-              }
-            },
-            buildWhen: (previous, current) => !current.status.isNotFound,
-            builder: (context, state) {
-              if (state.status.isSuccess) {
-                return Expanded(
-                  child: CellInfo(
-                    cell: state.cell,
-                  ),
-                );
-              }
-              if (state.status.isFailure) {
-                return Expanded(
-                  child: Center(
-                      child: WentWrong(
-                    errorDescription: state.errorMassage,
-                    buttonTrue: false,
-                  )),
-                );
-              }
-              if (state.status.isLoading) {
-                return const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              return const Center();
-            },
-          )
-        ],
+              buildWhen: (previous, current) => !current.status.isNotFound,
+              builder: (context, state) {
+                if (state.status.isSuccess) {
+                  return Expanded(
+                    child: CellInfo(
+                      cell: state.cell,
+                    ),
+                  );
+                }
+                if (state.status.isFailure) {
+                  return Expanded(
+                    child: Center(
+                        child: WentWrong(
+                      errorDescription: state.errorMassage,
+                      buttonTrue: false,
+                    )),
+                  );
+                }
+                if (state.status.isLoading) {
+                  return const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const Center();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
@@ -108,18 +114,27 @@ class _BarcodeInputState extends State<BarcodeInput> {
   Widget build(BuildContext context) {
     final state = context.select((CheckCellCubit cubit) => cubit.state);
     state.status.isInitial ? controller.clear() : controller;
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: controller,
         focusNode: focusNode,
-        autofocus: true,
+        autofocus: cameraScaner ? false : true,
         onSubmitted: (value) {
           context.read<CheckCellCubit>().getCell(value);
           controller.clear();
           focusNode.requestFocus();
         },
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
+          suffixIcon: cameraScaner
+              ? CameraScanerButton(
+                  scan: (value) {
+                    context.read<CheckCellCubit>().getCell(value);
+                  },
+                )
+              : null,
           hintText: 'Відскануйте штрихкод',
         ),
       ),
@@ -159,10 +174,33 @@ class CellInfo extends StatelessWidget {
                 )
               : Expanded(
                   child: ListView.builder(
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                   itemCount: cell.noms.length,
                   itemBuilder: (context, index) {
                     return InkWell(
+                      onLongPress: () async {
+                        final cells = await context
+                            .read<CheckCellCubit>()
+                            .getNoms(cell.noms[index].article);
+
+                        final nom = cell.noms[index];
+                        if (context.mounted) {
+                          Navigator.pushNamed(context, AppRoutes.checkNomPage,
+                              arguments: {
+                                'nom': BarcodesNom(
+                                    name: nom.name,
+                                    article: nom.article,
+                                    barodes: nom.barcodes
+                                        .map((e) => Barcodee(
+                                            barcode: e.barcode,
+                                            count: 1,
+                                            ratio: e.ratio))
+                                        .toList(),
+                                    cells: cells),
+                              });
+                        }
+                      },
                       onTap: () {
                         restCountDialog(
                             context,
@@ -172,54 +210,56 @@ class CellInfo extends StatelessWidget {
                                 : cell.noms[index].barcodes.first.barcode);
                       },
                       child: Card(
-                        color: const Color.fromARGB(255, 244, 244, 244),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 3, vertical: 10),
-                              child: Text(cell.noms[index].name,
-                                  style: theme.titleMedium),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Артикул:', style: theme.titleSmall),
-                                  Text(cell.noms[index].article,
-                                      style: theme.titleSmall)
-                                ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 3, vertical: 10),
+                                child: Text(cell.noms[index].name,
+                                    style: theme.titleMedium),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Кількість в комірці:',
-                                      style: theme.titleSmall),
-                                  Text(cell.noms[index].qty.toString(),
-                                      style: theme.titleSmall)
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Артикул:', style: theme.titleSmall),
+                                    Text(cell.noms[index].article,
+                                        style: theme.titleSmall)
+                                  ],
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Мінімальний залишок:',
-                                      style: theme.titleSmall),
-                                  Text(cell.noms[index].minRest.toString(),
-                                      style: theme.titleSmall)
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Кількість в комірці:',
+                                        style: theme.titleSmall),
+                                    Text(cell.noms[index].qty.toString(),
+                                        style: theme.titleSmall)
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Мінімальний залишок:',
+                                        style: theme.titleSmall),
+                                    Text(cell.noms[index].minRest.toString(),
+                                        style: theme.titleSmall)
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -263,7 +303,6 @@ class _InputCountAlertState extends State<InputCountAlert> {
         const Spacer(),
         AlertDialog(
           iconPadding: const EdgeInsets.all(0),
-          contentPadding: const EdgeInsets.only(bottom: 20),
           actionsPadding: const EdgeInsets.only(bottom: 5),
           icon: Align(
               alignment: Alignment.centerRight,
@@ -299,7 +338,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  if(controller.text.isEmpty)return;
+                  if (controller.text.isEmpty) return;
                   context.read<CheckCellCubit>().setMinRest(
                       widget.codCell, controller.text, widget.nomBarcode);
                   Navigator.pop(context);

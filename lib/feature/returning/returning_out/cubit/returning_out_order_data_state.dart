@@ -1,0 +1,59 @@
+part of 'returning_out_order_data_cubit.dart';
+
+enum ReturningOutOrderDataStatus { initial, loading, success, failure, notFound }
+
+extension ReturningOrderDataStatusX on ReturningOutOrderDataStatus {
+  bool get isInitial => this == ReturningOutOrderDataStatus.initial;
+  bool get isLoading => this == ReturningOutOrderDataStatus.loading;
+  bool get isSuccess => this == ReturningOutOrderDataStatus.success;
+  bool get isFailure => this == ReturningOutOrderDataStatus.failure;
+  bool get isNotFound => this == ReturningOutOrderDataStatus.notFound;
+}
+
+final class ReturningOutOrderDataState extends Equatable {
+  ReturningOutOrderDataState(
+      {this.status = ReturningOutOrderDataStatus.initial,
+      Noms? noms,
+      Barcode? barcode,
+      this.errorMassage = '',
+      this.nomBarcode = '',
+      this.itsMezonine = false,
+      this.cellBarcode = '',
+      this.count = 0})
+      : noms = noms ?? Noms.empty,
+        barcode = barcode ?? Barcode.empty;
+
+  final ReturningOutOrderDataStatus status;
+  final Noms noms;
+  final String errorMassage;
+  final Barcode barcode;
+  final double count;
+  final String cellBarcode;
+  final String nomBarcode;
+  final bool itsMezonine;
+
+
+  ReturningOutOrderDataState copyWith(
+      {ReturningOutOrderDataStatus? status,
+      Noms? noms,
+      String? errorMassage,
+      int? orderStatus,
+      Barcode? barcode,
+      String? nomBarcode,
+      String? cellBarcode,
+      double? count,
+      bool? itsMezonine}) {
+    return ReturningOutOrderDataState(
+        status: status ?? this.status,
+        noms: noms ?? this.noms,
+        errorMassage: errorMassage ?? this.errorMassage,
+        barcode: barcode ?? this.barcode,
+        nomBarcode: nomBarcode ?? this.nomBarcode,
+        cellBarcode: cellBarcode ?? this.cellBarcode,
+        count: count ?? this.count,
+        itsMezonine: itsMezonine ?? this.itsMezonine);
+  }
+
+  @override
+  List<Object?> get props => [status, noms, errorMassage, barcode, count, nomBarcode, itsMezonine, cellBarcode];
+}

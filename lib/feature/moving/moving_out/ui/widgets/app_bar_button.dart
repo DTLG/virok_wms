@@ -6,8 +6,8 @@ import 'package:virok_wms/ui/theme/theme.dart';
 import '../../cubit/moving_out_order_data_cubit.dart';
 import '../../cubit/moving_out_order_head_cubit.dart';
 
-class AppBarButton extends StatelessWidget {
-  const AppBarButton({super.key, required this.cubit, required this.docId});
+class AppBarButtonO extends StatelessWidget {
+  const AppBarButtonO({super.key, required this.cubit, required this.docId});
 
   final MovingOutOrdersHeadCubit cubit;
   final String docId;

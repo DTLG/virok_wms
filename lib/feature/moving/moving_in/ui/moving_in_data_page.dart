@@ -34,7 +34,7 @@ class MovingInDataView extends StatelessWidget {
     final argument =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final MovingInOrder order = argument['order'];
-    final MovingInHeadCubit diplacementOrderHeadCubit =
+    final MovingInHeadCubit movingInHeadCubit =
         argument['cubit'];
 
     return Scaffold(
@@ -46,11 +46,11 @@ class MovingInDataView extends StatelessWidget {
         ),
         leading: IconButton(
             onPressed: () {
-              diplacementOrderHeadCubit.getOrders();
+              movingInHeadCubit.getOrders();
               Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
-        actions: [AppBarButton(invoice: order.invoice)],
+        actions: [AppBarButton()],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -114,13 +114,13 @@ class MovingInDataView extends StatelessWidget {
 }
 
 class AppBarButton extends StatelessWidget {
-  const AppBarButton({super.key, required this.invoice});
+  const AppBarButton({super.key});
 
-  final String invoice;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final invoice = context.select((MovingInDataCubit cubit) => cubit.state.noms.invoice);
     return Padding(
       padding: const EdgeInsets.all(7.0),
       child: ElevatedButton(
@@ -135,7 +135,7 @@ class AppBarButton extends StatelessWidget {
             context.read<MovingInDataCubit>().closeOrder(invoice);
             Navigator.pop(context);
             Navigator.pop(context);
-            Navigator.pushNamed(context, AppRoutes.admissionPlacementPage);
+            Navigator.pushNamed(context, AppRoutes.movingInHeadPage);
 
             // showRequestToPlacementDialog(context);
           }
@@ -183,7 +183,7 @@ class RequestToPlacementDialog extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pop(context);
 
-              Navigator.pushNamed(context, AppRoutes.admissionPlacementPage);
+              Navigator.pushNamed(context, AppRoutes.placementPage);
             },
             child: const Text('Так'))
       ],

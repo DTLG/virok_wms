@@ -5,19 +5,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_client/models/barcodes_noms.dart';
 
-
 class ChackNomClient {
   final client = http.Client();
 
   Future<BarcodesNomsDTO> getNoms(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String username = prefs.getString('username') ?? '';
     String password = prefs.getString('password') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+
     final url = '$baseUrl$query $body';
     final basicAuth = base64.encode(utf8.encode('$username:$password'));
 
     try {
+
       final response = await client.post(
         Uri.parse(url),
         headers: {
@@ -25,6 +27,9 @@ class ChackNomClient {
           'Accept': 'application/json',
         },
       );
+
+
+
 
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -40,15 +45,18 @@ class ChackNomClient {
     }
   }
 
-Future<int?> insertGenerationBarcode(String query, String body) async {
+  Future<int?> insertGenerationBarcode(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String username = prefs.getString('username') ?? '';
     String password = prefs.getString('password') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+
     final url = '$baseUrl$query $body';
     final basicAuth = base64.encode(utf8.encode('$username:$password'));
 
     try {
+
       final response = await client.post(
         Uri.parse(url),
         headers: {
@@ -56,6 +64,8 @@ Future<int?> insertGenerationBarcode(String query, String body) async {
           'Accept': 'application/json',
         },
       );
+ 
+
 
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
@@ -70,5 +80,4 @@ Future<int?> insertGenerationBarcode(String query, String body) async {
       client.close();
     }
   }
-
 }

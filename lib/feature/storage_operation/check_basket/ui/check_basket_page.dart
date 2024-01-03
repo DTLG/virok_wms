@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/ui/widgets/widgets.dart';
 
-import '../../../../ui/widgets/went_wrong.dart';
 import '../check_basket_repository/models/basket_info.dart';
 import '../cubit/check_basket_cubit.dart';
 
@@ -22,46 +23,53 @@ class ChackBasketView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Кошик'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(7),
-            child: ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                      Color.fromARGB(255, 91, 79, 179)),
-                  maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
-                  padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
-              child: Text('Очистити',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .copyWith(color: Colors.white)),
-              onPressed: () {
-                context.read<CheckBasketCubit>().clear();
-              },
-            ),
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          const BarcodeInput(),
-          BlocBuilder<CheckBasketCubit, CheckBasketState>(
-            builder: (context, state) {
-              if (state.status.isSuccess) {
-                return 
-                state.basket.basket.isNotEmpty?
-                BasketInfo(
-                  basket: state.basket,
-                ):const Row(
+    final theme = Theme.of(context).textTheme;
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Кошик'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(7),
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                        Color.fromARGB(255, 91, 79, 179)),
+                    maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
+                child: Text('Очистити',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(color: Colors.white)),
+                onPressed: () {
+                  context.read<CheckBasketCubit>().clear();
+                },
+              ),
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            const BarcodeInput(),
+            BlocBuilder<CheckBasketCubit, CheckBasketState>(
+              builder: (context, state) {
+                if (state.status.isSuccess) {
+                  return state.basket.basket.isNotEmpty
+                      ? BasketInfo(
+                          basket: state.basket,
+                        )
+                      : const Row(
                           children: [
-                            SizedBox(width: 10,),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Icon(Icons.error_outline_outlined),
-                            SizedBox(width: 5,),
+                            SizedBox(
+                              width: 5,
+                            ),
                             Text(
                               'Кошик не знайдено',
                               style: TextStyle(
@@ -69,27 +77,28 @@ class ChackBasketView extends StatelessWidget {
                             )
                           ],
                         );
-              }
-              if (state.status.isFailure) {
-                return Expanded(
-                  child: Center(
-                      child: WentWrong(
-                    errorDescription: state.errorMassage,
-                    buttonTrue: false,
-                  )),
-                );
-              }
-              if (state.status.isLoading) {
-                return const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              return const Center();
-            },
-          )
-        ],
+                }
+                if (state.status.isFailure) {
+                  return Expanded(
+                    child: Center(
+                        child: WentWrong(
+                      errorDescription: state.errorMassage,
+                      buttonTrue: false,
+                    )),
+                  );
+                }
+                if (state.status.isLoading) {
+                  return const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const Center();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
@@ -108,16 +117,25 @@ class _BarcodeInputState extends State<BarcodeInput> {
   @override
   Widget build(BuildContext context) {
     final state = context.select((CheckBasketCubit cubit) => cubit.state);
-    state.status.isInitial?controller.clear():controller;
+    state.status.isInitial ? controller.clear() : controller;
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: controller,
-        autofocus: true,
+        autofocus: cameraScaner ? false : true,
         onSubmitted: (value) {
           context.read<CheckBasketCubit>().getBasket(value);
         },
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
+          suffixIcon: cameraScaner
+              ? CameraScanerButton(
+                  scan: (value) {
+                    context.read<CheckBasketCubit>().getBasket(value);
+                  },
+                )
+              : null,
           hintText: 'Відскануйте штрихкод',
         ),
       ),
@@ -136,20 +154,45 @@ class BasketInfo extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text('Назва кошика:',style: theme.textTheme.titleLarge,),
-          trailing: Text(basket.basket,style: theme.textTheme.headlineSmall!.copyWith(color: Colors.black),),
+          title: Text(
+            'Назва кошика:',
+            style: theme.textTheme.titleLarge,
+          ),
+          trailing: Text(
+            basket.basket,
+            style: theme.textTheme.headlineSmall,
+          ),
         ),
         ListTile(
-          title: Text('Стіл:',style: theme.textTheme.titleLarge,),
-          trailing: Text(basket.table.name,style: theme.textTheme.headlineSmall!.copyWith(color: Colors.black),),
+          title: Text(
+            'Стіл:',
+            style: theme.textTheme.titleLarge,
+          ),
+          trailing: Text(
+            basket.table.name,
+            style: theme.textTheme.headlineSmall,
+
+          ),
         ),
         ListTile(
-          title: Text('Штрихкод столу:',style: theme.textTheme.titleLarge,),
-          trailing: Text(basket.table.barcode, style: theme.textTheme.headlineSmall!.copyWith(color: Colors.black),),
+          title: Text(
+            'Штрихкод столу:',
+            style: theme.textTheme.titleLarge,
+          ),
+          trailing: Text(
+            basket.table.barcode,
+            style: theme.textTheme.headlineSmall,
+          ),
         ),
-         ListTile(
-          title: Text('Номер документу:',style: theme.textTheme.titleLarge,),
-          trailing: Text(basket.docNumber, style: theme.textTheme.headlineSmall!.copyWith(color: Colors.black),),
+        ListTile(
+          title: Text(
+            'Номер документу:',
+            style: theme.textTheme.titleLarge,
+          ),
+          trailing: Text(
+            basket.docNumber,
+            style: theme.textTheme.headlineSmall,
+          ),
         ),
       ],
     );

@@ -49,7 +49,11 @@ class DiplacementOrderDataView extends StatelessWidget {
               Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
-        actions: [AppBarButton(invoice: order.invoice)],
+        actions: [
+          AppBarButton(
+            order: order,
+          )
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -60,13 +64,15 @@ class DiplacementOrderDataView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const DisplacementBarcodeInput(),
+              DisplacementBarcodeInput(
+                order: order,
+              ),
               const SizedBox(
                 height: 8,
               ),
               const DisplacementTableHead(),
               BlocConsumer<DisplacementOrderDataCubit,
-                  DiplacementOrderDataState>(
+                  DisplacementOrderDataState>(
                 listener: (context, state) {
                   if (state.time.isFinite && state.status.isNotFound) {
                     Alerts(msg: state.errorMassage, context: context)
@@ -76,6 +82,8 @@ class DiplacementOrderDataView extends StatelessWidget {
                 builder: (context, state) {
                   if (state.status.isInitial) {
                     context.read<DisplacementOrderDataCubit>().getNoms(order);
+                    return const Expanded(
+                        child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isLoading) {
                     return const Expanded(
@@ -91,6 +99,7 @@ class DiplacementOrderDataView extends StatelessWidget {
                   }
                   return DisplacementTable(
                     noms: state.noms,
+                    order: order,
                   );
                 },
               ),
@@ -101,11 +110,28 @@ class DiplacementOrderDataView extends StatelessWidget {
       bottomSheet: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GeneralButton(
-              lable: 'Оновити',
-              onPressed: () {
-                context.read<DisplacementOrderDataCubit>().getNoms(order);
-              })
+          BlocBuilder<DisplacementOrderDataCubit, DisplacementOrderDataState>(
+            builder: (context, state) {
+              return GeneralButton(
+                  lable: 'Завершити',
+                  onPressed: () {
+                    final int checkFullScan = context
+                        .read<DisplacementOrderDataCubit>()
+                        .checkFullOrder();
+                    if (checkFullScan == 0) {
+                      Alerts(
+                              msg: 'Не відскановано жодного товару',
+                              context: context)
+                          .showError();
+                    } else {
+                      context
+                          .read<DisplacementOrderDataCubit>()
+                          .closeOrder(state.noms.invoice);
+                      Navigator.pop(context);
+                    }
+                  });
+            },
+          ),
         ],
       ),
     );
@@ -113,9 +139,9 @@ class DiplacementOrderDataView extends StatelessWidget {
 }
 
 class AppBarButton extends StatelessWidget {
-  const AppBarButton({super.key, required this.invoice});
+  const AppBarButton({super.key, required this.order});
 
-  final String invoice;
+  final DisplacementOrder order;
 
   @override
   Widget build(BuildContext context) {
@@ -124,27 +150,14 @@ class AppBarButton extends StatelessWidget {
       padding: const EdgeInsets.all(7.0),
       child: ElevatedButton(
         onPressed: () {
-          final int checkFullScan =
-              context.read<DisplacementOrderDataCubit>().checkFullOrder();
-
-          if (checkFullScan == 0) {
-            Alerts(msg: 'Не відскановано жодного товару', context: context)
-                .showError();
-          } else {
-            context.read<DisplacementOrderDataCubit>().closeOrder(invoice);
-            Navigator.pop(context);
-            Navigator.pop(context);
-            Navigator.pushNamed(context, AppRoutes.admissionPlacementPage);
-
-            // showRequestToPlacementDialog(context);
-          }
+          context.read<DisplacementOrderDataCubit>().getNoms(order);
         },
         style: const ButtonStyle(
             backgroundColor: MaterialStatePropertyAll(AppColors.darkBlue)),
         child: SizedBox(
             width: 75,
             child: Text(
-              'Завершити',
+              'Оновити',
               textAlign: TextAlign.center,
               style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
             )),
@@ -182,7 +195,7 @@ class RequestToPlacementDialog extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pop(context);
 
-              Navigator.pushNamed(context, AppRoutes.admissionPlacementPage);
+              Navigator.pushNamed(context, AppRoutes.placementPage);
             },
             child: const Text('Так'))
       ],

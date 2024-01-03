@@ -11,48 +11,42 @@ extension PlacementStatusX on PlacementStatus {
 }
 
 final class PlacementState extends Equatable {
-  PlacementState(
-      {this.status = PlacementStatus.initial,
-      this.time = 0,
-      this.cell = '',
-      this.count =0,
-      this.nomBarcode = '',
-      AdmissionNoms? noms,
-      this.errorMassage = '',
-})
-      : noms = noms ?? AdmissionNoms.empty;
-      
+  PlacementState({
+    this.status = PlacementStatus.initial,
+    this.time = 0,
+    PlacementNoms? noms,
+    PlacementNom? nom,
+    this.errorMassage = '',
+  })  : noms = noms ?? PlacementNoms.empty,
+        nom = nom ?? PlacementNom.empty;
 
   final PlacementStatus status;
-  final AdmissionNoms noms;
+  final PlacementNoms noms;
+  final PlacementNom nom;
+
   final String errorMassage;
-  final String nomBarcode;
   final int time;
-  final String cell;
-  final double count;
 
-
-
-  PlacementState copyWith(
-      {PlacementStatus? status,
-      AdmissionNoms? noms,
-      int? time,
-      String? cell,
-      double? count,
-      String? nomBarcode,
-      String? errorMassage,
-    }) {
+  PlacementState copyWith({
+    PlacementStatus? status,
+    PlacementNoms? noms,
+    PlacementNom? nom,
+    int? time,
+    String? cell,
+    double? count,
+    String? nomBarcode,
+    String? errorMassage,
+  }) {
     return PlacementState(
-        status: status ?? this.status,
-        noms: noms ?? this.noms,
-        time: time ?? this.time,
-        cell: cell ?? this.cell,
-        nomBarcode: nomBarcode ?? this.nomBarcode,
-        count: count ?? this.count,
-        errorMassage: errorMassage ?? this.errorMassage,
-);
+      status: status ?? this.status,
+      noms: noms ?? this.noms,
+      nom: nom ?? this.nom,
+      time: time ?? this.time,
+      errorMassage: errorMassage ?? this.errorMassage,
+    );
   }
 
   @override
-  List<Object?> get props => [status, noms, errorMassage, time, cell, count, nomBarcode];
+  List<Object?> get props =>
+      [status, noms, errorMassage, time, nom];
 }

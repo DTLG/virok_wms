@@ -1,6 +1,8 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:virok_wms/ui/theme/theme.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import 'cubit/cel_generator_cubit.dart';
@@ -61,7 +63,7 @@ class CellGeneratorView extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
-                    color: const Color.fromARGB(20, 0, 0, 0),
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   children: [
@@ -89,13 +91,13 @@ class CellGeneratorView extends StatelessWidget {
                           context.read<CelLGeneratorCubit>().setRack(value),
                     ),
                     WellScrollWidget(
-                      maxValue: 6,
+                      maxValue: 4,
                       onChanged: (value) => context
                           .read<CelLGeneratorCubit>()
                           .setFloorRack(value),
                     ),
                     WellScrollWidget(
-                      maxValue: 9,
+                      maxValue: 10,
                       onChanged: (value) =>
                           context.read<CelLGeneratorCubit>().setCell(value),
                     ),
@@ -132,6 +134,10 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AdaptiveTheme.of(context).mode;
+    final Color borderColor = theme.isLight?Colors.black:Colors.grey;
+    final Color selectedTextColor =  theme.isLight?Colors.black:const Color.fromARGB(255, 255, 255, 255);
+
     return NumberPicker(
       minValue: 1,
       maxValue: widget.maxValue,
@@ -140,10 +146,10 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
       infiniteLoop: true,
       itemWidth: 58,
       itemHeight: 50,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           border: Border(
-              top: BorderSide(color: Colors.black),
-              bottom: BorderSide(color: Colors.black))),
+              top: BorderSide(color: borderColor),
+              bottom: BorderSide(color: borderColor))),
       onChanged: (value) {
         widget.onChanged(value);
         setState(() {
@@ -151,8 +157,8 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
         });
       },
       textStyle: const TextStyle(color: Colors.grey, fontSize: 20),
-      selectedTextStyle: const TextStyle(
-          color: Colors.black, fontSize: 25, fontWeight: FontWeight.w500),
+      selectedTextStyle:  TextStyle(
+          color: selectedTextColor, fontSize: 25, fontWeight: FontWeight.w500),
       textMapper: (numberText) {
         String res = '';
         if (widget.maxValue < 10) {

@@ -10,12 +10,7 @@ class DisplacementOrdersHeadCubit extends Cubit<DisplacementOrdersHeadState> {
 
   Future<void> getOrders() async {
     try {
-          await Future<void>.delayed(const Duration(microseconds: 1));
-
-      emit(state.copyWith(status: DisplacementOrdersHeadStatus.loading));
-                await Future<void>.delayed(const Duration(seconds: 1));
-
-
+      await Future<void>.delayed(const Duration(seconds: 1));
 
       final orders = await DiplacementOrderHeadRepository()
           .getOrders('IncomingInvoice_list', '');
@@ -28,7 +23,6 @@ class DisplacementOrdersHeadCubit extends Cubit<DisplacementOrdersHeadState> {
     }
   }
 
-
   void clear() {
     emit(state.copyWith(
         status: DisplacementOrdersHeadStatus.initial,
@@ -36,8 +30,4 @@ class DisplacementOrdersHeadCubit extends Cubit<DisplacementOrdersHeadState> {
         errorMassage: '',
         buskeStatus: false));
   }
-
-   
-
-   
 }

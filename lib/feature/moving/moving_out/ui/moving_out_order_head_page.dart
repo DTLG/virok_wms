@@ -7,8 +7,7 @@ import 'package:virok_wms/ui/widgets/row_element.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
-
-import '../../../home_page/cubit/home_page_cubit.dart';
+import '../../../../ui/theme/theme.dart';
 import '../cubit/moving_out_order_head_cubit.dart';
 
 class MovingOutHeadPage extends StatelessWidget {
@@ -53,6 +52,8 @@ class MovingOutOrdersHeadView extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state.status.isInitial) {
+                  context.read<MovingOutOrdersHeadCubit>().checkTsdType();
+
                   context.read<MovingOutOrdersHeadCubit>().getOrders();
                   return const Expanded(
                       child: Center(child: CircularProgressIndicator()));
@@ -102,14 +103,34 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
+    final bool itsMezonine =
+        context.read<MovingOutOrdersHeadCubit>().state.itsMezonine;
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
 
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: orders.orders.length,
         itemBuilder: (context, index) {
-          return InkWell(
+          final order = orders.orders[index];
+          return TableElement(
+            dataLenght: orders.orders.length,
+            rowElement: [
+              RowElement(
+                  flex: 1,
+                  value: (index + 1).toString(),
+                  textStyle: theme.textTheme.titleSmall),
+              RowElement(
+                  flex: 4,
+                  value: order.docId,
+                  textStyle: theme.textTheme.titleSmall),
+              RowElement(
+                  flex: 4,
+                  value: order.date,
+                  textStyle: theme.textTheme.titleSmall),
+            ],
+            index: index,
             onTap: () {
               if (itsMezonine) {
                 if (orders.orders[index].baskets.isEmpty) {
@@ -119,6 +140,7 @@ class _CustomTable extends StatelessWidget {
                       value: context.read<MovingOutOrdersHeadCubit>(),
                       child: SetBuscetDialog(
                         docId: orders.orders[index].docId,
+                        itsMezonine: itsMezonine,
                       ),
                     ),
                   );
@@ -126,70 +148,118 @@ class _CustomTable extends StatelessWidget {
                   Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
                       arguments: {
                         'docId': orders.orders[index].docId,
-                        'cubit': context.read<MovingOutOrdersHeadCubit>()
+                        'cubit': context.read<MovingOutOrdersHeadCubit>(),
+                        'basket': orders.orders[index].baskets.first.bascet,
+                        'itsMezonine': itsMezonine
                       });
                 }
               } else {
                 Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
                     arguments: {
                       'docId': orders.orders[index].docId,
-                      'cubit': context.read<MovingOutOrdersHeadCubit>()
+                      'cubit': context.read<MovingOutOrdersHeadCubit>(),
+                      'basket': '',
+                      'itsMezonine': itsMezonine
                     });
               }
             },
-            child: _CustomTableRow(
-              index: index,
-              lastIndex: orders.orders.length - 1,
-              order: orders.orders[index],
-            ),
+            color: order.fullOrder != 0
+                ? myColors.tableGreen
+                : index % 2 != 0
+                    ? myColors.tableDarkColor
+                    : myColors.tableLightColor,
           );
+
+          // InkWell(
+          //   onTap: () {
+          //     if (itsMezonine) {
+          //       if (orders.orders[index].baskets.isEmpty) {
+          //         showDialog(
+          //           context: context,
+          //           builder: (_) => BlocProvider.value(
+          //             value: context.read<MovingOutOrdersHeadCubit>(),
+          //             child: SetBuscetDialog(
+          //               docId: orders.orders[index].docId,
+          //               itsMezonine: itsMezonine,
+          //             ),
+          //           ),
+          //         );
+          //       } else {
+          //         Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
+          //             arguments: {
+          //               'docId': orders.orders[index].docId,
+          //               'cubit': context.read<MovingOutOrdersHeadCubit>(),
+          //               'basket': orders.orders[index].baskets.first.bascet,
+          //               'itsMezonine': itsMezonine
+          //             });
+          //       }
+          //     } else {
+          //       Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
+          //           arguments: {
+          //             'docId': orders.orders[index].docId,
+          //             'cubit': context.read<MovingOutOrdersHeadCubit>(),
+          //             'basket': '',
+          //             'itsMezonine': itsMezonine
+          //           });
+          //     }
+          //   },
+          //   child: _CustomTableRow(
+          //     index: index,
+          //     lastIndex: orders.orders.length - 1,
+          //     order: orders.orders[index],
+          //   ),
+          // );
         },
       ),
     );
   }
 }
 
-class _CustomTableRow extends StatelessWidget {
-  const _CustomTableRow(
-      {required this.index, required this.lastIndex, required this.order});
-  final Order order;
-  final int index;
-  final int lastIndex;
+// class _CustomTableRow extends StatelessWidget {
+//   const _CustomTableRow(
+//       {required this.index, required this.lastIndex, required this.order});
+//   final Order order;
+//   final int index;
+//   final int lastIndex;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-      height: 45,
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-          color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-          border: const Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-              bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-      child: Row(
-        children: [
-          RowElement(
-              flex: 1,
-              value: (index + 1).toString(),
-              textStyle: theme.textTheme.titleSmall),
-          RowElement(
-              flex: 4,
-              value: order.docId,
-              textStyle: theme.textTheme.titleSmall),
-          RowElement(
-              flex: 4,
-              value: order.date,
-              textStyle: theme.textTheme.titleSmall),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     return Container(
+//       margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
+//       height: 45,
+//       padding: const EdgeInsets.all(3),
+//       decoration: BoxDecoration(
+//           color: order.fullOrder != 0
+//               ? const Color.fromARGB(255, 132, 255, 142)
+//               : index % 2 == 0
+//                   ? Colors.grey[200]
+//                   : Colors.white,
+//           border: const Border.symmetric(
+//               vertical: BorderSide(width: 1),
+//               horizontal: BorderSide(width: 0.5)),
+//           borderRadius: BorderRadius.only(
+//               bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
+//               bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
+//       child: Row(
+//         children: [
+//           RowElement(
+//               flex: 1,
+//               value: (index + 1).toString(),
+//               textStyle: theme.textTheme.titleSmall),
+//           RowElement(
+//               flex: 4,
+//               value: order.docId,
+//               textStyle: theme.textTheme.titleSmall),
+//           RowElement(
+//               flex: 4,
+//               value: order.date,
+//               textStyle: theme.textTheme.titleSmall),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _TableHead extends StatelessWidget {
   const _TableHead();
@@ -197,15 +267,8 @@ class _TableHead extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      height: 45,
-      decoration: const BoxDecoration(
-          border: Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Row(
+    return TableHeads(
+  
         children: [
           RowElement(
             flex: 1,
@@ -223,15 +286,17 @@ class _TableHead extends StatelessWidget {
             textStyle: theme.textTheme.titleSmall,
           ),
         ],
-      ),
+      
     );
   }
 }
 
 class SetBuscetDialog extends StatefulWidget {
-  const SetBuscetDialog({super.key, required this.docId});
+  const SetBuscetDialog(
+      {super.key, required this.docId, required this.itsMezonine});
 
   final String docId;
+  final bool itsMezonine;
 
   @override
   State<SetBuscetDialog> createState() => _SetBuscetDialogState();
@@ -282,7 +347,9 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                   Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
                       arguments: {
                         'docId': widget.docId,
-                        'cubit': context.read<MovingOutOrdersHeadCubit>()
+                        'cubit': context.read<MovingOutOrdersHeadCubit>(),
+                        'basket': controller.text,
+                        'itsMezonine': widget.itsMezonine
                       });
                 }
               }

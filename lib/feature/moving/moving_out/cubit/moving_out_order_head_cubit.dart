@@ -1,34 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virok_wms/feature/moving/moving_out/moving_out_client/moving_gate_api_client.dart';
 
 import 'package:virok_wms/models/order.dart';
 
-import '../moving_out_client/moving_out_api_client.dart';
-import '../moving_out_repository/moving_out_order_head_repository.dart';
+import '../moving_out_repository/moving_gate_order_head_repository.dart';
 
 part 'moving_out_order_head_state.dart';
 
 class MovingOutOrdersHeadCubit extends Cubit<MovingOutOrdersHeadState> {
   MovingOutOrdersHeadCubit() : super(const MovingOutOrdersHeadState());
 
+  
   Future<void> getOrders() async {
-    try {
-      await Future<void>.delayed(const Duration(seconds: 1));
+    try {      await Future.delayed(const Duration(milliseconds: 500),(){});
 
-      final orders = await MovingOutOrderHeadRepository()
-          .getMovingList('get_moving_out_list', '');
+      final orders =
+          await MovingGateOrderHeadRepository().getOrders('get_moving_out_list', '');
       emit(state.copyWith(
           status: MovingOutOrdersHeadStatus.success, orders: orders));
     } catch (e) {
       emit(state.copyWith(
-          status: MovingOutOrdersHeadStatus.failure, errorMassage: e.toString()));
+          status: MovingOutOrdersHeadStatus.failure,
+          errorMassage: e.toString()));
     }
   }
 
   Future<bool> setBasketToOrder(String barcode, String docId) async {
     try {
       String bascketStatus =
-          await MovingOutOrderDataClient().setBasketToOrder('$barcode $docId');
+          await MovingGateOrderDataClient().setBasketToOrder('$barcode $docId');
 
       bool res = false;
       if (bascketStatus == '0') {
@@ -65,8 +67,15 @@ class MovingOutOrdersHeadCubit extends Cubit<MovingOutOrdersHeadState> {
         buskeStatus: false));
   }
 
-// Future<void>getOrderBusket(String docId)async{
-//   final basket = await MovingOrderHeadRepository().getOrderBaskets(docId);
-//   print(basket);
-// }
+  Future<void> checkTsdType() async {
+    try {
+      bool itsMezonine = await MovingGateOrderDataClient().checkTsdType();
+      emit(state.copyWith(
+          itsMezonine: itsMezonine, status: MovingOutOrdersHeadStatus.success));
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('its_mezonine', itsMezonine);
+    } catch (e) {
+      emit(state.copyWith(status: MovingOutOrdersHeadStatus.failure));
+    }
+  }
 }

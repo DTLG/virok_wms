@@ -20,4 +20,14 @@ class SelectionOrderHeadRepository {
         .toList();
     return Orders(orders: orders, status: listNom.status ?? 1);
   }
+
+  // Future<Baskets> getOrderBaskets(String docId) async {
+  //   final baskets = await _selectionApiClient.getOrderBasket(docId);
+
+  //   return Baskets(
+  //       basket: baskets.basket
+  //           .map((e) =>
+  //               Basket(basket: e.basket ?? '', basketName: e.basketName ?? ''))
+  //           .toList());
+  // }
 }

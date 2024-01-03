@@ -1,9 +1,13 @@
 {
-   
-    "DocNumber": "УТТзО295016",
-    "table": {
-        "name": "Стіл 2",
-        "barcode": "03"
-    },
-    "basket": "01"
+    "cod_cell": "",
+    "name_cell": "",
+    "noms": [
+        {
+            "name": "",
+            "article": "",
+            "qty": 0,
+            "min_rest": 0
+        }
+    ],
+    "error_massage":""
 }

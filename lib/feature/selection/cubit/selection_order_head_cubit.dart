@@ -71,4 +71,11 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
   }
 
    
+// Future<void>getOrderBusket(String docId)async{
+//   final basket = await SelectionOrderHeadRepository().getOrderBaskets(docId);
+//   print(basket);
+// }
+
+
+   
 }

@@ -1,5 +1,6 @@
 import 'package:virok_wms/models/models.dart';
 
+import '../../../models/barcode_model.dart';
 import '../selection_client/selection_api_client.dart';
 
 class SelectionOrderDataRepository {
@@ -25,7 +26,7 @@ class SelectionOrderDataRepository {
                 .toList(),
             nameCell: nom.nameCell ?? '',
             codeCell: nom.codeCell ?? '',
-            cells: nom.cells.map((e) => e ?? '').toList(),
+            cells: (nom.cells ?? [CellDTO(codeCell: '', nameCell: '')]).map((e) =>  Cell(codeCell: e.codeCell ?? '', nameCell: e.nameCell ?? '')).toList(),
             table: nom.table ?? '',
             docNumber: nom.docNumber ?? '',
             qty: nom.qty ?? 0,

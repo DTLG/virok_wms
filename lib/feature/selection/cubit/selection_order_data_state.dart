@@ -27,10 +27,11 @@ final class SelectionOrderDataState extends Equatable {
   final Noms noms;
   final String errorMassage;
   final Barcode barcode;
-  final int count;
+  final double count;
   final String cellBarcode;
   final String nomBarcode;
   final bool itsMezonine;
+
 
   SelectionOrderDataState copyWith(
       {SelectionOrderDataStatus? status,
@@ -40,7 +41,7 @@ final class SelectionOrderDataState extends Equatable {
       Barcode? barcode,
       String? nomBarcode,
       String? cellBarcode,
-      int? count,
+      double? count,
       bool? itsMezonine}) {
     return SelectionOrderDataState(
         status: status ?? this.status,

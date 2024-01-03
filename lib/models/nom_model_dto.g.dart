@@ -13,6 +13,11 @@ NomsDTO _$NomsDTOFromJson(Map<String, dynamic> json) => NomsDTO(
       status: json['status'] as int?,
     );
 
+Map<String, dynamic> _$NomsDTOToJson(NomsDTO instance) => <String, dynamic>{
+      'noms': instance.noms,
+      'status': instance.status,
+    };
+
 NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
       name: json['tovar'] as String?,
       table: json['table'] as String?,
@@ -22,8 +27,8 @@ NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
           .toList(),
       nameCell: json['name_cell'] as String?,
       codeCell: json['cod_cell'] as String?,
-      cells: (json['available_cells'] as List<dynamic>)
-          .map((e) => e as String)
+      cells: (json['available_cells'] as List<dynamic>?)
+          ?.map((e) => CellDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       docNumber: json['DocNumber'] as String?,
       qty: (json['qty'] as num?)?.toDouble(),
@@ -34,12 +39,38 @@ NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
           .toList(),
     );
 
-BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
-      barcode: json['barcode'] as String?,
-      ratio: json['ratio'] as int?,
-    );
+Map<String, dynamic> _$NomDTOToJson(NomDTO instance) => <String, dynamic>{
+      'tovar': instance.name,
+      'article': instance.article,
+      'barcodes': instance.barcodes,
+      'name_cell': instance.nameCell,
+      'cod_cell': instance.codeCell,
+      'available_cells': instance.cells,
+      'DocNumber': instance.docNumber,
+      'qty': instance.qty,
+      'table': instance.table,
+      'its_myne': instance.itsMyne,
+      'baskets': instance.baskets,
+      'count': instance.count,
+    };
 
 BascketDTO _$BascketDTOFromJson(Map<String, dynamic> json) => BascketDTO(
       basket: json['basket'] as String?,
-      basketName: json['basket_name'] as String?,
+      basketName: json['basketName'] as String?,
     );
+
+Map<String, dynamic> _$BascketDTOToJson(BascketDTO instance) =>
+    <String, dynamic>{
+      'basket': instance.basket,
+      'basketName': instance.basketName,
+    };
+
+CellDTO _$CellDTOFromJson(Map<String, dynamic> json) => CellDTO(
+      codeCell: json['code_cell'] as String?,
+      nameCell: json['name_cell'] as String?,
+    );
+
+Map<String, dynamic> _$CellDTOToJson(CellDTO instance) => <String, dynamic>{
+      'code_cell': instance.codeCell,
+      'name_cell': instance.nameCell,
+    };

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:virok_wms/models/barcode_dto_model.dart';
 
 part 'nom_model_dto.g.dart';
 
@@ -25,7 +26,7 @@ class NomDTO {
   @JsonKey(name: 'cod_cell')
   final String? codeCell;
   @JsonKey(name: 'available_cells')
-  final List<String?> cells;
+  final List<CellDTO>? cells;
   @JsonKey(name: 'DocNumber')
   final String? docNumber;
   final double? qty;
@@ -53,16 +54,6 @@ class NomDTO {
   factory NomDTO.fromJson(Map<String, dynamic> json) => _$NomDTOFromJson(json);
 }
 
-@JsonSerializable()
-class BarcodeDTO {
-  final String? barcode;
-  final int? ratio;
-
-  BarcodeDTO({required this.barcode, required this.ratio});
-
-  factory BarcodeDTO.fromJson(Map<String, dynamic> json) =>
-      _$BarcodeDTOFromJson(json);
-}
 
 @JsonSerializable()
 class BascketDTO {
@@ -74,3 +65,19 @@ class BascketDTO {
   factory BascketDTO.fromJson(Map<String, dynamic> json) =>
       _$BascketDTOFromJson(json);
 }
+
+
+@JsonSerializable()
+class CellDTO {
+    @JsonKey(name: "code_cell")
+
+  final String? codeCell;
+  @JsonKey(name: "name_cell")
+  final String? nameCell;
+
+  CellDTO({required this.codeCell, required this.nameCell});
+
+  factory CellDTO.fromJson(Map<String, dynamic> json) =>
+      _$CellDTOFromJson(json);
+}
+

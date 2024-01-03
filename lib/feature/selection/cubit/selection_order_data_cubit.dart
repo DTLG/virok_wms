@@ -5,6 +5,7 @@ import 'package:virok_wms/feature/selection/cubit/selection_order_head_cubit.dar
 import 'package:virok_wms/feature/selection/selection_repository/selection_order_data_repository.dart';
 import 'package:virok_wms/models/noms_model.dart';
 
+import '../../../models/barcode_model.dart';
 import '../selection_client/selection_api_client.dart';
 
 part 'selection_order_data_state.dart';
@@ -32,12 +33,12 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     }
   }
 
-  bool checkCell(String cellBarcode, List<String> cells) {
+  bool checkCell(String cellBarcode, List<Cell> cells) {
     bool res = false;
     emit(state.copyWith(cellBarcode: ''));
 
     for (var cell in cells) {
-      if (cellBarcode == cell) {
+      if (cellBarcode == cell.codeCell) {
         emit(state.copyWith(cellBarcode: cellBarcode));
         res = true;
         return res;
@@ -54,7 +55,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   void scan(String nomBar, Nom nom) {
-    int count = state.count;
+    double count = state.count == 0? nom.count: state.count;
      String checkNomBar = '';
 
     for (var barcode in nom.barcode) {
@@ -65,6 +66,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
           emit(state.copyWith(
               status: SelectionOrderDataStatus.notFound,
               errorMassage: 'Відсканована більша кількість'));
+checkNomBar = nomBar;
         } else {
           count += barcode.ratio;
           emit(state.copyWith(
@@ -86,21 +88,21 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   void manualCountIncrement(String count, double qty, double nomCount) {
-    if ((int.tryParse(count) ?? qty) > qty ||
-        (int.tryParse(count) ?? 0) > qty - nomCount) {
+    if ((int.tryParse(count) ?? qty) > qty ) {
       emit(state.copyWith(status: SelectionOrderDataStatus.success));
       emit(state.copyWith(
           status: SelectionOrderDataStatus.notFound,
           errorMassage: 'Введена більша кількість'));
     } else {
       emit(state.copyWith(
-          count: int.tryParse(count),
+          count: double.tryParse(count),
           status: SelectionOrderDataStatus.success));
     }
   }
 
-  Future<void> send(String barcode, int count, String docNum, String cell,
-      String bascket) async {
+  Future<void> send(String barcode, String docNum, String cell,
+      String bascket, double qty) async {
+double count = state.count - qty;
     try {
       final orders = await SelectionOrderDataRepository().selectionRepo(
           'send_selection', '$barcode $count $docNum $cell $bascket');
@@ -122,6 +124,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
           '${nom.barcode.first.barcode} $qty $docId ${nom.codeCell}');
       emit(state.copyWith(
           status: SelectionOrderDataStatus.success, noms: orders));
+clear();
     } catch (e) {
       emit(state.copyWith(status: SelectionOrderDataStatus.success));
 
@@ -131,7 +134,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     }
   }
 
-  int checkOrder() {
+  int checkFullOrder() {
     final noms = state.noms;
     int res = 0;
 
@@ -148,7 +151,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   Future<void> closeOrder(String docId, SelectionOrdersHeadCubit cubit) async {
-    final fullScanned = checkOrder();
+    final fullScanned = checkFullOrder();
 
     try {
       await SelectionOrderDataClient()

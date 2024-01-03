@@ -1,7 +1,7 @@
 name: virok_wms
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.0
+version: 1.5.1
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
@@ -17,6 +17,7 @@ dependencies:
   fluttertoast: ^8.2.2
   http: ^1.1.0
   json_annotation: ^4.8.1
+  numberpicker: ^2.1.2
   path: ^1.8.3
   pinput: ^3.0.1
   shared_preferences: ^2.2.1

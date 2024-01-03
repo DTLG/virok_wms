@@ -14,6 +14,10 @@ class SettingsState extends Equatable {
   final bool printButton;
   final bool cellInfoButton;
   final bool basketInfoButton;
+  final bool cellGeneratorButton;
+  final bool placementButton;
+  final bool writeOffButton;
+
   final String printerHost;
   final String printerPort;
 
@@ -24,6 +28,9 @@ class SettingsState extends Equatable {
       this.printButton = false,
       this.cellInfoButton = false,
       this.basketInfoButton = false,
+      this.cellGeneratorButton = false,
+      this.placementButton = false,
+      this.writeOffButton = false,
       this.printerHost = '',
       this.printerPort = ''});
 
@@ -34,6 +41,9 @@ class SettingsState extends Equatable {
       bool? printButton,
       bool? cellInfoButton,
       bool? basketInfoButton,
+      bool? cellGeneratorButton,
+      bool? placementButton,
+      bool? writeOffButton,
       String? printerHost,
       String? printerPort}) {
     return SettingsState(
@@ -43,6 +53,9 @@ class SettingsState extends Equatable {
         printButton: printButton ?? this.printButton,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
         basketInfoButton: basketInfoButton ?? this.basketInfoButton,
+        cellGeneratorButton: cellGeneratorButton ?? this.cellGeneratorButton,
+        placementButton: placementButton ?? this.placementButton,
+        writeOffButton: writeOffButton ?? this.writeOffButton,
         printerHost: printerHost ?? this.printerHost,
         printerPort: printerPort ?? this.printerPort);
   }
@@ -56,6 +69,9 @@ class SettingsState extends Equatable {
         printerHost,
         printerPort,
         cellInfoButton,
+        cellGeneratorButton,
+        placementButton,
+        writeOffButton,
         basketInfoButton
       ];
 }

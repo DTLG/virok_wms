@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:math' as math;
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
-import 'package:virok_wms/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
+import '../../home_page/cubit/home_page_cubit.dart';
 import '../cubit/selection_order_head_cubit.dart';
 import 'ui.dart';
 
@@ -65,7 +65,7 @@ class SelectionOrderDataView extends StatelessWidget {
                         WatermarkWidget(itsMezonine: itsMezonine),
 
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -94,9 +94,11 @@ class SelectionOrderDataView extends StatelessWidget {
                             child: Center(child: CircularProgressIndicator()));
                       }
                       if (state.status.isFailure) {
-                        return WentWrong(
-                          errorMassage: state.errorMassage,
-                          onPressed: () => Navigator.pop(context),
+                        return Expanded(
+                          child: WentWrong(
+                            errorDescription: state.errorMassage,
+                            onPressed: () => Navigator.pop(context),
+                          ),
                         );
                       }
                       return CustomTable(

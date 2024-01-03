@@ -1,3 +1,5 @@
+import 'package:virok_wms/models/barcode_model.dart';
+
 class Noms {
   final List<Nom> noms;
   final int status;
@@ -13,7 +15,7 @@ class Nom {
   final List<Barcode> barcode;
   final String nameCell;
   final String codeCell;
-  final List<String> cells;
+  final List<Cell> cells;
   final String docNumber;
   final double qty;
   final double count;
@@ -50,14 +52,7 @@ class Nom {
       baskets: [Bascket.empty]);
 }
 
-class Barcode {
-  final String barcode;
-  final int ratio;
 
-  Barcode({required this.barcode, required this.ratio});
-
-  static final empty = Barcode(barcode: '', ratio: 0);
-}
 
 class Bascket {
   final String bascket;
@@ -67,3 +62,13 @@ class Bascket {
 
   static final empty = Bascket(bascket: '', name: '');
 }
+
+class Cell {
+  final String codeCell;
+  final String nameCell;
+
+  Cell({required this.codeCell, required this.nameCell});
+
+  static final empty = Cell(codeCell: '', nameCell: '');
+}
+

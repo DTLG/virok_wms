@@ -14,6 +14,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     final printButton = prefs.getBool('barcode_print_lable_button') ?? false;
     final cellInfoButton = prefs.getBool('cell_info_button') ?? false;
     final basketInfoButton = prefs.getBool('basket_info_button') ?? false;
+    final cellGeneratorButton = prefs.getBool('cell_generator_button') ?? false;
+
+    final placementButton = prefs.getBool('placement_button') ?? false;
+    final writeOffButton = prefs.getBool('writing_off_button') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -25,7 +29,32 @@ class SettingsCubit extends Cubit<SettingsState> {
         printButton: printButton,
         cellInfoButton: cellInfoButton,
         basketInfoButton: basketInfoButton,
+        cellGeneratorButton: cellGeneratorButton,
+        placementButton: placementButton,
+        writeOffButton: writeOffButton,
         printerHost: printerHost,
         printerPort: printerPort));
+  }
+
+  Future<void> writeToSP(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+    switch (key) {
+      case 'barcode_print_lable_button':
+        return emit(state.copyWith(printButton: value));
+      case 'cell_info_button':
+        return emit(state.copyWith(cellInfoButton: value));
+      case 'basket_info_button':
+        return emit(state.copyWith(basketInfoButton: value));
+      case 'cell_generator_button':
+        return emit(state.copyWith(cellGeneratorButton: value));
+      case 'generation_bar_button':
+        return emit(state.copyWith(generationButton: value));
+         case 'placement_button':
+        return emit(state.copyWith(placementButton: value));
+      case 'writing_off_button':
+        return emit(state.copyWith(writeOffButton: value));
+    
+    }
   }
 }

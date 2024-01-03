@@ -18,7 +18,7 @@ class AppBarButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           final int checkFullScan =
-              context.read<SelectionOrderDataCubit>().checkOrder();
+              context.read<SelectionOrderDataCubit>().checkFullOrder();
               
 
           if (checkFullScan == 0) {

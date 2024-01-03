@@ -80,7 +80,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Spacer(),
+        const Spacer(),
         AlertDialog(
           iconPadding: const EdgeInsets.all(0),
           contentPadding: const EdgeInsets.only(bottom: 20),

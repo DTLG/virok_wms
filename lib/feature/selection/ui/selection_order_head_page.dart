@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_head_cubit.dart';
-import 'package:virok_wms/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/order.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../ui/widgets/alerts.dart';
 import '../../../ui/widgets/row_element.dart';
+import '../../home_page/cubit/home_page_cubit.dart';
 
-class SelectioOrdersHeadPage extends StatelessWidget {
-  const SelectioOrdersHeadPage({super.key});
+class SelectionOrdersHeadPage extends StatelessWidget {
+  const SelectionOrdersHeadPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class SelectionOrdersHeadView extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
         child: Column(
           children: [
             const _TableHead(),
@@ -77,6 +78,11 @@ class SelectionOrdersHeadView extends StatelessWidget {
           ],
         ),
       ),
+bottomSheet: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [GeneralButton(lable: 'Оновити', onPressed: (){
+               context.read<SelectionOrdersHeadCubit>().getOrders();
+      })],),
     );
   }
 }
@@ -109,14 +115,14 @@ class _CustomTable extends StatelessWidget {
                     ),
                   );
                 } else {
-                  Navigator.pushNamed(context, '/selection_order_data_page',
+                  Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,
                       arguments: {
                         'docId': orders.orders[index].docId,
                         'cubit': context.read<SelectionOrdersHeadCubit>()
                       });
                 }
               } else {
-                Navigator.pushNamed(context, '/selection_order_data_page',
+                  Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,
                     arguments: {
                       'docId': orders.orders[index].docId,
                       'cubit': context.read<SelectionOrdersHeadCubit>()
@@ -265,7 +271,7 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                   if (!mounted) return;
                   Navigator.pop(context);
 
-                  Navigator.pushNamed(context, '/selection_order_data_page',
+                  Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,
                       arguments: {
                         'docId': widget.docId,
                         'cubit': context.read<SelectionOrdersHeadCubit>()

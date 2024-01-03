@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class WentWrong extends StatelessWidget {
-  const WentWrong({super.key,  this.onPressed,this.errorMassage = '', this.errorDescription = ''});
+  const WentWrong({super.key,  this.onPressed,this.errorMassage = '', this.errorDescription = '', this.buttonTrue = true});
 
   final VoidCallback? onPressed;
   final String errorMassage;
   final String errorDescription;
+  final bool buttonTrue;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +30,11 @@ class WentWrong extends StatelessWidget {
           style: theme.textTheme.bodyLarge?.copyWith(fontSize: 17),
         ),
         const SizedBox(height: 20,),
-        ElevatedButton(onPressed: onPressed, child: const Text('Спробувати ще раз')),
+        buttonTrue ?ElevatedButton(onPressed: onPressed, child: const Text('Спробувати ще раз')):const SizedBox(),
         const Spacer(),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(errorDescription, textAlign: TextAlign.center,style: TextStyle(color: Colors.grey),),
+          child: Text(errorDescription, textAlign: TextAlign.center,style: const TextStyle(color: Colors.grey),),
         )
       ],
     );

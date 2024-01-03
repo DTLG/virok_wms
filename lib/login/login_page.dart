@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/login/cubit/login_cubit.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 
-import '../home_page/cubit/home_page_cubit.dart';
+import '../feature/home_page/cubit/home_page_cubit.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -20,7 +21,7 @@ class LoginPage extends StatelessWidget {
             context.read<HomePageCubit>().getActivButton();
             context.read<HomePageCubit>().checkTsdType();
 
-            Navigator.pushReplacementNamed(context, '/homePage');
+            Navigator.pushReplacementNamed(context, AppRoutes.homePage);
           }
           if (state.status.isUnknown) {
             Alerts(msg: 'Користувача не знайдено', context: context)

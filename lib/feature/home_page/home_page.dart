@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
                     child: SizedBox(
                       width: 50,
                       child: Text(
-                        '2.1.2',
+                        '2.1.3',
                         style: theme.textTheme.titleMedium!.copyWith(
                           fontSize: 12,
                             color: Colors.white, fontWeight: FontWeight.w500),

@@ -50,12 +50,9 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
   void initState() {
     context
         .read<ReturningInDataCubit>()
-        .getNom(widget.invoice, widget.nomBarcode, widget.nom.nomStatus);
-        nomStatus = widget.nom.nomStatus;
-    super.initState();
+        .getNom(widget.invoice, widget.nomBarcode);
+            super.initState();
   }
-
-  String nomStatus = '';
 
   @override
   Widget build(BuildContext context) {
@@ -147,17 +144,14 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 10
+                      ,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
+                    Column(
                           children: [
                             SizedBox(
                               width: 70,
-                              height: 50,
-                              child: TextField(
+                                                            child: TextField(
                                 controller: controller,
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.number,
@@ -168,61 +162,9 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                               height: 10,
                             ),
                             Text(
-                              'Кількість',
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ],
+                              'Введіть кількість',
+                              style: theme.textTheme.titleMedium,
                         ),
-                        Column(
-                          children: [
-                            PopupMenuButton(
-                              itemBuilder: (context) => [
-                                const PopupMenuItem(
-                                  value: 'Кондиція',
-                                  child: Text('Кондиція'),
-                                ),
-                                const PopupMenuItem(
-                                  value: 'Брак',
-                                  child: Text('Брак'),
-                                ),
-                                const PopupMenuItem(
-                                  value: 'Уцінка',
-                                  child: Text('Уцінка'),
-                                ),
-                              ],
-                              onSelected: (value) {
-                                setState(() {
-                                  nomStatus = value;
-                                });
-                              },
-                              offset: const Offset(1, -1),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(18.0))),
-                              child: Container(
-                                height: 50,
-                                width: 110,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: const Color.fromARGB(255, 100, 100, 100)),
-                                    borderRadius: BorderRadius.circular(18)),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 10,),
-                                    Text(nomStatus),
-                                    const Icon(Icons.arrow_drop_down_rounded)
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Статус',
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ],
-                        )
                       ],
                     )
                   ],
@@ -241,8 +183,8 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                             }
                           }
 
-                          context.read<ReturningInDataCubit>().send(barcode,
-                              widget.invoice, double.parse(controller.text), nomStatus);
+                          context.read<ReturningInDataCubit>().addNom(barcode,
+                              widget.invoice, double.parse(controller.text));
                           Navigator.pop(context);
                         }
                       },

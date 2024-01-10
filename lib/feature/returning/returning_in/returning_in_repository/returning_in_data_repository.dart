@@ -22,8 +22,7 @@ class ReturningInDataRepository {
                       Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
                   .toList(),
               qty: nom.qty ?? 0,
-              count: nom.count ?? 0,
-              nomStatus: nom.nomStatus ?? ''
+              count: nom.count ?? 0, nomStatus: '',
             ))
         .toList();
     return ReturningInNoms(
@@ -42,8 +41,7 @@ class ReturningInDataRepository {
           .map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
           .toList(),
       qty: nom.qty ?? 0,
-      count: nom.count ?? 0,
-      nomStatus: nom.nomStatus ?? ''
+      count: nom.count ?? 0, nomStatus: '',
     );
   }
 }

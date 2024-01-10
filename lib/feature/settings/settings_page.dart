@@ -212,26 +212,26 @@ class StorageOperationSettingsWidget extends StatelessWidget {
             title: const Text('Налаштування складських операцій'),
             shape: Border.all(color: Colors.transparent),
             children: [
-              ListTile(
-                title: const Text('Розміщення товарів'),
-                trailing: Switch(
-                    value: state.placementButton,
-                    onChanged: (value) async {
-                      context
-                          .read<SettingsCubit>()
-                          .writeToSP('placement_button', value);
-                    }),
-              ),
-              ListTile(
-                title: const Text('Списання товарів'),
-                trailing: Switch(
-                    value: state.writeOffButton,
-                    onChanged: (value) async {
-                      context
-                          .read<SettingsCubit>()
-                          .writeToSP('writing_off_button', value);
-                    }),
-              ),
+              // ListTile(
+                //   title: const Text('Розміщення товарів'),
+                //   trailing: Switch(
+                    //       value: state.placementButton,
+                    //       onChanged: (value) async {
+                      //         context
+                          //             .read<SettingsCubit>()
+                          //             .writeToSP('placement_button', value);
+                    //       }),
+              // ),
+              // ListTile(
+                //   title: const Text('Списання товарів'),
+                //   trailing: Switch(
+                    //       value: state.writeOffButton,
+                    //       onChanged: (value) async {
+                      //         context
+                          //             .read<SettingsCubit>()
+                          //             .writeToSP('writing_off_button', value);
+                    //       }),
+              // ),
               ListTile(
                 title: const Text('Генерація штрихкоду'),
                 trailing: Switch(

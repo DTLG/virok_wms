@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:virok_wms/route/route.dart';
-
 import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
@@ -110,39 +108,43 @@ class ReturningInDataView extends StatelessWidget {
               return GeneralButton(
                   lable: 'Завершити',
                   onPressed: () {
-                   
                     showDialog(
-                      context: context,
-                      builder: (_) => BlocProvider.value(value: context.read<ReturningInDataCubit>(),
-                      child: AlertDialog(
-                        content: const Text('Ви дійсно хочете завершити'),
-                        actions: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: GeneralButton(
-                                      lable: 'Так',
-                                      onPressed: () {
-                                        context
-                                            .read<ReturningInDataCubit>()
-                                            .closeOrder(state.noms.invoice);
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      })),
-                              Expanded(
-                                child: GeneralButton(
-                                    lable: 'ні',
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    }),
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                              value: context.read<ReturningInDataCubit>(),
+                              child: AlertDialog(
+                                content:
+                                    const Text('Ви дійсно хочете завершити'),
+                                actions: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: GeneralButton(
+                                              lable: 'Так',
+                                              onPressed: () {
+                                                context
+                                                    .read<
+                                                        ReturningInDataCubit>()
+                                                    .closeOrder(
+                                                        state.noms.invoice);
+                                                returningInHeadCubit
+                                                    .getOrders();
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              })),
+                                      Expanded(
+                                        child: GeneralButton(
+                                            lable: 'ні',
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }),
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                    );
-                     final int checkFullScan =
+                            ));
+                    final int checkFullScan =
                         context.read<ReturningInDataCubit>().checkFullOrder();
                     if (checkFullScan == 0) {
                       Alerts(
@@ -187,40 +189,40 @@ class AppBarButton extends StatelessWidget {
   }
 }
 
-showRequestToPlacementDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) => const RequestToPlacementDialog(),
-  );
-}
+// showRequestToPlacementDialog(BuildContext context) {
+  //   showDialog(
+    //     context: context,
+    //     builder: (context) => const RequestToPlacementDialog(),
+  //   );
+// }
 
-class RequestToPlacementDialog extends StatelessWidget {
-  const RequestToPlacementDialog({super.key});
+// class RequestToPlacementDialog extends StatelessWidget {
+  //   const RequestToPlacementDialog({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: const Text(
-        'Перейти до розміщення товарів',
-        textAlign: TextAlign.center,
-      ),
-      actions: [
-        ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Ні')),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
+  //   @override
+  //   Widget build(BuildContext context) {
+    //     return AlertDialog(
+      //       content: const Text(
+        //         'Перейти до розміщення товарів',
+        //         textAlign: TextAlign.center,
+      //       ),
+      //       actions: [
+        //         ElevatedButton(
+            //             onPressed: () {
+              //               Navigator.pop(context);
+            //             },
+            //             child: const Text('Ні')),
+        //         ElevatedButton(
+            //             onPressed: () {
+              //               Navigator.pop(context);
+              //               Navigator.pop(context);
+              //               Navigator.pop(context);
 
-              Navigator.pushNamed(context, AppRoutes.placementPage);
-            },
-            child: const Text('Так'))
-      ],
-      actionsAlignment: MainAxisAlignment.spaceAround,
-    );
-  }
-}
+              //               Navigator.pushNamed(context, AppRoutes.placementPage);
+            //             },
+            //             child: const Text('Так'))
+      //       ],
+      //       actionsAlignment: MainAxisAlignment.spaceAround,
+    //     );
+  //   }
+// }

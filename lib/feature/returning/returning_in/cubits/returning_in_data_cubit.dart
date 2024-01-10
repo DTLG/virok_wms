@@ -13,13 +13,13 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
   Future<void> getNoms(ReturningInOrder order) async {
     try {      await Future.delayed(const Duration(milliseconds: 500),(){});
 
-      
+      emit(state.copyWith(status: ReturningInDataStatus.loading));
 
       final orders = order.invoice == '0'
           ? await ReturningInDataRepository()
               .getNoms('StartInvoice', order.docId)
           : await ReturningInDataRepository()
-              .getNoms('Invoice_return_data', order.invoice);
+              .getNoms('Invoice_data', order.invoice);
       emit(state.copyWith(
           status: ReturningInDataStatus.success, noms: orders));
     } catch (e) {
@@ -32,10 +32,10 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
   }
 
 
-  Future<void> getNom(String invoice, String barcode, String nomStatus) async {
+  Future<void> getNom(String invoice, String barcode) async {
     try {
       final nom = await ReturningInDataRepository()
-          .getNom('Invoice_return_sku_data', '$invoice $barcode $nomStatus');
+          .getNom('Invoice_sku_data', '$invoice $barcode');
       emit(state.copyWith(
           status: ReturningInDataStatus.success, nom: nom));
     } catch (e) {
@@ -67,10 +67,41 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
   }
 
 
-    Future<void> send(String barcode, String invoice, double count, String nomStatus) async {
+    //   void scan1(String nomBar, ReturningInNom nom) {
+  //   double count = state.count == 0 ? nom.count : state.count;
+  //   String checkNomBar = '';
+
+  //   for (var barcode in nom.barcode) {
+  //     if (barcode.barcode == nomBar) {
+  //       if (count + barcode.ratio > nom.qty) {
+  //         emit(state.copyWith(
+  //             status: ReturningInDataStatus.notFound,
+  //             errorMassage: 'Відсканована більша кількість',
+  //             time: DateTime.now().millisecondsSinceEpoch));
+  //         checkNomBar = nomBar;
+  //       } else {
+  //         count += barcode.ratio;
+  //         emit(state.copyWith(
+  //             count: count,
+  //             nomBarcode: nomBar,
+  //             status: ReturningInDataStatus.success));
+  //         checkNomBar = nomBar;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   if (checkNomBar.isEmpty) {
+  //     emit(state.copyWith(
+  //         status: ReturningInDataStatus.notFound,
+  //         errorMassage: 'Товар не знайдено',
+  //         time: DateTime.now().millisecondsSinceEpoch));
+  //   }
+  // }
+
+    Future<void> addNom(String barcode, String invoice, double count) async {
     try {
       final noms = await ReturningInDataRepository()
-          .getNoms('Invoice_return_scan', '$barcode $count $invoice $nomStatus');
+          .getNoms('Invoice_scan', '$barcode $count $invoice');
       noms.errorMassage != "OK"
           ? emit(state.copyWith(
               errorMassage: noms.errorMassage,

@@ -2,7 +2,6 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:virok_wms/ui/theme/theme.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import 'cubit/cel_generator_cubit.dart';
@@ -72,6 +71,7 @@ class CellGeneratorView extends StatelessWidget {
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                     ),
+
                     const SizedBox(
                       width: 5,
                     ),

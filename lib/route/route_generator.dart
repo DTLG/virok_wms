@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:virok_wms/feature/admission/admission_placement/ui/admission/admission_placement_page.dart';
 import 'package:virok_wms/feature/admission_placement/ui/placement_data_page.dart';
 import 'package:virok_wms/feature/admission_placement/ui/placement_head_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_data/ui/inventory_data_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_head/ui/inventory_head_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_page.dart';
 
@@ -127,6 +129,10 @@ class RouteGenerator {
 
       case AppRoutes.placementPage:
         return buildRoute(const AdmissingPlacementPage1(), settings: settings);
+          case AppRoutes.inventoryHeadPage:
+        return buildRoute(const InventoryHeadPage(), settings: settings);
+                  case AppRoutes.inventoryDataPage:
+        return buildRoute(const InventoryDataPage(), settings: settings);
       default:
         return buildRoute(const HomePage(), settings: settings);
     }

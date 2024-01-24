@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
@@ -57,6 +58,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return WillPopScope(
       onWillPop: () async {
         await context.read<MovingGateOrderDataCubit>().clear();
@@ -89,7 +92,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                 TextField(
                   controller: nomController,
                   focusNode: nomFocusNode,
-                  autofocus: true,
+                  autofocus: cameraScaner ? false : true,
                   onSubmitted: (value) {
                     context
                         .read<MovingGateOrderDataCubit>()
@@ -98,8 +101,19 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     nomFocusNode.requestFocus();
                     setState(() {});
                   },
-                  decoration:
-                      const InputDecoration(hintText: 'Відскануйте товар'),
+                  decoration: InputDecoration(
+                      hintText: 'Відскануйте товар',
+                      suffixIcon: cameraScaner
+                          ? CameraScanerButton(
+                              scan: (value) {
+                                context
+                                    .read<MovingGateOrderDataCubit>()
+                                    .scan(value, state.nom);
+
+                                setState(() {});
+                              },
+                            )
+                          : null),
                 ),
                 const SizedBox(
                   height: 5,
@@ -117,14 +131,17 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     children: [
                       Text(
                         'Кількість в замовленні:',
-                        style: theme.textTheme.titleSmall!.copyWith(color:Colors.black),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
                       ),
                       Text(
                         state.nom == Nom.empty
                             ? widget.nom.qty.toStringAsFixed(0)
                             : state.nom.qty.toStringAsFixed(0),
                         style: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600,color:Colors.black),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
                       ),
                     ],
                   ),

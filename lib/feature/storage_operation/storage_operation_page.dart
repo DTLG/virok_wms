@@ -55,8 +55,8 @@ List<Widget> buildButtons(
     placement, writingOff, cell, basket, lablePrint, context) {
   List<Map<String, String>> a = [];
 
-  // if (placement) a.add({'name': 'РОЗМІЩЕННЯ ТОВАРІВ', 'path': 'placement'});
-  // if (writingOff) a.add({'name': 'СПИСАННЯ ТОВАРІВ', 'path': 'writing_off'});
+  if (placement) a.add({'name': 'РОЗМІЩЕННЯ ТОВАРІВ', 'path': 'placement'});
+  if (writingOff) a.add({'name': 'СПИСАННЯ ТОВАРІВ', 'path': 'writing_off'});
   if (cell) a.add({'name': 'КОМІРКА', 'path': 'cell'});
   if (basket) a.add({'name': 'КОШИК', 'path': 'basket'});
   if (lablePrint) a.add({'name': 'ДРУК ЕТИКЕТКИ КОМІРКИ', 'path': 'lable_print'});

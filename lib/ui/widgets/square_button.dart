@@ -19,7 +19,7 @@ class SquareButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double textWith = lableWidth == 0
-        ? lable.length > 12
+        ? lable.length > 14
             ? 135
             : 200
         : lableWidth;
@@ -27,7 +27,7 @@ class SquareButton extends StatelessWidget {
     lable.length > 12 ? 135 : 200;
     final textStyle = GoogleFonts.oswald(
         color: Colors.white,
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w900,
         height: 1.1,
         shadows: [

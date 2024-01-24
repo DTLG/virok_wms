@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/recharging/recharge/cubit/recharge_cubit.dart';
 import 'package:virok_wms/feature/recharging/recharge/recharge_repository/models/recharge_noms.dart';
 import 'package:virok_wms/ui/ui.dart';
+import 'package:virok_wms/ui/widgets/camera_scaner_button.dart';
 import 'package:virok_wms/ui/widgets/color_container.dart';
 
 import '../../../../../ui/custom_keyboard/keyboard.dart';
@@ -30,6 +32,8 @@ class NomScanDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return WillPopScope(
       onWillPop: () async {
         await context.read<RechargeCubit>().clear();
@@ -76,13 +80,15 @@ class NomScanDialog extends StatelessWidget {
                     'Артикул:',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                   Text(
                     nom.article,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                 ],
               ),
@@ -99,13 +105,15 @@ class NomScanDialog extends StatelessWidget {
                     type == 1 ? 'Відібрати з:' : 'Розмістити в:',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                   Text(
                     type == 1 ? nom.nameCellFrom : nom.nameCellTo,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                 ],
               ),
@@ -116,6 +124,7 @@ class NomScanDialog extends StatelessWidget {
             CellInput(
               nom: nom,
               type: type,
+              cameraScaner: cameraScaner,
             ),
             const SizedBox(
               height: 5,
@@ -123,6 +132,7 @@ class NomScanDialog extends StatelessWidget {
             NomInput(
               nom: nom,
               type: type,
+              cameraScaner: cameraScaner,
             ),
             const SizedBox(
               height: 5,
@@ -137,11 +147,13 @@ class NomScanDialog extends StatelessWidget {
                 children: [
                   Text(
                     'Кількість до ${type == 1 ? 'відбирання' : 'розміщення'}:',
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                   Text(
                     nom.qty.toStringAsFixed(0),
-                    style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
                   ),
                 ],
               ),
@@ -165,7 +177,6 @@ class NomScanDialog extends StatelessWidget {
         actions: [
           Column(
             children: [
-             
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -188,10 +199,15 @@ class NomScanDialog extends StatelessWidget {
 }
 
 class CellInput extends StatefulWidget {
-  const CellInput({super.key, required this.nom, required this.type});
+  const CellInput(
+      {super.key,
+      required this.nom,
+      required this.type,
+      required this.cameraScaner});
 
   final RechargeNom nom;
   final int type;
+  final bool cameraScaner;
 
   @override
   State<CellInput> createState() => _CellInputState();
@@ -207,7 +223,7 @@ class _CellInputState extends State<CellInput> {
     return SizedBox(
       height: 45,
       child: TextField(
-        autofocus: true,
+        autofocus: widget.cameraScaner ? false : true,
         focusNode: focusNode,
         textInputAction: TextInputAction.next,
         textAlignVertical: TextAlignVertical.bottom,
@@ -221,17 +237,34 @@ class _CellInputState extends State<CellInput> {
             focusNode.requestFocus();
           }
         },
-        decoration: const InputDecoration(hintText: 'Відскануйте комірку'),
+        decoration: InputDecoration(
+            hintText: 'Відскануйте комірку',
+            suffixIcon: widget.cameraScaner
+                ? CameraScanerButton(
+                    scan: (value) {
+                      context.read<RechargeCubit>().scanCell(
+                          widget.type == 1
+                              ? widget.nom.codCellFrom
+                              : widget.nom.codCellTo,
+                          value);
+                    },
+                  )
+                : null),
       ),
     );
   }
 }
 
 class NomInput extends StatefulWidget {
-  const NomInput({super.key, required this.nom, required this.type});
+  const NomInput(
+      {super.key,
+      required this.nom,
+      required this.type,
+      required this.cameraScaner});
 
   final RechargeNom nom;
   final int type;
+  final bool cameraScaner;
 
   @override
   State<NomInput> createState() => _NomInputState();
@@ -259,7 +292,21 @@ class _NomInputState extends State<NomInput> {
           controller.clear();
           focusNode.requestFocus();
         },
-        decoration: const InputDecoration(hintText: 'Відскануйте товар'),
+        decoration: InputDecoration(
+            hintText: 'Відскануйте товар',
+            suffixIcon: widget.cameraScaner
+                ? CameraScanerButton(
+                    scan: (value) {
+                      widget.type == 1
+                          ? context
+                              .read<RechargeCubit>()
+                              .scanNomWritingOff(value, widget.nom)
+                          : context
+                              .read<RechargeCubit>()
+                              .scanNomPlacement(value, widget.nom);
+                    },
+                  )
+                : null),
       ),
     );
   }
@@ -267,7 +314,10 @@ class _NomInputState extends State<NomInput> {
 
 class InputCountAlert extends StatefulWidget {
   const InputCountAlert(
-      {super.key, required this.onChanged, required this.nom, required this.type});
+      {super.key,
+      required this.onChanged,
+      required this.nom,
+      required this.type});
 
   final ValueChanged<String>? onChanged;
   final RechargeNom nom;
@@ -327,11 +377,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
             ElevatedButton(
                 onPressed: () {
                   context.read<RechargeCubit>().manualCountIncrement(
-                        controller.text,
-                        widget.type,
-                        widget.nom
-                        
-                      );
+                      controller.text, widget.type, widget.nom);
                   Navigator.pop(context);
                 },
                 child: const Text(
@@ -350,11 +396,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
   }
 }
 
-void showCountAlert(
-  BuildContext context,
-  RechargeNom nom,
-  int type
-) {
+void showCountAlert(BuildContext context, RechargeNom nom, int type) {
   showDialog(
       barrierColor: const Color.fromARGB(149, 0, 0, 0),
       context: context,
@@ -435,4 +477,3 @@ class SendButton extends StatelessWidget {
         ));
   }
 }
-

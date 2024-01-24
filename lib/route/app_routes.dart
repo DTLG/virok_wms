@@ -11,13 +11,11 @@ class AppRoutes {
   static const movingOutHeadPage = '/moving_out_head_page';
   static const movingOutDataPage = '/moving_out_data_page';
 
-    static const movingGateHeadPage = '/moving_gate_head_page';
+  static const movingGateHeadPage = '/moving_gate_head_page';
   static const movingGateDataPage = '/moving_gate_data_page';
 
   static const movingInHeadPage = '/moving_in_head_page';
   static const movingInDataPage = '/moving_in_data_page';
-
-
 
   static const returningPage = '/returning_page';
   static const returningOutHeadPage = '/returning_out_head_page';
@@ -33,8 +31,7 @@ class AppRoutes {
   static const displacementOrderHeadPage = '/displacement_order_head_page';
   static const displacementorderDataPage = '/displacement_order_data_page';
   static const admissionPlacementPage = '/admission_placement_page';
-  static const admissionOlacementOrderHeadPage = '/admissionOlacementOrderHeadPage';
-
+  static const admissionOlacementOrderHeadPage ='/admissionOlacementOrderHeadPage';
   static const barcodeGeneration = '/barcode_generation';
   static const checkCell = '/check_cell';
   static const barcodeLablePrint = '/barcode_Lable_print';
@@ -43,8 +40,10 @@ class AppRoutes {
   static const checkNomListPage = '/check_nom_list_page';
   static const checkNomPage = '/check_nom_page';
   static const settings = '/settings';
-    static const placementPage = '/placement_page';
-
+  static const placementPage = '/placement_page';
+  
+  static const inventoryHeadPage = '/inventory_head_page';
+  static const inventoryDataPage = '/inventory_data_page';
 
 
 }

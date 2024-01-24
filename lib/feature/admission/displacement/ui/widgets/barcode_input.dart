@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/noms_model.dart';
 import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
 import 'package:virok_wms/feature/admission/displacement/ui/widgets/dialog/count_input.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/ui/widgets/camera_scaner_button.dart';
 
 import '../../cubits/displacement_order_data_cubit.dart';
 
@@ -21,31 +23,42 @@ class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
   final focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return SizedBox(
       height: 50,
       child: TextField(
-        autofocus: true,
+        autofocus: cameraScaner ? false : true,
         controller: controller,
         focusNode: focusNode,
         textAlignVertical: TextAlignVertical.bottom,
         onSubmitted: (value) {
-          final String invoice =
-              context.read<DisplacementOrderDataCubit>().state.noms.invoice;
           if (controller.text.isNotEmpty) {
-            context.read<DisplacementOrderDataCubit>().getNoms(widget.order);
-            final DisplacementNom nom =
-                context.read<DisplacementOrderDataCubit>().scan(value);
-            if (nom != DisplacementNom.empty) {
-              showManualCountIncrementAlert(
-                  context, nom.barcode.first.barcode, invoice, nom);
-            }
-
+            onSubmited(value);
             controller.clear();
           }
           focusNode.requestFocus();
         },
-        decoration: const InputDecoration(hintText: 'Відскануйте штрихкод'),
+        decoration: InputDecoration(
+            hintText: 'Відскануйте штрихкод',
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(scan: (value) {
+                    onSubmited(value);
+                  })
+                : null),
       ),
     );
+  }
+
+  onSubmited(String value) {
+    final String invoice =
+        context.read<DisplacementOrderDataCubit>().state.noms.invoice;
+    context.read<DisplacementOrderDataCubit>().getNoms(widget.order);
+    final DisplacementNom nom =
+        context.read<DisplacementOrderDataCubit>().scan(value);
+    if (nom != DisplacementNom.empty) {
+      showManualCountIncrementAlert(
+          context, nom.barcode.first.barcode, invoice, nom);
+    }
   }
 }

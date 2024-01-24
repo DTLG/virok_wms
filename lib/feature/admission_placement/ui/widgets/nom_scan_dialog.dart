@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/ui.dart';
 
 import '../../../../../ui/custom_keyboard/keyboard.dart';
@@ -34,7 +35,8 @@ class _NomScanDialogState extends State<NomScanDialog> {
   void initState() {
     context.read<PlacementCubit>().getNom(
         widget.nom.barcodes.isEmpty ? '' : widget.nom.barcodes.first.barcode,
-        widget.nom.incomingInvoice, widget.nom.taskNumber);
+        widget.nom.incomingInvoice,
+        widget.nom.taskNumber);
     super.initState();
   }
 
@@ -49,15 +51,13 @@ class _NomScanDialogState extends State<NomScanDialog> {
       child: AlertDialog(
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        icon:
-        
-        DialogHead(article: widget.nom.article, onPressed: () {
-                  context.read<PlacementCubit>().clear();
-                  Navigator.pop(context);
-                },),
-        
-        
-        
+        icon: DialogHead(
+          article: widget.nom.article,
+          onPressed: () {
+            context.read<PlacementCubit>().clear();
+            Navigator.pop(context);
+          },
+        ),
         content: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(
@@ -79,11 +79,13 @@ class _NomScanDialogState extends State<NomScanDialog> {
                 children: [
                   Text(
                     'Розмістити в:',
-                    style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     widget.nom.nameCell,
-                    style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: Colors.black),
                   ),
                 ],
               ),
@@ -116,14 +118,16 @@ class _NomScanDialogState extends State<NomScanDialog> {
                     children: [
                       Text(
                         'Кількість до розміщення:',
-                    style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
                       ),
                       Text(
                         (state.nom == AdmissionNom.empty
                                 ? widget.nom.qty
                                 : state.nom.qty)
                             .toStringAsFixed(0),
-                    style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
                       ),
                     ],
                   ),
@@ -202,10 +206,12 @@ class _CellInputState extends State<CellInput> {
     final cellValue =
         context.select((PlacementCubit cubit) => cubit.state.cell);
     controller.text == cellValue;
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return SizedBox(
       height: 45,
       child: TextField(
-        autofocus: true,
+        autofocus: cameraScaner ? false : true,
         focusNode: focusNode,
         textInputAction: TextInputAction.next,
         textAlignVertical: TextAlignVertical.bottom,
@@ -217,7 +223,15 @@ class _CellInputState extends State<CellInput> {
             focusNode.requestFocus();
           }
         },
-        decoration: const InputDecoration(hintText: 'Відскануйте комірку'),
+        decoration: InputDecoration(
+            hintText: 'Відскануйте комірку',
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(
+                    scan: (value) {
+                      context.read<PlacementCubit>().checkCell(value);
+                    },
+                  )
+                : null),
       ),
     );
   }
@@ -240,6 +254,8 @@ class _NomInputState extends State<NomInput> {
     final cellValue =
         context.select((PlacementCubit cubit) => cubit.state.cell);
     controller.text == cellValue;
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return SizedBox(
       height: 45,
       child: TextField(
@@ -251,7 +267,15 @@ class _NomInputState extends State<NomInput> {
           controller.clear();
           focusNode.requestFocus();
         },
-        decoration: const InputDecoration(hintText: 'Відскануйте товар'),
+        decoration: InputDecoration(
+            hintText: 'Відскануйте товар',
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(
+                    scan: (value) {
+                      context.read<PlacementCubit>().scan(value, widget.nom);
+                    },
+                  )
+                : null),
       ),
     );
   }
@@ -384,7 +408,7 @@ class ManualInputButton extends StatelessWidget {
                 showCountAlert(context, nom);
               }
             },
-            child: const Text('Ввести в ручну'));
+            child: const Text('Ввести вручну'));
       },
     );
   }
@@ -401,8 +425,8 @@ class SendButton extends StatelessWidget {
         onPressed: () {
           final state = context.read<PlacementCubit>().state;
           if (state.cell.isNotEmpty && state.nomBarcode.isNotEmpty) {
-            context.read<PlacementCubit>().send(
-                state.nomBarcode, state.cell, nom.incomingInvoice, nom.count, nom.taskNumber);
+            context.read<PlacementCubit>().send(state.nomBarcode, state.cell,
+                nom.incomingInvoice, nom.count, nom.taskNumber);
             Navigator.pop(context);
           } else if (state.cell.isEmpty) {
             Alerts(msg: 'Відскануйте комірку', context: context).showError();

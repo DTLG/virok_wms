@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
                     child: SizedBox(
                       width: 50,
                       child: Text(
-                        '2.1.3',
+                        '2.1.4',
                         style: theme.textTheme.titleMedium!.copyWith(
                           fontSize: 12,
                             color: Colors.white, fontWeight: FontWeight.w500),
@@ -293,6 +293,7 @@ List<Widget> buildButtons(
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
+  a.add({'name': 'ІНВЕНТАРИЗАЦІЯ', 'path': 'inventory'});
 
   List<Widget> buttons = [];
 
@@ -308,7 +309,7 @@ List<Widget> buildButtons(
       },
     ));
   }
-  buttons.add(SquareButton(
+   buttons.add(SquareButton(
     lable: 'НАЛАШТУВАННЯ',
     color: const Color.fromARGB(255, 96, 96, 96),
     imagePath: 'assets/image/settings.png',
@@ -316,6 +317,7 @@ List<Widget> buildButtons(
       showPinDialog(context);
     },
   ));
+
 
   return buttons;
 }
@@ -337,6 +339,8 @@ extension on String {
         return AppRoutes.rechargingMenuPage;
       case 'settings':
         return AppRoutes.settings;
+        case 'inventory':
+        return AppRoutes.inventoryHeadPage;
     }
   }
 }

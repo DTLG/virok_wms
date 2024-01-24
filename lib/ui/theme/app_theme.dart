@@ -3,7 +3,7 @@ import 'package:virok_wms/ui/ui.dart';
 
 abstract class AppTheme {
   static ThemeData light = ThemeData(
-    useMaterial3: false,
+      useMaterial3: false,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       inputDecorationTheme: inputDecorationTheme,
       appBarTheme: const AppBarTheme(
@@ -11,6 +11,7 @@ abstract class AppTheme {
       scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
       bottomSheetTheme:
           const BottomSheetThemeData(backgroundColor: Colors.white),
+      floatingActionButtonTheme: floatingActionButtonTheme,
       elevatedButtonTheme: elevatedButtonTheme,
       cardColor: AppColors.cardColorLight,
       extensions: const <ThemeExtension<dynamic>>[
@@ -23,8 +24,7 @@ abstract class AppTheme {
       ]);
 
   static ThemeData dark = ThemeData.dark(
-        useMaterial3: false,
-
+    useMaterial3: false,
   ).copyWith(
       visualDensity: VisualDensity.adaptivePlatformDensity,
       inputDecorationTheme: inputDecorationTheme.copyWith(
@@ -32,6 +32,7 @@ abstract class AppTheme {
       appBarTheme: const AppBarTheme(
         centerTitle: true,
       ),
+      floatingActionButtonTheme: floatingActionButtonTheme.copyWith(backgroundColor: AppColors.tableLightDarktheme),
       elevatedButtonTheme: elevatedButtonTheme,
       cardColor: AppColors.cardColorDark,
       textTheme: const TextTheme(
@@ -68,6 +69,9 @@ final elevatedButtonTheme = ElevatedButtonThemeData(
         borderRadius: BorderRadius.circular(25),
       ))),
 );
+
+final floatingActionButtonTheme =
+    FloatingActionButtonThemeData(backgroundColor: AppColors.darkRed);
 
 @immutable
 class MyColors extends ThemeExtension<MyColors> {

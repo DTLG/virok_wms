@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/ui.dart';
@@ -59,6 +60,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+        final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return WillPopScope(
       onWillPop: () async {
         await context.read<SelectionOrderDataCubit>().clear();
@@ -92,7 +95,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                   height: 45,
                   child: TextField(
                     textAlignVertical: TextAlignVertical.bottom,
-                    autofocus: true,
+              autofocus: cameraScaner ? false : true,
                     textInputAction: TextInputAction.next,
                     controller: cellController,
                     focusNode: cellFocusNode,
@@ -110,7 +113,20 @@ class _NomInputDialogState extends State<NomInputDialog> {
                       }
                     },
                     decoration:
-                        const InputDecoration(hintText: 'Відскануйте комірку'),
+                         InputDecoration(hintText: 'Відскануйте комірку',
+                         suffixIcon: cameraScaner
+                    ? CameraScanerButton(
+                        scan: (value) {
+                          context
+                          .read<SelectionOrderDataCubit>()
+                          .checkCell(
+                              cellController.text,
+                              state.nom.cells.isEmpty
+                                  ? widget.nom.cells
+                                  : state.nom.cells);
+                        },
+                      )
+                    : null),
                   ),
                 ),
                 const SizedBox(
@@ -131,7 +147,17 @@ class _NomInputDialogState extends State<NomInputDialog> {
                       setState(() {});
                     },
                     decoration:
-                        const InputDecoration(hintText: 'Відскануйте товар'),
+                         InputDecoration(hintText: 'Відскануйте товар',
+                          suffixIcon: cameraScaner
+                    ? CameraScanerButton(
+                        scan: (value) {
+                             context
+                          .read<SelectionOrderDataCubit>()
+                          .scan(value, state.nom);
+                        },
+                      )
+                    : null),
+                        
                   ),
                 ),
                 const SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
@@ -59,6 +60,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return WillPopScope(
       onWillPop: () async {
         await context.read<MovingOutOrderDataCubit>().clear();
@@ -67,15 +70,13 @@ class _NomInputDialogState extends State<NomInputDialog> {
       child: AlertDialog(
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        icon: DialogHead(article: widget.nom.article, onPressed: () {
-                  context.read<MovingOutOrderDataCubit>().clear();
-                  Navigator.pop(context);
-                },),
-        
-        
-        
-        
-       
+        icon: DialogHead(
+          article: widget.nom.article,
+          onPressed: () {
+            context.read<MovingOutOrderDataCubit>().clear();
+            Navigator.pop(context);
+          },
+        ),
         content: BlocBuilder<MovingOutOrderDataCubit, MovingOutOrderDataState>(
           builder: (context, state) {
             return SingleChildScrollView(
@@ -94,21 +95,38 @@ class _NomInputDialogState extends State<NomInputDialog> {
                   height: 45,
                   child: TextField(
                     textAlignVertical: TextAlignVertical.bottom,
-                    autofocus: true,
+                    autofocus: cameraScaner ? false : true,
                     textInputAction: TextInputAction.next,
                     controller: cellController,
                     focusNode: cellFocusNode,
                     onSubmitted: (value) {
                       final bool res = context
                           .read<MovingOutOrderDataCubit>()
-                          .checkCell(cellController.text, state.nom.cells.isEmpty?widget.nom.cells:state.nom.cells);
+                          .checkCell(
+                              cellController.text,
+                              state.nom.cells.isEmpty
+                                  ? widget.nom.cells
+                                  : state.nom.cells);
                       if (res == false) {
                         cellController.clear();
                         cellFocusNode.requestFocus();
                       }
                     },
-                    decoration:
-                        const InputDecoration(hintText: 'Відскануйте комірку'),
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте комірку',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  context
+                                      .read<MovingOutOrderDataCubit>()
+                                      .checkCell(
+                                          cellController.text,
+                                          state.nom.cells.isEmpty
+                                              ? widget.nom.cells
+                                              : state.nom.cells);
+                                },
+                              )
+                            : null),
                   ),
                 ),
                 const SizedBox(
@@ -128,8 +146,19 @@ class _NomInputDialogState extends State<NomInputDialog> {
                       nomFocusNode.requestFocus();
                       setState(() {});
                     },
-                    decoration:
-                        const InputDecoration(hintText: 'Відскануйте товар'),
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте товар',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  context
+                                      .read<MovingOutOrderDataCubit>()
+                                      .scan(value, state.nom);
+
+                                  setState(() {});
+                                },
+                              )
+                            : null),
                   ),
                 ),
                 const SizedBox(
@@ -148,14 +177,17 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     children: [
                       Text(
                         'Кількість в замовленні:',
-                        style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
                       ),
                       Text(
-                        state.nom == Nom.empty?
-                widget.nom.qty.toStringAsFixed(0):
-                  state.nom.qty.toStringAsFixed(0),
+                        state.nom == Nom.empty
+                            ? widget.nom.qty.toStringAsFixed(0)
+                            : state.nom.qty.toStringAsFixed(0),
                         style: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600,color:Colors.black),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
                       ),
                     ],
                   ),
@@ -343,8 +375,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
               controller: controller,
               keyboardType: TextInputType.number,
               inputFormatters: [
-      FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*')),
-
+                FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*')),
               ],
               decoration: const InputDecoration(hintText: 'Введіть кількість'),
             ),
@@ -359,7 +390,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                 onPressed: () {
                   double inputCount = double.parse(controller.text);
                   if (controller.text.isNotEmpty) {
-                  if (inputCount < widget.count) {
+                    if (inputCount < widget.count) {
                       Alerts(
                               msg: 'Введена менаша кількість ніж  відскановано',
                               context: context)
@@ -369,11 +400,12 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                               msg:
                                   'Введена та сама кількість що й в замовленні',
                               context: context)
-                          .showError();}
-                    else {
-                      context
-                          .read<MovingOutOrderDataCubit>()
-                          .changeQty(double.parse(controller.text), widget.nom, widget.docId);
+                          .showError();
+                    } else {
+                      context.read<MovingOutOrderDataCubit>().changeQty(
+                          double.parse(controller.text),
+                          widget.nom,
+                          widget.docId);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     }
@@ -432,4 +464,3 @@ class CellListdialog extends StatelessWidget {
             )));
   }
 }
-

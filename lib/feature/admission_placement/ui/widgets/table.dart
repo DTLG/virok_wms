@@ -4,7 +4,6 @@ import 'package:virok_wms/feature/admission_placement/cubit/placement_cubit.dart
 import 'package:virok_wms/feature/admission_placement/placement_repository/model/admission_nom.dart';
 import 'package:virok_wms/feature/admission_placement/placement_repository/model/placement_order.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
-import 'package:virok_wms/ui/widgets/cell_name.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
@@ -12,19 +11,16 @@ import '../../../../ui/theme/theme.dart';
 import 'widgets.dart';
 
 class PlacementTable extends StatelessWidget {
-  const PlacementTable({
-    super.key,
-    required this.noms,
-    required this.order
-  });
+  const PlacementTable({super.key, required this.noms, required this.order});
 
   final List<AdmissionNom> noms;
   final PlacementOrder order;
 
   @override
   Widget build(BuildContext context) {
-        noms.sort((a, b) => a.nameCell.compareTo(b.nameCell));
-final theme = Theme.of(context);        final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+    noms.sort((a, b) => a.nameCell.compareTo(b.nameCell));
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
 
     return Expanded(
       child: ListView.builder(
@@ -32,59 +28,64 @@ final theme = Theme.of(context);        final MyColors myColors = Theme.of(conte
         itemCount: noms.length,
         itemBuilder: (context, index) {
           final nom = noms[index];
-          return 
-          TableElement(dataLenght: noms.length, rowElement: [
-          RowElement(
-            flex: 6,
-            value: nom.name,
-            textStyle: theme.textTheme.labelSmall?.copyWith(
-                letterSpacing: 0.5,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 9),
-          ),
-          RowElement(
-            flex: 4,
-            value: nom.article,
-            textStyle: theme.textTheme.labelMedium
-                ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
-          ),
-          CellName(
-            flex: 4,
-            value: nom.nameCell,
-          ),
-          RowElement(
-            flex: 2,
-            value: nom.qty.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),
-          RowElement(
-            flex: 2,
-            value: nom.count.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),
-        ], index: index, onTap: () {
- final barcode = noms[index].barcodes.isEmpty
+          return TableElement(
+            dataLenght: noms.length,
+            rowElement: [
+              RowElement(
+                flex: 6,
+                value: nom.name,
+                textStyle: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 0.5,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 9),
+              ),
+              RowElement(
+                flex: 4,
+                value: nom.article,
+                textStyle: theme.textTheme.labelMedium
+                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
+              ),
+              CellName(
+                flex: 4,
+                value: nom.nameCell,
+              ),
+              RowElement(
+                flex: 2,
+                value: nom.qty.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+              RowElement(
+                flex: 2,
+                value: nom.count.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+            ],
+            index: index,
+            onTap: () {
+              final barcode = noms[index].barcodes.isEmpty
                   ? ''
                   : noms[index].barcodes.first.barcode;
 
               if (barcode.isEmpty) {
-                Alerts(msg: 'Вибраному товару не присвоєний штрихкод', context: context).showError();
+                Alerts(
+                        msg: 'Вибраному товару не присвоєний штрихкод',
+                        context: context)
+                    .showError();
                 return;
               }
-
 
               if (noms[index].count < noms[index].qty) {
                 showPlacementNomScanDialog(context, noms[index]);
                 context.read<PlacementCubit>().getNoms(order.incomingInvoice);
               }
             },
-             color: nom.count == nom.qty
-              ? myColors.tableGreen
-           : index % 2 != 0
-                  ? myColors.tableDarkColor
-                  : myColors.tableLightColor,);
-          
-          
+            color: nom.count == nom.qty
+                ? myColors.tableGreen
+                : index % 2 != 0
+                    ? myColors.tableDarkColor
+                    : myColors.tableLightColor,
+          );
+
 //           InkWell(
 //             onTap: () {
 //  final barcode = noms[index].barcodes.isEmpty
@@ -95,7 +96,6 @@ final theme = Theme.of(context);        final MyColors myColors = Theme.of(conte
 //                 Alerts(msg: 'Вибраному товару не присвоєний штрихкод', context: context).showError();
 //                 return;
 //               }
-
 
 //               if (noms[index].count < noms[index].qty) {
 //                 showPlacementNomScanDialog(context, noms[index]);

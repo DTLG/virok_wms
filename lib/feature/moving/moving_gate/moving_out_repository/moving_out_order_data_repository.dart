@@ -9,7 +9,7 @@ class MovingGateOrderDataRepository {
 
   final MovingOutOrderDataClient _selectionApiClient;
 
-  Future<Noms> movingRepo (String query, String body) async {
+  Future<Noms> movingRepo(String query, String body) async {
     final listNom = await _selectionApiClient.movingApi(query, body);
 
     List<Nom> noms = listNom.noms
@@ -26,16 +26,21 @@ class MovingGateOrderDataRepository {
                 .toList(),
             nameCell: nom.nameCell ?? '',
             codeCell: nom.codeCell ?? '',
-            cells: (nom.cells ?? [CellDTO(codeCell: '', nameCell: '')]).map((e) =>  Cell(codeCell: e.codeCell ?? '', nameCell: e.nameCell ?? '')).toList(),
+            cells: (nom.cells ?? [CellDTO(codeCell: '', nameCell: '')])
+                .map((e) => Cell(
+                    codeCell: e.codeCell ?? '', nameCell: e.nameCell ?? ''))
+                .toList(),
             table: nom.table ?? '',
             docNumber: nom.docNumber ?? '',
             qty: nom.qty ?? 0,
             count: nom.count ?? 0,
-            isMyne: nom.itsMyne ?? 0))
+            isMyne: nom.itsMyne ?? 0,
+            taskNumber: nom.taskNumber ?? ''))
         .toList();
     return Noms(noms: noms, status: listNom.status ?? 1);
   }
-   Future<Nom> getNom(String query, String body) async {
+
+  Future<Nom> getNom(String query, String body) async {
     final nom = await _selectionApiClient.getNom(query, body);
 
     return Nom(
@@ -58,6 +63,7 @@ class MovingGateOrderDataRepository {
         docNumber: nom.docNumber ?? '',
         qty: nom.qty ?? 0,
         count: nom.count ?? 0,
-        isMyne: nom.itsMyne ?? 0);
+        isMyne: nom.itsMyne ?? 0,
+        taskNumber: nom.taskNumber ?? '');
   }
 }

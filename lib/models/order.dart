@@ -17,13 +17,20 @@ class Order extends Equatable {
   final String date;
   final List<Bascet> baskets;
   final int fullOrder;
+  final int importanceMark;
 
-  const Order({required this.docId, required this.date, required this.baskets, required this.fullOrder});
+  const Order(
+      {required this.docId,
+      required this.date,
+      required this.baskets,
+      required this.fullOrder,
+      required this.importanceMark});
 
   @override
   List<Object?> get props => [docId, date, baskets];
 
-  static const empty = Order(docId: '', date: '', baskets: [], fullOrder: 0);
+  static const empty =
+      Order(docId: '', date: '', baskets: [], fullOrder: 0, importanceMark: 0);
 }
 
 class Bascet extends Equatable {

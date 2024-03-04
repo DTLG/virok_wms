@@ -5,7 +5,6 @@ import 'package:virok_wms/feature/recharging/recharge/cubit/recharge_cubit.dart'
 import 'package:virok_wms/feature/recharging/recharge/recharge_repository/models/recharge_noms.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
-import 'package:virok_wms/ui/widgets/general_button.dart';
 
 import '../../../../../ui/widgets/widgets.dart';
 import 'nom_scan_dialog.dart';

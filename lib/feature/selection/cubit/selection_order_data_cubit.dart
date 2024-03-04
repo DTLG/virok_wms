@@ -13,15 +13,8 @@ part 'selection_order_data_state.dart';
 class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   SelectionOrderDataCubit() : super(SelectionOrderDataState());
 
-
-
-
-
-
   Future<void> getNoms(String docId) async {
     try {
-
-
       final orders = await SelectionOrderDataRepository()
           .selectionRepo('get_orders_data', docId);
       emit(state.copyWith(
@@ -39,12 +32,11 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     emit(state.copyWith(basket: busket));
   }
 
-  Future<void> getNom(
-      String docId, String nomBarcode, String cellBarcode) async {
+  Future<void> getNom(String docId, String nomBarcode, String cellBarcode,
+      String taskNumber) async {
     try {
-
-      final nom = await SelectionOrderDataRepository()
-          .getNom('get_order_sku_data', '$docId $nomBarcode $cellBarcode');
+      final nom = await SelectionOrderDataRepository().getNom(
+          'get_order_sku_data', '$docId $nomBarcode $taskNumber $cellBarcode');
       emit(state.copyWith(status: SelectionOrderDataStatus.success, nom: nom));
     } catch (e) {
       emit(state.copyWith(
@@ -54,11 +46,14 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   bool checkCell(String cellBarcode, List<Cell> cells) {
-    emit(state.copyWith(cellBarcode: ''));
+    emit(state.copyWith(
+        cellBarcode: '', status: SelectionOrderDataStatus.success));
 
     for (var cell in cells) {
       if (cellBarcode == cell.codeCell) {
-        emit(state.copyWith(cellBarcode: cellBarcode, status: SelectionOrderDataStatus.success));
+        emit(state.copyWith(
+            cellBarcode: cellBarcode,
+            status: SelectionOrderDataStatus.success));
         return true;
       }
     }
@@ -72,7 +67,6 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
 
   void scan(String nomBar, Nom nom) {
     double count = state.count == 0 ? nom.count : state.count;
-    String checkNomBar = '';
 
     for (var barcode in nom.barcode) {
       if (barcode.barcode == nomBar) {
@@ -81,25 +75,23 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
               status: SelectionOrderDataStatus.notFound,
               errorMassage: 'Відсканована більша кількість',
               time: DateTime.now().millisecondsSinceEpoch));
-          checkNomBar = nomBar;
-        } else {
-          count += barcode.ratio;
-          emit(state.copyWith(
-              barcode: barcode,
-              count: count,
-              nomBarcode: nomBar,
-              status: SelectionOrderDataStatus.success));
-          checkNomBar = nomBar;
-          break;
+          return;
         }
+
+        count += barcode.ratio;
+        emit(state.copyWith(
+            barcode: barcode,
+            count: count,
+            nomBarcode: nomBar,
+            status: SelectionOrderDataStatus.success));
+
+        return;
       }
     }
-    if (checkNomBar.isEmpty) {
-      emit(state.copyWith(
-          status: SelectionOrderDataStatus.notFound,
-          errorMassage: 'Відскановано не той товар',
-          time: DateTime.now().millisecondsSinceEpoch));
-    }
+    emit(state.copyWith(
+        status: SelectionOrderDataStatus.notFound,
+        errorMassage: 'Відскановано не той товар',
+        time: DateTime.now().millisecondsSinceEpoch));
   }
 
   void manualCountIncrement(String count, double qty, double nomCount) {
@@ -208,7 +200,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
             time: DateTime.now().millisecondsSinceEpoch));
         res = false;
       } else if (bascketStatus == '1') {
-        emit(state.copyWith(basketStatus: true, basket: barcode));
+        emit(state.copyWith(basketStatus: true, basket: barcode, status: SelectionOrderDataStatus.success));
         res = true;
         getNoms(docId);
       }

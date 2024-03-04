@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DialogHead extends StatelessWidget {
-  const DialogHead({super.key, required this.article, required this.onPressed});
+  const DialogHead({super.key, required this.title, required this.onPressed});
 
-  final String article;
+  final String title;
   final VoidCallback? onPressed;
 
   @override
@@ -15,11 +15,11 @@ class DialogHead extends StatelessWidget {
           width: 50,
         ),
         Text(
-          article,
+          title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-              fontSize: article.length.toSize, fontWeight: FontWeight.w500),
+              fontSize: title.length.toSize, fontWeight: FontWeight.w500),
         ),
         IconButton(onPressed: onPressed, icon: const Icon(Icons.close)),
       ],

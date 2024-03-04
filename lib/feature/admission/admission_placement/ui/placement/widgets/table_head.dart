@@ -37,12 +37,12 @@ class PlacementTableHead extends StatelessWidget {
             textStyle: theme.textTheme.labelMedium,
           ),
          
-          RowElement(
+          const RowElement(
             flex: 3,
             value: "Залишок",
             textStyle: TextStyle(fontSize: 10),
           ),
-          RowElement(
+          const RowElement(
             flex: 3,
             value: "Доступно",
             textStyle: TextStyle(fontSize: 10),

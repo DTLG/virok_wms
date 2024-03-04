@@ -3,7 +3,6 @@ import 'package:virok_wms/models/models.dart';
 import '../../../../models/barcode_model.dart';
 import '../api_client/bar_gen_api_client.dart';
 
-
 class BarcodeGenerationRepo {
   BarcodeGenerationRepo(
       {BarcodeGenerationApiCLient? barcodeGenerationApiCLient})
@@ -18,7 +17,10 @@ class BarcodeGenerationRepo {
         .map((nom) => Nom(
             name: nom.name ?? '',
             article: nom.article ?? '',
-            barcode: nom.barcodes.map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1)).toList(),
+            barcode: nom.barcodes
+                .map((e) =>
+                    Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+                .toList(),
             baskets: [],
             nameCell: '',
             codeCell: '',
@@ -27,7 +29,8 @@ class BarcodeGenerationRepo {
             isMyne: 0,
             table: '',
             qty: 0,
-            count: 0))
+            count: 0,
+            taskNumber: nom.taskNumber ?? ''))
         .toList();
     return Noms(noms: noms, status: nomsDTO.status ?? 0);
   }

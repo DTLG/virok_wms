@@ -13,12 +13,10 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
 
   Future<void> getOrders() async {
     try {
-            await Future.delayed(const Duration(seconds: 1),()async{ final orders =
+      final orders =
           await SelectionOrderHeadRepository().getOrders('get_orders_list', '');
       emit(state.copyWith(
-          status: SelectioOrdersHeadStatus.success, orders: orders));});
-
-     
+          status: SelectioOrdersHeadStatus.success, orders: orders));
     } catch (e) {
       emit(state.copyWith(
           status: SelectioOrdersHeadStatus.failure,
@@ -35,22 +33,22 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
       if (bascketStatus == '0') {
         emit(state.copyWith(
             status: SelectioOrdersHeadStatus.notFound,
-            errorMassage: "Кошик зайнятий"));
-        res = false;
-      } else if (bascketStatus == '2') {
+            errorMassage: "Кошик зайнятий",
+            time: DateTime.now().millisecondsSinceEpoch));
+        false;
+      }
+      if (bascketStatus == '2') {
         emit(state.copyWith(
-          status: SelectioOrdersHeadStatus.notFound,
-          errorMassage: "Кошик не знайдено",
-        ));
+            status: SelectioOrdersHeadStatus.notFound,
+            errorMassage: "Кошик не знайдено",
+            time: DateTime.now().millisecondsSinceEpoch));
         res = false;
       } else if (bascketStatus == '1') {
-        emit(state.copyWith(buskeStatus: true));
+        emit(state.copyWith(
+            buskeStatus: true, status: SelectioOrdersHeadStatus.success));
         res = true;
       }
-      emit(state.copyWith(
-        status: SelectioOrdersHeadStatus.success,
-        errorMassage: "",
-      ));
+
       return res;
     } catch (e) {
       emit(state.copyWith(status: SelectioOrdersHeadStatus.failure));

@@ -22,7 +22,7 @@ class DisplacementOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
@@ -55,7 +55,7 @@ class DisplacementOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
@@ -116,7 +116,7 @@ class DisplacementOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });

@@ -18,7 +18,11 @@ class HomePageCubit extends Cubit<HomePageState> {
     ));
   }
 
-
+  Future<void> getRefreshTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int refreshTime = prefs.getInt('refreshTime') ?? 10;
+    emit(state.copyWith(refreshTime: refreshTime));
+  }
 
   Future<void> getActivButton() async {
     final prefs = await SharedPreferences.getInstance();

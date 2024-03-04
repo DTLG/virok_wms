@@ -71,7 +71,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                 contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                 actionsPadding: const EdgeInsets.only(bottom: 5),
                 icon: DialogHead(
-                  article: widget.nom.article,
+                  title: widget.nom.article,
                   onPressed: () {
                     context.read<DisplacementOrderDataCubit>().clear();
                     Navigator.pop(context);

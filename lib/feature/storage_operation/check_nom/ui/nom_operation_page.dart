@@ -5,7 +5,6 @@ import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
 
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../check_nom_repo/models/barcodes_noms.dart';
@@ -20,8 +19,6 @@ class CheckNomPage extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final BarcodesNom nom = arguments['nom'] as BarcodesNom;
 
-  
-
     return BlocProvider(
       create: (context) => NomOperationsCubit(),
       child: CheckNomView(
@@ -32,8 +29,7 @@ class CheckNomPage extends StatelessWidget {
 }
 
 class CheckNomView extends StatelessWidget {
-  const CheckNomView(
-      {super.key, required this.nom});
+  const CheckNomView({super.key, required this.nom});
 
   final BarcodesNom nom;
 
@@ -74,8 +70,7 @@ class CheckNomView extends StatelessWidget {
             BlocConsumer<NomOperationsCubit, NomOperationsState>(
               listener: (context, state) {
                 if (state.status.isError) {
-                  Alerts(msg: state.errorMassage, context: context)
-                      .showError();
+                  Alerts(msg: state.errorMassage, context: context).showError();
                 }
               },
               buildWhen: (previous, current) =>
@@ -127,8 +122,7 @@ class BarcodesCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
       decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(20)),
+          color: theme.cardColor, borderRadius: BorderRadius.circular(20)),
       height: nom.barodes.length > 5
           ? 225
           : nom.barodes.isEmpty
@@ -220,8 +214,7 @@ class CellsCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(20)),
+          color: theme.cardColor, borderRadius: BorderRadius.circular(20)),
       height: nom.cells.length > 5
           ? 225
           : nom.cells.isEmpty
@@ -263,6 +256,15 @@ class CellsCard extends StatelessWidget {
                     height: 0,
                   ),
                 )),
+                const Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Загальна сума:', style: theme.textTheme.titleSmall),
+                    Text(nom.totalCount.toString(),
+                        style: theme.textTheme.titleSmall),
+                  ],
+                )
               ],
             )
           : Text(
@@ -613,7 +615,10 @@ class _PrintAlertState extends State<PrintAlert> {
                           controller.text.isEmpty ? '1' : controller.text);
 
                   if (count > 99) {
-                    Alerts(msg: 'Максемальне кількість друку 99', context: context).showError();
+                    Alerts(
+                            msg: 'Максемальне кількість друку 99',
+                            context: context)
+                        .showError();
                     return;
                   }
                   context

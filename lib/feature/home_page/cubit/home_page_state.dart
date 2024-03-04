@@ -15,30 +15,28 @@ extension HomePageStatusX on HomePageStatus {
 }
 
 final class HomePageState extends Equatable {
-  const HomePageState({
-    this.username = '',
-    this.status = HomePageStatus.initial,
-    this.selectionButton = false,
-    this.admissionButton = false,
-    this.movingButton = false,
-    this.returningButton = false,
-    this.rechargeButton = false,
-    this.itsMezonine = true,
-    this.cameraScaner = false
-  });
+  const HomePageState(
+      {this.username = '',
+      this.status = HomePageStatus.initial,
+      this.selectionButton = false,
+      this.admissionButton = false,
+      this.movingButton = false,
+      this.returningButton = false,
+      this.rechargeButton = false,
+      this.itsMezonine = true,
+      this.cameraScaner = false,
+      this.refreshTime = 10});
 
   final String username;
   final HomePageStatus status;
   final bool selectionButton;
   final bool admissionButton;
   final bool movingButton;
-    final bool returningButton;
-
+  final bool returningButton;
   final bool rechargeButton;
-
   final bool cameraScaner;
-
   final bool itsMezonine;
+  final int refreshTime;
 
   HomePageState copyWith(
       {String? username,
@@ -49,17 +47,19 @@ final class HomePageState extends Equatable {
       bool? returningButton,
       bool? rechargeButton,
       bool? itsMezonine,
-      bool? cameraScaner}) {
+      bool? cameraScaner,
+      int? refreshTime}) {
     return HomePageState(
         username: username ?? this.username,
         status: status ?? this.status,
         selectionButton: selectionButton ?? this.selectionButton,
         admissionButton: admissionButton ?? this.admissionButton,
         movingButton: movingButton ?? this.movingButton,
-        returningButton:returningButton ?? this.returningButton,
+        returningButton: returningButton ?? this.returningButton,
         rechargeButton: rechargeButton ?? this.rechargeButton,
         itsMezonine: itsMezonine ?? this.itsMezonine,
-        cameraScaner:  cameraScaner ?? this.cameraScaner);
+        cameraScaner: cameraScaner ?? this.cameraScaner,
+        refreshTime: refreshTime ?? this.refreshTime);
   }
 
   @override
@@ -72,6 +72,7 @@ final class HomePageState extends Equatable {
         returningButton,
         rechargeButton,
         itsMezonine,
-        cameraScaner
+        cameraScaner,
+        refreshTime
       ];
 }

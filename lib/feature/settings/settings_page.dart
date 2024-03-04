@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +46,8 @@ class SettingsView extends StatelessWidget {
                 TextButton(
                     onPressed: () {
                       context.read<HomePageCubit>().getActivButton();
+                      context.read<HomePageCubit>().getRefreshTime();
+
                       Navigator.pushNamedAndRemoveUntil(
                           context, AppRoutes.homePage, (route) => false);
                     },
@@ -66,7 +69,8 @@ class SettingsView extends StatelessWidget {
                     StorageOperationSettingsWidget(),
                     PrinterSettingsWidget(),
                     ThemeSettings(),
-                    CameraSettings()
+                    CameraSettings(),
+                    AutoRefreshTimeSettings()
                   ],
                 )),
           ),
@@ -213,24 +217,24 @@ class StorageOperationSettingsWidget extends StatelessWidget {
             shape: Border.all(color: Colors.transparent),
             children: [
               ListTile(
-                  title: const Text('Розміщення товарів'),
-                  trailing: Switch(
-                          value: state.placementButton,
-                          onChanged: (value) async {
-                              context
-                                      .read<SettingsCubit>()
-                                      .writeToSP('placement_button', value);
-                          }),
+                title: const Text('Розміщення товарів'),
+                trailing: Switch(
+                    value: state.placementButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('placement_button', value);
+                    }),
               ),
               ListTile(
-                  title: const Text('Списання товарів'),
-                  trailing: Switch(
-                          value: state.writeOffButton,
-                          onChanged: (value) async {
-                              context
-                                      .read<SettingsCubit>()
-                                      .writeToSP('writing_off_button', value);
-                          }),
+                title: const Text('Списання товарів'),
+                trailing: Switch(
+                    value: state.writeOffButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('writing_off_button', value);
+                    }),
               ),
               ListTile(
                 title: const Text('Генерація штрихкоду'),
@@ -457,13 +461,13 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-         final theme = AdaptiveTheme.of(context).mode;
+    final theme = AdaptiveTheme.of(context).mode;
 
     return Card(
       elevation: 3,
-      color: theme.isLight?
-      
-       const Color.fromARGB(255, 243, 243, 243):Color.fromARGB(255, 67, 67, 67),
+      color: theme.isLight
+          ? const Color.fromARGB(255, 243, 243, 243)
+          : const Color.fromARGB(255, 67, 67, 67),
       shape: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none),
       clipBehavior: Clip.antiAlias,
@@ -554,3 +558,77 @@ class CameraSettings extends StatelessWidget {
     );
   }
 }
+
+class AutoRefreshTimeSettings extends StatefulWidget {
+  const AutoRefreshTimeSettings({super.key});
+
+  @override
+  State<AutoRefreshTimeSettings> createState() =>
+      _AutoRefreshTimeSettingsState();
+}
+
+class _AutoRefreshTimeSettingsState extends State<AutoRefreshTimeSettings> {
+  void _showDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: true,
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return SettingsCard(
+          child: ListTile(
+              onTap: () {
+                _showDialog(
+                  CupertinoPicker(
+                    magnification: 1.22,
+                    squeeze: 1.2,
+                    useMagnifier: true,
+                    itemExtent: _kItemExtent,
+                    scrollController: FixedExtentScrollController(
+                      initialItem: _seconds.indexOf(state.autoRefreshTime),
+                    ),
+                    onSelectedItemChanged: (int selectedItem) {
+                      context
+                          .read<SettingsCubit>()
+                          .changeRefreshTime(_seconds[selectedItem]);
+                    },
+                    children:
+                        List<Widget>.generate(_seconds.length, (int index) {
+                      return Center(child: Text(_seconds[index].toString()));
+                    }),
+                  ),
+                );
+              },
+              title: const Text('Час авто оновлення'),
+              contentPadding: const EdgeInsets.only(left: 20),
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: BlocBuilder<SettingsCubit, SettingsState>(
+                  builder: (context, state) {
+                    return Text('${state.autoRefreshTime} сек.');
+                  },
+                ),
+              )),
+        );
+      },
+    );
+  }
+}
+
+const double _kItemExtent = 32.0;
+List<int> _seconds = List.generate(496, (index) => index + 5);

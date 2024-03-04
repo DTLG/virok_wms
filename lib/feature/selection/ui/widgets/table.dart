@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/ui.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
-import 'package:virok_wms/ui/widgets/row_element.dart';
 
-import '../../../../ui/widgets/widgets.dart';
 import 'dialog/nom_scan.dart';
 
 class CustomTable extends StatelessWidget {

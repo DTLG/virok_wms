@@ -3,9 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-import '../../../../../ui/custom_keyboard/keyboard.dart';
-import '../../../../../ui/widgets/alerts.dart';
-import '../../../../ui/widgets/widgets.dart';
 import '../../cubit/placement_cubit.dart';
 import '../../placement_repository/model/admission_nom.dart';
 
@@ -52,7 +49,7 @@ class _NomScanDialogState extends State<NomScanDialog> {
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         icon: DialogHead(
-          article: widget.nom.article,
+          title: widget.nom.article,
           onPressed: () {
             context.read<PlacementCubit>().clear();
             Navigator.pop(context);

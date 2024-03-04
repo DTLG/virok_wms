@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:virok_wms/ui/widgets/row_element.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 class ReturningInTableHead extends StatelessWidget {

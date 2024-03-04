@@ -5,7 +5,6 @@ import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../cubit/moving_gate_order_data_cubit.dart';
@@ -69,7 +68,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         icon: DialogHead(
-          article: widget.nom.article,
+          title: widget.nom.article,
           onPressed: () {
             context.read<MovingGateOrderDataCubit>().clear();
             Navigator.pop(context);

@@ -34,7 +34,8 @@ class NomDTO {
   @JsonKey(name: 'its_myne')
   final int? itsMyne;
   final List<BascketDTO>? baskets;
-
+  @JsonKey(name: 'task_number')
+  final String? taskNumber;
   final double? count;
 
   NomDTO(
@@ -49,11 +50,11 @@ class NomDTO {
       required this.qty,
       required this.count,
       required this.itsMyne,
-      required this.baskets});
+      required this.baskets,
+      required this.taskNumber});
 
   factory NomDTO.fromJson(Map<String, dynamic> json) => _$NomDTOFromJson(json);
 }
-
 
 @JsonSerializable()
 class BascketDTO {
@@ -67,11 +68,9 @@ class BascketDTO {
       _$BascketDTOFromJson(json);
 }
 
-
 @JsonSerializable()
 class CellDTO {
-    @JsonKey(name: "code_cell")
-
+  @JsonKey(name: "code_cell")
   final String? codeCell;
   @JsonKey(name: "name_cell")
   final String? nameCell;
@@ -81,4 +80,3 @@ class CellDTO {
   factory CellDTO.fromJson(Map<String, dynamic> json) =>
       _$CellDTOFromJson(json);
 }
-

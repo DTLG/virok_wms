@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/storage_operation/placement_writing_off/placement_writeing_off_repository/model/cell_model.dart';
 import 'package:virok_wms/route/app_routes.dart';
-import 'package:virok_wms/ui/theme/theme.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
 import 'package:virok_wms/ui/widgets/went_wrong.dart';
@@ -36,8 +35,7 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -48,18 +46,32 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
             onPressed: () {
               final count = context.read<PlacementGoodsCubit>().state.count;
               if (count > 0) {
-                showClosingCheck(
-                  context,
-                  AppColors.darkRed,
-                  "Ви дійсно хочете завершити дії",
-                  () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, AppRoutes.homePage, (route) => false);
-                  },
-                  () {
-                    Navigator.pop(context);
-                  },
+                showDialog(
+                  context: context,
+                  builder: (context) => ClosingCheckDialog(
+                    massage: "Ви дійсно хочете завершити дії",
+                    noButton: () {
+                      Navigator.pop(context);
+                    },
+                    yesButton: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, AppRoutes.homePage, (route) => false);
+                    },
+                  ),
                 );
+
+                // showClosingCheck(
+                //   context,
+                //   "Ви дійсно хочете завершити дії",
+                //   focusNode,
+                //   yesButton: () {
+                //     Navigator.pushNamedAndRemoveUntil(
+                //         context, AppRoutes.homePage, (route) => false);
+                //   },
+                //   noButton: () {
+                //     Navigator.pop(context);
+                //   },
+                // );
               } else {
                 Navigator.pop(context);
               }
@@ -173,7 +185,7 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
                                     ),
                                   );
                                 }
-                                if (state.status.isSuccess ) {
+                                if (state.status.isSuccess) {
                                   return const Column(
                                     children: [
                                       QuantityInfo(),
@@ -204,22 +216,28 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
                   GeneralButton(
                       lable: 'Розмістити',
                       onPressed: () {
-                        showClosingCheck(
-                          context,
-                          AppColors.darkRed,
-                          "Ви дійсно хочете розмістити товар",
-                          () {
-                            context.read<PlacementGoodsCubit>().sendNom(
-                                state.cellBarcode,
-                                state.nomBarcode,
-                                state.count.toString());
-                            focusNode.requestFocus();
-                            Navigator.pop(context);
-                          },
-                          () {
-                            Navigator.pop(context);
-                          },
-                        );
+                        showDialog(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                                  value: context.read<PlacementGoodsCubit>(),
+                                  child: ClosingCheckDialog(
+                                    massage:
+                                        "Ви дійсно хочете розмістити товар",
+                                    yesButton: () {
+                                      context
+                                          .read<PlacementGoodsCubit>()
+                                          .sendNom(
+                                              state.cellBarcode,
+                                              state.nomBarcode,
+                                              state.count.toString());
+                                      focusNode.requestFocus();
+                                      Navigator.pop(context);
+                                    },
+                                    noButton: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ));
                       })
                 ],
               );

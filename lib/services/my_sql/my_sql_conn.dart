@@ -14,7 +14,7 @@ class MySQLConn {
       user: user ,
       password: password,
       db: db,
-      timeout: Duration(seconds: 15)
+      timeout: const Duration(seconds: 15)
     );
     return await MySqlConnection.connect(settings);
   }

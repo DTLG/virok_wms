@@ -1,14 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_head_cubit.dart';
 import 'package:virok_wms/models/order.dart';
 import 'package:virok_wms/ui/theme/theme.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
-
-import '../../../ui/widgets/alerts.dart';
-import '../../../ui/widgets/row_element.dart';
 
 class SelectionOrdersHeadPage extends StatelessWidget {
   const SelectionOrdersHeadPage({super.key});
@@ -22,8 +22,17 @@ class SelectionOrdersHeadPage extends StatelessWidget {
   }
 }
 
-class SelectionOrdersHeadView extends StatelessWidget {
+class SelectionOrdersHeadView extends StatefulWidget {
   const SelectionOrdersHeadView({super.key});
+
+  @override
+  State<SelectionOrdersHeadView> createState() =>
+      _SelectionOrdersHeadViewState();
+}
+
+class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
+  late Timer _timer;
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +40,7 @@ class SelectionOrdersHeadView extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
+              _timer.cancel();
               Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
@@ -53,8 +63,15 @@ class SelectionOrdersHeadView extends StatelessWidget {
               builder: (context, state) {
                 if (state.status.isInitial) {
                   context.read<SelectionOrdersHeadCubit>().checkTsdType();
-
                   context.read<SelectionOrdersHeadCubit>().getOrders();
+                  final refreshTime =
+                      context.read<HomePageCubit>().state.refreshTime;
+
+                  _timer =
+                      Timer.periodic(Duration(seconds: refreshTime), (timer) {
+                    context.read<SelectionOrdersHeadCubit>().getOrders();
+                  });
+
                   return const Expanded(
                       child: Center(child: CircularProgressIndicator()));
                 }
@@ -88,7 +105,12 @@ class SelectionOrdersHeadView extends StatelessWidget {
           GeneralButton(
               lable: 'Оновити',
               onPressed: () {
+                if (isSelected) return;              
+                isSelected = true;
                 context.read<SelectionOrdersHeadCubit>().getOrders();
+                Timer(const Duration(seconds: 1), () {
+                  isSelected = false;
+                });
               })
         ],
       ),
@@ -107,7 +129,7 @@ class _CustomTable extends StatelessWidget {
         context.read<SelectionOrdersHeadCubit>().state.itsMezonine;
     final theme = Theme.of(context);
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
-    
+
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -128,6 +150,20 @@ class _CustomTable extends StatelessWidget {
                   flex: 4,
                   value: orders.orders[index].date,
                   textStyle: theme.textTheme.titleSmall),
+              orders.orders[index].importanceMark == 1
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        '!',
+                        style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w900,
+                            color: Color.fromARGB(255, 255, 6, 6)),
+                      ),
+                    )
+                  : const SizedBox(
+                      width: 29,
+                    ),
             ],
             index: index,
             onTap: () {
@@ -168,100 +204,11 @@ class _CustomTable extends StatelessWidget {
                     ? myColors.tableDarkColor
                     : myColors.tableLightColor,
           );
-
-          // InkWell(
-          //   onTap: () {
-          //     if (itsMezonine) {
-          //       if (orders.orders[index].baskets.isEmpty) {
-          //         showDialog(
-          //           context: context,
-          //           builder: (_) => BlocProvider.value(
-          //             value: context.read<SelectionOrdersHeadCubit>(),
-          //             child: SetBuscetDialog(
-          //               docId: orders.orders[index].docId,
-          //               itsMezonine: itsMezonine,
-          //             ),
-          //           ),
-          //         );
-          //       } else {
-          //         Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,
-          //             arguments: {
-          //               'docId': orders.orders[index].docId,
-          //               'cubit': context.read<SelectionOrdersHeadCubit>(),
-          //               'basket': orders.orders[index].baskets.first.bascet,
-          //                                     'itsMezonine': itsMezonine
-
-          //             });
-          //       }
-          //     } else {
-          //       Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,
-          //           arguments: {
-          //             'docId': orders.orders[index].docId,
-          //             'cubit': context.read<SelectionOrdersHeadCubit>(),
-          //             'basket': '',
-          //             'itsMezonine': itsMezonine
-          //           });
-          //     }
-          //   },
-          //   child: _CustomTableRow(
-          //     index: index,
-          //     lastIndex: orders.orders.length - 1,
-          //     order: orders.orders[index],
-          //   ),
-          // );
         },
       ),
     );
   }
 }
-
-// class _CustomTableRow extends StatelessWidget {
-//   const _CustomTableRow(
-//       {required this.index, required this.lastIndex, required this.order});
-//   final Order order;
-//   final int index;
-//   final int lastIndex;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     return
-
-//     Container(
-//       margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-//       height: 45,
-//       padding: const EdgeInsets.all(3),
-//       decoration: BoxDecoration(
-//           color: order.fullOrder != 0
-//               ? AppColors.tableGreen
-//               : index % 2 == 0
-//                   ? Colors.grey[200]
-//                   : Colors.white,
-//           border: const Border.symmetric(
-//               vertical: BorderSide(width: 1),
-//               horizontal: BorderSide(width: 0.5)),
-//           borderRadius: BorderRadius.only(
-//               bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-//               bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-//       child: Row(
-//         children: [
-//           RowElement(
-//               flex: 1,
-//               value: (index + 1).toString(),
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.docId,
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.date,
-//               textStyle: theme.textTheme.titleSmall),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class _TableHead extends StatelessWidget {
   const _TableHead();
@@ -285,36 +232,10 @@ class _TableHead extends StatelessWidget {
         value: "Дата",
         textStyle: theme.textTheme.titleSmall,
       ),
+      const SizedBox(
+        width: 29,
+      )
     ]);
-
-    // Container(
-    //   height: 45,
-    //   decoration: const BoxDecoration(
-    //       border: Border.symmetric(
-    //           vertical: BorderSide(width: 1),
-    //           horizontal: BorderSide(width: 0.5)),
-    //       borderRadius: BorderRadius.only(
-    //           topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-    //   child: Row(
-    //     children: [
-    //       RowElement(
-    //         flex: 1,
-    //         value: "№",
-    //         textStyle: theme.textTheme.titleSmall,
-    //       ),
-    //       RowElement(
-    //         flex: 4,
-    //         value: "№ документу",
-    //         textStyle: theme.textTheme.titleSmall,
-    //       ),
-    //       RowElement(
-    //         flex: 4,
-    //         value: "Дата",
-    //         textStyle: theme.textTheme.titleSmall,
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }
 

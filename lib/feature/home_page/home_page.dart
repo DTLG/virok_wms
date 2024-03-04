@@ -31,19 +31,19 @@ class HomePage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             leadingWidth: 120,
-            leading:
-             Align(
-                    alignment: const Alignment(-0.5, 0),
-                    child: SizedBox(
-                      width: 50,
-                      child: Text(
-                        '2.1.4',
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          fontSize: 12,
-                            color: Colors.white, fontWeight: FontWeight.w500),
-                      ),
-                    )),
-            
+            leading: Align(
+                alignment: const Alignment(-0.5, 0),
+                child: SizedBox(
+                  width: 50,
+                  child: Text(
+                    '2.1.8',
+                    style: theme.textTheme.titleMedium!.copyWith(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
+                  ),
+                )),
+
             //  Row(
             //   mainAxisSize: MainAxisSize.min,
             //   children: [
@@ -91,6 +91,7 @@ class HomePage extends StatelessWidget {
                     context.read<HomePageCubit>().getUser();
                     context.read<HomePageCubit>().checkTsdType();
                     context.read<HomePageCubit>().getActivButton();
+                    context.read<HomePageCubit>().getRefreshTime();
                   }
 
                   return InkWell(
@@ -151,7 +152,6 @@ class _PinDialogState extends State<PinDialog> {
       height: 56,
       textStyle: const TextStyle(
         fontSize: 22,
-  
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(19),
@@ -208,7 +208,6 @@ class _PinDialogState extends State<PinDialog> {
                 ],
               ),
               focusedPinTheme: defaultPinTheme.copyWith(
-                
                 decoration: defaultPinTheme.decoration!.copyWith(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: focusedBorderColor),
@@ -309,7 +308,7 @@ List<Widget> buildButtons(
       },
     ));
   }
-   buttons.add(SquareButton(
+  buttons.add(SquareButton(
     lable: 'НАЛАШТУВАННЯ',
     color: const Color.fromARGB(255, 96, 96, 96),
     imagePath: 'assets/image/settings.png',
@@ -317,7 +316,6 @@ List<Widget> buildButtons(
       showPinDialog(context);
     },
   ));
-
 
   return buttons;
 }
@@ -339,8 +337,8 @@ extension on String {
         return AppRoutes.rechargingMenuPage;
       case 'settings':
         return AppRoutes.settings;
-        case 'inventory':
-        return AppRoutes.inventoryHeadPage;
+      case 'inventory':
+        return AppRoutes.inventoryPage;
     }
   }
 }

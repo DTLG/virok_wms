@@ -4,7 +4,6 @@ import 'package:virok_wms/feature/admission/admission_placement/cubit/admission_
 import 'package:virok_wms/feature/admission/admission_placement/placement_repository/model/admission_placement_nom.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 
 import '../../../../../../ui/widgets/widgets.dart';
 
@@ -51,7 +50,7 @@ class _NomScanDialogState extends State<NomScanDialog> {
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         icon:
         
-                 DialogHead(article: widget.nom.article, onPressed: () {
+                 DialogHead(title: widget.nom.article, onPressed: () {
                   context.read<AdmissionPlacementCubit>().clear();
                   Navigator.pop(context);
                 },)

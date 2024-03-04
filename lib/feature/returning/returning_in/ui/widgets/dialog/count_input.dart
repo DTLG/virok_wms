@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-import '../../../../../../ui/custom_keyboard/keyboard.dart';
-import '../../../../../../ui/widgets/widgets.dart';
+
 import '../../../cubits/returning_in_data_cubit.dart';
 import '../../../returning_in_repository/models/noms_model.dart';
 
@@ -74,7 +73,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                 contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                 actionsPadding: const EdgeInsets.only(bottom: 5),
                 icon: DialogHead(
-                  article: widget.nom.article,
+                  title: widget.nom.article,
                   onPressed: () {
                     context.read<ReturningInDataCubit>().clear();
                     Navigator.pop(context);

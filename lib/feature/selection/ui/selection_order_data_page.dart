@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:math' as math;
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/selection_order_head_cubit.dart';
 import 'ui.dart';
@@ -33,7 +34,7 @@ class SelectionOrderDataView extends StatelessWidget {
     final String basket = argument['basket'];
     final bool itsMezonine = argument['itsMezonine'];
     //----
-
+    bool isSelected = false;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -93,7 +94,7 @@ class SelectionOrderDataView extends StatelessWidget {
                             .read<SelectionOrderDataCubit>()
                             .writeBasket(basket);
                         context.read<SelectionOrderDataCubit>().getNoms(docId);
-                        return  const Expanded(
+                        return const Expanded(
                             child: Center(child: CircularProgressIndicator()));
                       }
                       if (state.status.isLoading) {
@@ -126,7 +127,8 @@ class SelectionOrderDataView extends StatelessWidget {
           GeneralButton(
               lable: 'Оновити',
               onPressed: () {
-                context.read<SelectionOrderDataCubit>().getNoms(docId);
+                  context.read<SelectionOrderDataCubit>().getNoms(docId);
+  
               })
         ],
       ),
@@ -167,7 +169,6 @@ class TableInfo extends StatelessWidget {
     return BlocBuilder<SelectionOrderDataCubit, SelectionOrderDataState>(
       buildWhen: (previous, current) => !current.status.isLoading,
       builder: (context, state) {
-        if (state.status.isSuccess) {
           return Card(
               color: const Color.fromARGB(255, 219, 219, 219),
               margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
@@ -190,13 +191,13 @@ class TableInfo extends StatelessWidget {
                       state.noms.noms.isNotEmpty
                           ? state.noms.noms.first.table
                           : '',
-                      style: theme.textTheme.titleLarge!.copyWith(color: Colors.black),
+                      style: theme.textTheme.titleLarge!
+                          .copyWith(color: Colors.black),
                     )
                   ],
                 ),
               ));
-        }
-        return const SizedBox();
+        
       },
     );
   }
@@ -213,7 +214,6 @@ class BascketInfo extends StatelessWidget {
     return BlocBuilder<SelectionOrderDataCubit, SelectionOrderDataState>(
       buildWhen: (previous, current) => !current.status.isLoading,
       builder: (context, state) {
-        if (state.status.isSuccess) {
           final baskets = state.noms.noms.isEmpty
               ? [Bascket.empty]
               : state.noms.noms.first.baskets;
@@ -243,7 +243,8 @@ class BascketInfo extends StatelessWidget {
                   color: const Color.fromARGB(255, 219, 219, 219),
                   margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
                   shape: OutlineInputBorder(
-                      borderSide: index == 0?const BorderSide(): BorderSide.none,
+                      borderSide:
+                          index == 0 ? const BorderSide() : BorderSide.none,
                       borderRadius: BorderRadius.circular(15)),
                   child: Padding(
                     padding:
@@ -260,7 +261,8 @@ class BascketInfo extends StatelessWidget {
                         ),
                         Text(
                           baskets[index].name,
-                          style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                          style: theme.textTheme.titleSmall!
+                              .copyWith(color: Colors.black),
                         ),
                       ],
                     ),
@@ -271,8 +273,7 @@ class BascketInfo extends StatelessWidget {
             ),
           );
         }
-        return const SizedBox();
-      },
+     
     );
   }
 }

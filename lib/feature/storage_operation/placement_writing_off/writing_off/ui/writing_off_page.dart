@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/ui/theme/theme.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import '../../../../../ui/widgets/widgets.dart';
 import '../../placement_writeing_off_repository/model/cell_model.dart';
 import '../../ui/widgets.dart';
@@ -34,8 +33,7 @@ class _WritingOffViewState extends State<WritingOffView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -47,18 +45,32 @@ class _WritingOffViewState extends State<WritingOffView> {
             onPressed: () {
               final count = context.read<WritingOffCubit>().state.count;
               if (count > 0) {
-                showClosingCheck(
-                  context,
-                  AppColors.darkBlue,
-                  'Ви дійсно хочете завершити дії',
-                  () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, AppRoutes.homePage, (route) => false);
-                  },
-                  () {
-                    Navigator.pop(context);
-                  },
+                showDialog(
+                  context: context,
+                  builder: (context) => ClosingCheckDialog(
+                    massage: "Ви дійсно хочете завершити дії",
+                    noButton: () {
+                      Navigator.pop(context);
+                    },
+                    yesButton: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, AppRoutes.homePage, (route) => false);
+                    },
+                  ),
                 );
+
+                // showClosingCheck(
+                //   context,
+                //   'Ви дійсно хочете завершити дії',
+                //   focusNode,
+                //   yesButton: () {
+                //     Navigator.pushNamedAndRemoveUntil(
+                //         context, AppRoutes.homePage, (route) => false);
+                //   },
+                //   noButton: () {
+                //     Navigator.pop(context);
+                //   },
+                // );
               } else {
                 Navigator.pop(context);
               }
@@ -73,7 +85,8 @@ class _WritingOffViewState extends State<WritingOffView> {
               padding: const EdgeInsets.all(7),
               child: ElevatedButton(
                 style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(AppColors.darkRed),
+                    backgroundColor:
+                        MaterialStatePropertyAll(AppColors.darkRed),
                     maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
                     padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
                 child: Text('Очистити',
@@ -185,23 +198,44 @@ class _WritingOffViewState extends State<WritingOffView> {
                   GeneralButton(
                     lable: 'Списати',
                     onPressed: () {
-                      showClosingCheck(
-                        context,
-                        AppColors.darkBlue,
-                        "Ви дійсно хочете списати товар",
-                        () {
-                          context.read<WritingOffCubit>().sendNom(
-                              state.cellBarcode,
-                              state.nomBarcode,
-                              state.count.toString());
-    
-                          focusNode.requestFocus();
-                          Navigator.pop(context);
-                        },
-                        () {
-                          Navigator.pop(context);
-                        },
+                      showDialog(
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<WritingOffCubit>(),
+                          child: ClosingCheckDialog(
+                            massage: "Ви дійсно хочете списати товар",
+                            yesButton: () {
+                              context.read<WritingOffCubit>().sendNom(
+                                  state.cellBarcode,
+                                  state.nomBarcode,
+                                  state.count.toString());
+
+                              focusNode.requestFocus();
+                              Navigator.pop(context);
+                            },
+                            noButton: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
                       );
+                      // showClosingCheck(
+                      //   context,
+                      //   "Ви дійсно хочете списати товар",
+                      //   focusNode,
+                      // yesButton: () {
+                      //   context.read<WritingOffCubit>().sendNom(
+                      //       state.cellBarcode,
+                      //       state.nomBarcode,
+                      //       state.count.toString());
+
+                      //   focusNode.requestFocus();
+                      //   Navigator.pop(context);
+                      // },
+                      // noButton: () {
+                      //   Navigator.pop(context);
+                      // },
+                      // );
                     },
                     color: AppColors.darkBlue,
                   )
@@ -270,7 +304,7 @@ class ArticleInfo extends StatelessWidget {
         rowName('Артикул:'),
         BlocBuilder<WritingOffCubit, WritingOffState>(
           builder: (context, state) {
-            return rowValue( state.article);
+            return rowValue(state.article);
           },
         ),
       ],

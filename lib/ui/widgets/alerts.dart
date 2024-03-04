@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:flutter_beep/flutter_beep.dart';
+ import 'package:flutter_beep/flutter_beep.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
+import 'package:virok_wms/ui/widgets/general_button.dart';
 
 import '../../models/noms_model.dart';
 import '../custom_keyboard/keyboard.dart';
@@ -56,12 +57,13 @@ class Alerts {
         );
       },
     );
-    // FlutterBeep.beep(false);
+    FlutterBeep.beep(false);
   }
 }
 
 class InputCountAlert extends StatefulWidget {
-  const InputCountAlert({super.key, required this.onChanged, required this.nom});
+  const InputCountAlert(
+      {super.key, required this.onChanged, required this.nom});
 
   final ValueChanged<String>? onChanged;
   final Nom nom;
@@ -119,10 +121,9 @@ class _InputCountAlertState extends State<InputCountAlert> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  context
-                      .read<SelectionOrderDataCubit>()
-                      .manualCountIncrement(controller.text,widget.nom.qty, widget.nom.count);
-                      Navigator.pop(context);
+                  context.read<SelectionOrderDataCubit>().manualCountIncrement(
+                      controller.text, widget.nom.qty, widget.nom.count);
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Додати',
@@ -137,5 +138,74 @@ class _InputCountAlertState extends State<InputCountAlert> {
         )
       ],
     );
+  }
+}
+
+// void showClosingCheck(
+//   BuildContext context,
+//   String massage,
+//   FocusNode focusNode, {
+//   VoidCallback? yesButton,
+//   VoidCallback? noButton,
+// }) {
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         content: Text(
+//           massage,
+//           style: Theme.of(context).textTheme.titleLarge,
+//           textAlign: TextAlign.center,
+//         ),
+//         actionsAlignment: MainAxisAlignment.spaceAround,
+//         actions: [
+//           Row(
+//             children: [
+//               Expanded(
+//                   child: GeneralButton(onPressed: yesButton, lable: 'Так')),
+//               Expanded(child: GeneralButton(onPressed: noButton, lable: 'Ні')),
+//             ],
+//           )
+//         ],
+//         contentPadding: const EdgeInsets.all(10),
+//         actionsPadding: EdgeInsets.zero,
+//       );
+//     },
+//   );
+//   focusNode.requestFocus();
+// }
+
+class ClosingCheckDialog extends StatelessWidget {
+  const ClosingCheckDialog(
+      {super.key,
+      required this.massage,
+      required this.noButton,
+      required this.yesButton});
+
+  final String massage;
+  final VoidCallback yesButton;
+  final VoidCallback noButton;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Text(
+        massage,
+        style: Theme.of(context).textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ),
+      actionsAlignment: MainAxisAlignment.spaceAround,
+      actions: [
+        Row(
+          children: [
+            Expanded(child: GeneralButton(onPressed: yesButton, lable: 'Так')),
+            Expanded(child: GeneralButton(onPressed: noButton, lable: 'Ні')),
+          ],
+        )
+      ],
+      contentPadding: const EdgeInsets.all(10),
+      actionsPadding: EdgeInsets.zero,
+    );
+    
   }
 }

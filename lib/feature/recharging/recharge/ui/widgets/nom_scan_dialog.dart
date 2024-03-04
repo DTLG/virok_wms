@@ -4,11 +4,7 @@ import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/recharging/recharge/cubit/recharge_cubit.dart';
 import 'package:virok_wms/feature/recharging/recharge/recharge_repository/models/recharge_noms.dart';
 import 'package:virok_wms/ui/ui.dart';
-import 'package:virok_wms/ui/widgets/camera_scaner_button.dart';
-import 'package:virok_wms/ui/widgets/color_container.dart';
 
-import '../../../../../ui/custom_keyboard/keyboard.dart';
-import '../../../../../ui/widgets/alerts.dart';
 
 void nomScanDialog(BuildContext context, RechargeNom nom, int type) {
   showDialog(

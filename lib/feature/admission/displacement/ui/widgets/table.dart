@@ -3,9 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/admission/displacement/cubits/displacement_order_data_cubit.dart';
 import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
 import 'package:virok_wms/ui/ui.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
-import 'package:virok_wms/ui/widgets/row_element.dart';
-import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../displacement_repository/models/noms_model.dart';
 import 'dialog/count_input.dart';

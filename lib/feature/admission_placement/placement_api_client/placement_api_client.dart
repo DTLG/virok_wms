@@ -21,7 +21,7 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
@@ -53,7 +53,7 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
@@ -87,7 +87,7 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });
@@ -118,7 +118,7 @@ class PlacementApiClient {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });

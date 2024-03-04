@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:virok_wms/models/models.dart';
 
 part 'returning_in_nom_model_dto.g.dart';
 

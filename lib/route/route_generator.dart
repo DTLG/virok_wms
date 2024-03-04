@@ -2,31 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:virok_wms/feature/admission/admission_placement/ui/admission/admission_placement_page.dart';
 import 'package:virok_wms/feature/admission_placement/ui/placement_data_page.dart';
 import 'package:virok_wms/feature/admission_placement/ui/placement_head_page.dart';
-import 'package:virok_wms/feature/inventory/inventory_data/ui/inventory_data_page.dart';
-import 'package:virok_wms/feature/inventory/inventory_head/ui/inventory_head_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_by_cells/task_noms/ui/task_noms.dart';
+import 'package:virok_wms/feature/inventory/inventory_by_cells/tasks/ui/tasks_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_by_nom/task_nom/ui/task_cells.dart';
+import 'package:virok_wms/feature/inventory/inventory_by_nom/tasks/ui/tasks_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_data/ui/full_inventory_data_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_head/ui/full_inventory_head_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_nom_in_cell/tasks/ui/tasks_page.dart';
+import 'package:virok_wms/feature/inventory/inventory_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_page.dart';
-
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_head_page.dart';
-
 import 'package:virok_wms/feature/moving/moving_page.dart';
 import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_page.dart';
 import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
-import 'package:virok_wms/feature/returning/returning_in/ui/returning_in_head_page.dart';
+import 'package:virok_wms/feature/return/ui/return_data_page.dart';
+import 'package:virok_wms/feature/return/ui/return_head_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/home_page/home_page.dart';
-
 import 'package:virok_wms/feature/settings/settings_page.dart';
-import 'package:virok_wms/login/login_page.dart';
+import 'package:virok_wms/feature/login/login_page.dart';
+
 import '../feature/admission/admission_page.dart';
 import '../feature/admission/displacement/ui/diplacement_order_data_page.dart';
 import '../feature/admission/displacement/ui/displacement_order_head_page.dart';
-
 import '../feature/moving/moving_out/ui/moving_out_order_data_page.dart';
 import '../feature/moving/moving_out/ui/moving_out_order_head_page.dart';
 import '../feature/recharging/recharge/ui/recharge_page.dart';
-import '../feature/returning/returning_in/ui/returning_in_data_page.dart';
 import '../feature/returning/returning_out/ui/returning_out_order_data_page.dart';
 import '../feature/returning/returning_out/ui/returning_out_order_head_page.dart';
 import '../feature/returning/returning_page.dart';
@@ -85,16 +88,15 @@ class RouteGenerator {
         return buildRoute(const ReturningOutDataPage(), settings: settings);
 
       case AppRoutes.returningInHeadPage:
-        return buildRoute(const ReturningInHeadPage(), settings: settings);
+        return buildRoute(const ReturnHeadPage(), settings: settings);
       case AppRoutes.returningInDataPage:
-        return buildRoute(const ReturningInDataPage(), settings: settings);
-
+        return buildRoute(const ReturnDataPage(), settings: settings);
 
       case AppRoutes.rechargePage:
         return buildRoute(const RechargePage(), settings: settings);
-           case AppRoutes.rechargingMenuPage:
+      case AppRoutes.rechargingMenuPage:
         return buildRoute(const RechargingMenuPage(), settings: settings);
-             case AppRoutes.movingInCells:
+      case AppRoutes.movingInCells:
         return buildRoute(const MovingInCellsPage(), settings: settings);
 
       case AppRoutes.admissionPage:
@@ -106,7 +108,7 @@ class RouteGenerator {
         return buildRoute(const DiplacementOrderDataPage(), settings: settings);
 
       case AppRoutes.admissionOlacementOrderHeadPage:
-      return buildRoute(const PlacementOrdersHeadPage(), settings: settings);
+        return buildRoute(const PlacementOrdersHeadPage(), settings: settings);
 
       case AppRoutes.admissionPlacementPage:
         return buildRoute(const AdmissingPlacementPage(), settings: settings);
@@ -126,13 +128,33 @@ class RouteGenerator {
         return buildRoute(const CheckNomListPage(), settings: settings);
       case AppRoutes.checkNomPage:
         return buildRoute(const CheckNomPage(), settings: settings);
-
       case AppRoutes.placementPage:
         return buildRoute(const AdmissingPlacementPage1(), settings: settings);
-          case AppRoutes.inventoryHeadPage:
-        return buildRoute(const InventoryHeadPage(), settings: settings);
-                  case AppRoutes.inventoryDataPage:
-        return buildRoute(const InventoryDataPage(), settings: settings);
+
+      case AppRoutes.inventoryPage:
+        return buildRoute(const InventoryPage(), settings: settings);
+
+      case AppRoutes.fullInventoryHeadPage:
+        return buildRoute(const FullInventoryHeadPage(), settings: settings);
+      case AppRoutes.fullInventoryDataPage:
+        return buildRoute(const FullInventoryDataPage(), settings: settings);
+
+      case AppRoutes.inventoryByCellsTasksPage:
+        return buildRoute(const InventoryByCellsTasksPage(),
+            settings: settings);
+      case AppRoutes.inventoryByCellsTaskNomsPage:
+        return buildRoute(const InventoryByCellsTaskNomsPage(),
+            settings: settings);
+
+      case AppRoutes.inventoryByNomTasksPage:
+        return buildRoute(const InventoryByNomTasksPage(), settings: settings);
+
+      case AppRoutes.inventoryByNomTaskPage:
+        return buildRoute(const InventoryByNomTaskCellsPage(),
+            settings: settings);
+      case AppRoutes.inventoryNomInCellTasksPage:
+        return buildRoute(const InventoryNomInCellTasksPage(),
+            settings: settings);
       default:
         return buildRoute(const HomePage(), settings: settings);
     }

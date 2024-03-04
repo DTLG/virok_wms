@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:virok_wms/route/route.dart';
 
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/app_color.dart';
@@ -50,7 +49,7 @@ class MovingInDataView extends StatelessWidget {
               Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
-        actions: [AppBarButton()],
+        actions: const [AppBarButton()],
       ),
       body: RefreshIndicator(
         onRefresh: () async {

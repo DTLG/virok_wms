@@ -5,7 +5,6 @@ import 'package:virok_wms/feature/storage_operation/check_cell/cubit/check_cell_
 import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_repo/models/barcodes_noms.dart';
 import 'package:virok_wms/models/check_cell.dart';
 import 'package:virok_wms/route/app_routes.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
@@ -197,6 +196,7 @@ class CellInfo extends StatelessWidget {
                                             count: 1,
                                             ratio: e.ratio))
                                         .toList(),
+                                        totalCount: 0,
                                     cells: cells),
                               });
                         }

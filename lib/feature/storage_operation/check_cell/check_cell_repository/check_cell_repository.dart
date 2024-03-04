@@ -48,7 +48,8 @@ class CheckCellRepository {
                       codeCell: c.codeCell ?? '',
                       nameCell: c.nameCell ?? '',
                       count: c.count ?? 0))
-                  .toList()),
+                  .toList(),
+                  totalCount: 0),
         )
         .toList();
     return BarcodesNoms(noms: noms);

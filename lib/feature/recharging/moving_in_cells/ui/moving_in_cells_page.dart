@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/recharging/moving_in_cells/cubit/moving_in_cells_cubit.dart';
 import 'package:virok_wms/models/check_cell.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/custom_keyboard/keyboard.dart';
@@ -116,7 +115,6 @@ class Body extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView(
-        
         primary: false,
         children: [
           const SizedBox(
@@ -147,7 +145,7 @@ class Body extends StatelessWidget {
                   child: Column(
                     children: [
                       CeelInfo(
-                        cell: state.cellTake,
+                        cell: state.cellTakeName,
                       ),
                       QuantityInfo(
                           qty: state.nom.qty == 0
@@ -191,7 +189,7 @@ class _CellTakeInputState extends State<CellTakeInput> {
   @override
   Widget build(BuildContext context) {
     final state = context.select((MovingInCellsCubit cubit) => cubit.state);
-    controller.text = state.cellTake;
+     controller.text = state.cellTake;
     final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
     final status = state.status;
     if (cameraScaner != true) {
@@ -220,11 +218,10 @@ class _CellTakeInputState extends State<CellTakeInput> {
               suffixIcon: cameraScaner
                   ? CameraScanerButton(
                       scan: (value) async {
-                        final res = await context
+                     await context
                             .read<MovingInCellsCubit>()
                             .getCellTake(value);
-                        res ? controller : controller.clear();
-                        res ? () {} : focusNode.requestFocus();
+       
                       },
                     )
                   : null),

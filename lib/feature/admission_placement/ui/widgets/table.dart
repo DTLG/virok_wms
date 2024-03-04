@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/admission_placement/cubit/placement_cubit.dart';
 import 'package:virok_wms/feature/admission_placement/placement_repository/model/admission_nom.dart';
 import 'package:virok_wms/feature/admission_placement/placement_repository/model/placement_order.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
-import 'package:virok_wms/ui/widgets/row_element.dart';
+
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';

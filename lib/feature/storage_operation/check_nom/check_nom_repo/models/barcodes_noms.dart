@@ -16,18 +16,21 @@ class BarcodesNom extends Equatable {
   final String article;
   final List<Barcodee> barodes;
   final List<Cell> cells;
+  final int totalCount;
 
   const BarcodesNom(
       {required this.name,
       required this.article,
       required this.barodes,
-      required this.cells});
+      required this.cells,
+      required this.totalCount
+      });
 
   @override
   List<Object?> get props => [name, article, barodes];
 
   static const empty =
-      BarcodesNom(name: '', article: '', barodes: [], cells: []);
+      BarcodesNom(name: '', article: '', barodes: [], cells: [], totalCount: 0);
 }
 
 class Barcodee extends Equatable {

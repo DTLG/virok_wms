@@ -62,9 +62,11 @@ class RechargeView extends StatelessWidget {
                   }
                   if (state.status.isFailure) {
                     return Expanded(
-                      child: WentWrong(
-                        errorDescription: state.errorMassage,
-                        onPressed: () => Navigator.pop(context),
+                      child: Center(
+                        child: WentWrong(
+                          errorDescription: state.errorMassage,
+                          onPressed: () => Navigator.pop(context),
+                        ),
                       ),
                     );
                   }

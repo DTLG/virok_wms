@@ -4,7 +4,6 @@ import 'package:virok_wms/feature/admission/displacement/ui/widgets/table.dart';
 import 'package:virok_wms/feature/admission/displacement/ui/widgets/table_head.dart';
 import 'package:virok_wms/route/route.dart';
 
-import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/app_color.dart';

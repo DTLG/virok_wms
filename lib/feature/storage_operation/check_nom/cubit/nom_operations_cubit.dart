@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../services/printer/connect_printer.dart';
+import '../../../../services/printer/printer.dart';
 import '../check_nom_repo/check_nom_repo.dart';
 import '../check_nom_repo/models/barcodes_noms.dart';
 
@@ -51,8 +51,8 @@ class NomOperationsCubit extends Cubit<NomOperationsState> {
 
   Future<void> printLable(BarcodesNom nom, String barcode, int count) async {
     PrinterConnect().connectToPrinter(barcode.length == 14
-        ? lableEAN14(barcode, nom.article, nom.name, count)
-        : lableEAN13(barcode, nom.article, nom.name, count));
+        ?  PrinterLables.nomLableEAN14(barcode, nom.article, nom.name, count)
+        :  PrinterLables.nomLableEAN13 (barcode, nom.article, nom.name, count));
   }
 
   Future<void> getActivButton() async {
@@ -67,35 +67,3 @@ class NomOperationsCubit extends Cubit<NomOperationsState> {
   }
 }
 
-String lableEAN13(String barcode, String article, String name, int count) {
-  return '''
-SIZE 50 mm,30 mm
-GAP 3 mm, 0
-DIRECTION 1,0
-DENSITY 8
-CLS
-BLOCK 15,15,380,120,"2",0,1,1,1,1,"${name.replaceAll(RegExp('[\\"]'), '')}"
-TEXT 15,115,"4",0,1,1,1,"Арт:$article"
-BARCODE 200,160, "EAN13",60,2,0,2,2,2, "$barcode"
-PRINT $count
-
-''';
-}
-
-String lableEAN14(String barcode, String article, String name, int count) {
-  List<String> b = barcode.split('');
-  b.removeLast();
-  return '''
-SIZE 50 mm,30 mm
-GAP 3 mm, 0
-DIRECTION 1,0
-DENSITY 8
-CLS
-BLOCK 15,15,380,120,"2",0,1,1,1,1,"${name.replaceAll(RegExp('[\\"]'), '')}"
-TEXT 15,115,"4",0,1,1,1,"Арт:$article"
-BARCODE 200,150, "ITF14",70,2,0,2,5,2, "$barcode"
-"
-PRINT $count
-
-''';
-}

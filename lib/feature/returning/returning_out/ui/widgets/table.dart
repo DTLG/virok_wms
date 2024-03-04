@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/theme/theme.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
-import 'package:virok_wms/ui/widgets/row_element.dart';
+
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import 'dialog/nom_scan.dart';

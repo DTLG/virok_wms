@@ -26,12 +26,13 @@ class AppRoutes {
   static const rechargingMenuPage = '/recharging_menu_page';
   static const rechargePage = '/recharge_page';
   static const movingInCells = '/moving_in_cells';
-  
+
   static const admissionPage = '/admission_page';
   static const displacementOrderHeadPage = '/displacement_order_head_page';
   static const displacementorderDataPage = '/displacement_order_data_page';
   static const admissionPlacementPage = '/admission_placement_page';
-  static const admissionOlacementOrderHeadPage ='/admissionOlacementOrderHeadPage';
+  static const admissionOlacementOrderHeadPage =
+      '/admissionOlacementOrderHeadPage';
   static const barcodeGeneration = '/barcode_generation';
   static const checkCell = '/check_cell';
   static const barcodeLablePrint = '/barcode_Lable_print';
@@ -41,9 +42,17 @@ class AppRoutes {
   static const checkNomPage = '/check_nom_page';
   static const settings = '/settings';
   static const placementPage = '/placement_page';
-  
-  static const inventoryHeadPage = '/inventory_head_page';
-  static const inventoryDataPage = '/inventory_data_page';
 
+  static const inventoryPage = '/inventory_page';
 
+  static const inventoryByCellsTasksPage = '/inventory_by_cells_tasks_page';
+  static const inventoryByCellsTaskNomsPage = '/inventory_by_cells_noms_page';
+
+  static const inventoryByNomTasksPage = '/inventory_by_nom_tasks_page';
+  static const inventoryByNomTaskPage = '/inventory_by_nom_task_page';
+
+    static const inventoryNomInCellTasksPage = '/inventory_nom_in_cell_tasks_page';
+
+  static const fullInventoryHeadPage = '/full_inventory_head_page';
+  static const fullInventoryDataPage = '/full_inventory_data_page';
 }

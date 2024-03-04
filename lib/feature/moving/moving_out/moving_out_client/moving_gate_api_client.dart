@@ -22,7 +22,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -54,7 +54,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -87,7 +87,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -119,7 +119,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -153,7 +153,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -185,7 +185,7 @@ class MovingGateOrderDataClient {
 
     try {
 
-      final response = await http.post(Uri.parse(url), headers: {
+      final response = await client.post(Uri.parse(url), headers: {
         'Authorization': basicAuth,
         'Accept': 'application/json',
       });

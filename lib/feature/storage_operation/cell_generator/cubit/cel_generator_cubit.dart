@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:virok_wms/services/printer/connect_printer.dart';
 
+import '../../../../services/printer/printer.dart';
 
 part 'cel_generator_state.dart';
 
@@ -28,15 +28,44 @@ class CelLGeneratorCubit extends Cubit<CellGeneratorState> {
     emit(state.copyWith(cell: value.toStr));
   }
 
-  Future<void> printLable() async {
+  Future<void> printMezoninLable() async {
     final barcode =
         'M${state.floor}${state.range}${state.rack}${state.floorRack}${state.cell}';
-    final title = 'M${state.floor}-${state.range}-';
-    final subtitle = '${state.rack}-${state.floorRack}-${state.cell}';
+    final title = 'M${state.floor} ${state.range} ';
+    final subtitle = '${state.rack} ${state.floorRack} ${state.cell}';
+    final errowUp = state.floorRack == '04'?true:false;
 
-    PrinterConnect().connectToPrinter(lable(barcode, title, subtitle));
+    PrinterConnect().connectToPrinter(
+        PrinterLables.mezoninCellLable(barcode, title, subtitle, errowUp));
   }
+
+  Future<void> printPalletLable() async {
+    final barcode =
+        '${state.range}${state.rack}${state.floorRack}${state.cell}';
+    final title =
+        '${state.range} ${state.rack} ${state.floorRack} ${state.cell}';
+
+    PrinterConnect().connectToPrinter(PrinterLables.palletCellLable(
+      barcode,
+      title,
+    ));
+  }
+
+    Future<void> printServiceLable() async {
+    final barcode =
+        'S${state.floor}${state.range}${state.rack}${state.floorRack}${state.cell}';
+    final title = 'S${state.floor} ${state.range} ';
+    final subtitle = '${state.rack} ${state.floorRack} ${state.cell}';
+    final errowUp = state.floorRack == '04'?true:false;
+
+    PrinterConnect().connectToPrinter(
+        PrinterLables.serviceCellLable(barcode, title, subtitle, errowUp));
+  }
+
 }
+
+
+
 
 extension on int {
   String get toStr {
@@ -44,19 +73,3 @@ extension on int {
   }
 }
 
-String lable(String barcode, String title, String subTitle) {
-  return '''
-SIZE 100 mm,70 mm
-GAP 3 mm, 0
-DIRECTION 1,0
-DENSITY 8
-CLS
-QRCODE 83,80,M,15,A,0,M2, "$barcode"
-TEXT 80,430,"0",0,30,30,"$title"
-TEXT 360,420,"0",0,40,40,"$subTitle"
-
-
-PRINT 1
-
-''';
-}

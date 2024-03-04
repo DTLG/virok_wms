@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:virok_wms/ui/widgets/general_button.dart';
 import '../placement_writeing_off_repository/model/cell_model.dart';
 
 Widget rowName(String name) {
@@ -22,40 +21,6 @@ Widget rowValue(String value) {
   );
 }
 
-void showClosingCheck(BuildContext context, Color color, String massage,
-    VoidCallback? yesButton, VoidCallback? noButton) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        content: Text(
-          massage,
-          style: Theme.of(context).textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.spaceAround,
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                  child: GeneralButton(
-                      color: color, onPressed: yesButton, lable: 'Так')),
-              Expanded(
-                  child: GeneralButton(
-                      color: color,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      lable: 'Ні')),
-            ],
-          )
-        ],
-        contentPadding: const EdgeInsets.all(10),
-        actionsPadding: EdgeInsets.zero,
-      );
-    },
-  );
-}
 
 class CellInfoAlert extends StatelessWidget {
   const CellInfoAlert(

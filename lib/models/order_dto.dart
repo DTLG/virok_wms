@@ -9,7 +9,7 @@ class OrdersDTO {
   final int? status;
 
   OrdersDTO({required this.orders, required this.status});
-   factory OrdersDTO.fromJson(Map<String, dynamic> json) =>
+  factory OrdersDTO.fromJson(Map<String, dynamic> json) =>
       _$OrdersDTOFromJson(json);
 }
 
@@ -20,24 +20,28 @@ class OrderDTO {
   @JsonKey(name: 'date')
   final String? date;
   final List<BasketDTO> baskets;
-    @JsonKey(name: 'full_order')
-
+  @JsonKey(name: 'full_order')
   final int? fullOrdfer;
+  @JsonKey(name: 'importance_mark')
+  final int? importanceMark;
 
+  OrderDTO(
+      {required this.docId,
+      required this.date,
+      required this.baskets,
+      required this.fullOrdfer,
+      required this.importanceMark});
 
-  OrderDTO({required this.docId, required this.date, required this.baskets, required this.fullOrdfer});
-
-   factory OrderDTO.fromJson(Map<String, dynamic> json) =>
+  factory OrderDTO.fromJson(Map<String, dynamic> json) =>
       _$OrderDTOFromJson(json);
 }
 
 @JsonSerializable()
-class BasketDTO{
+class BasketDTO {
   final String? basket;
 
   BasketDTO({required this.basket});
 
-     factory BasketDTO.fromJson(Map<String, dynamic> json) =>
+  factory BasketDTO.fromJson(Map<String, dynamic> json) =>
       _$BasketDTOFromJson(json);
-  
 }

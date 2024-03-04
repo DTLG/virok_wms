@@ -33,10 +33,10 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
   }
 
   Future<void> getNom(
-      String docId, String nomBarcode, String cellBarcode) async {
+      String docId, String nomBarcode, String cellBarcode, String taskNumber) async {
     try {
       final nom = await MovingOutOrderDataRepository()
-          .getNom('get_order_sku_data', '$docId $nomBarcode $cellBarcode');
+          .getNom('get_order_sku_data', '$docId $nomBarcode $taskNumber $cellBarcode');
       emit(state.copyWith(status: MovingOutOrderDataStatus.success, nom: nom));
     } catch (e) {
       emit(state.copyWith(

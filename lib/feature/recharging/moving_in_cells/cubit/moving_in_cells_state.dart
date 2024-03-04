@@ -18,6 +18,8 @@ final class MovingInCellsState extends Equatable {
     this.errorMassage = '',
     this.cellPut = '',
     this.cellTake = '',
+        this.cellTakeName = '',
+
     this.count = 0,
     this.time = 0,
     this.isPlacement = false,
@@ -32,6 +34,8 @@ final class MovingInCellsState extends Equatable {
   final String errorMassage;
   final int count;
   final String cellTake;
+    final String cellTakeName;
+
   final String cellPut;
   final Nom nom;
   final bool isPlacement;
@@ -43,6 +47,8 @@ final class MovingInCellsState extends Equatable {
     int? time,
     int? count,
     String? cellTake,
+        String? cellTakeName,
+
     String? cellPut,
     Nom? nom,
     bool? isPlacement,
@@ -54,6 +60,8 @@ final class MovingInCellsState extends Equatable {
         errorMassage: errorMassage ?? this.errorMassage,
         count: count ?? this.count,
         cellTake: cellTake ?? this.cellTake,
+                cellTakeName: cellTakeName ?? this.cellTakeName,
+
         cellPut: cellPut ?? this.cellPut,
         nom: nom ?? this.nom,
         isPlacement: isPlacement ?? this.isPlacement
@@ -61,5 +69,5 @@ final class MovingInCellsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, cell, errorMassage, count, cellPut, cellTake, nom, isPlacement, time];
+  List<Object?> get props => [status, cell, errorMassage, count, cellPut, cellTake, nom, isPlacement, time,cellTakeName];
 }

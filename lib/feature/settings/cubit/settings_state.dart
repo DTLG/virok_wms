@@ -32,29 +32,32 @@ class SettingsState extends Equatable {
   final String errorCounterH;
   final String scanH;
   final String scan;
+  final int autoRefreshTime;
 
-  const SettingsState(
-      {this.status = SettingsStatus.initial,
-      this.dbPath = '',
-      this.generationButton = false,
-      this.printButton = false,
-      this.cellInfoButton = false,
-      this.basketInfoButton = false,
-      this.cellGeneratorButton = false,
-      this.placementButton = false,
-      this.writeOffButton = false,
-      this.selectionButton = false,
-      this.admissionButton = false,
-      this.movingButton = false,
-      this.rechargeButton = false,
-      this.returningButton = false,
-      this.printerHost = '',
-      this.printerPort = '',
-      this.cameraScaner = false,
-      this.errorCounter = '',
-      this.errorCounterH = '',
-      this.scan = '',
-      this.scanH = ''});
+  const SettingsState({
+    this.status = SettingsStatus.initial,
+    this.dbPath = '',
+    this.generationButton = false,
+    this.printButton = false,
+    this.cellInfoButton = false,
+    this.basketInfoButton = false,
+    this.cellGeneratorButton = false,
+    this.placementButton = false,
+    this.writeOffButton = false,
+    this.selectionButton = false,
+    this.admissionButton = false,
+    this.movingButton = false,
+    this.rechargeButton = false,
+    this.returningButton = false,
+    this.printerHost = '',
+    this.printerPort = '',
+    this.cameraScaner = false,
+    this.errorCounter = '',
+    this.errorCounterH = '',
+    this.scan = '',
+    this.scanH = '',
+    this.autoRefreshTime = 10,
+  });
 
   SettingsState copyWith(
       {SettingsStatus? status,
@@ -77,7 +80,8 @@ class SettingsState extends Equatable {
       String? errorCounter,
       String? errorCounterH,
       String? scan,
-      String? scanH}) {
+      String? scanH,
+      int? autoRefreshTime}) {
     return SettingsState(
         status: status ?? this.status,
         dbPath: dbPath ?? this.dbPath,
@@ -97,10 +101,10 @@ class SettingsState extends Equatable {
         printerPort: printerPort ?? this.printerPort,
         cameraScaner: cameraScaner ?? this.cameraScaner,
         errorCounter: errorCounter ?? this.errorCounter,
-                errorCounterH: errorCounterH ?? this.errorCounterH,
-
+        errorCounterH: errorCounterH ?? this.errorCounterH,
         scan: scan ?? this.scan,
-        scanH: scanH ?? this.scanH);
+        scanH: scanH ?? this.scanH,
+        autoRefreshTime: autoRefreshTime ?? this.autoRefreshTime);
   }
 
   @override
@@ -124,6 +128,8 @@ class SettingsState extends Equatable {
         cameraScaner,
         errorCounter,
         errorCounterH,
-        scan,scanH
+        scan,
+        scanH,
+        autoRefreshTime
       ];
 }

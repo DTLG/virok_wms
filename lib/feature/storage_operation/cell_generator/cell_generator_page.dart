@@ -6,6 +6,14 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import 'cubit/cel_generator_cubit.dart';
 
+enum WellScrollViewType { pallet, mezonin, service }
+
+extension PlacementStatusX on WellScrollViewType {
+  bool get isPalet => this == WellScrollViewType.pallet;
+  bool get isMezonin => this == WellScrollViewType.mezonin;
+  bool get isService => this == WellScrollViewType.service;
+}
+
 class CellGeneratorPage extends StatelessWidget {
   const CellGeneratorPage({super.key});
 
@@ -18,103 +26,157 @@ class CellGeneratorPage extends StatelessWidget {
   }
 }
 
-class CellGeneratorView extends StatelessWidget {
+class CellGeneratorView extends StatefulWidget {
   const CellGeneratorView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<CellGeneratorView> createState() => _CellGeneratorViewState();
+}
 
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Генератор комірок'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
+class _CellGeneratorViewState extends State<CellGeneratorView> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Генератор комірок'),
+              bottom: const TabBar(tabs: [
+                Tab(
+                  text: 'Палетний',
+                ),
+                Tab(
+                  text: 'Мезонін',
+                ),
+                Tab(
+                  text: 'Сервіс',
+                )
+              ]),
+            ),
+            body: const TabBarView(children: [
+              WellScrollView(
+                type: WellScrollViewType.pallet,
+              ),
+              WellScrollView(
+                type: WellScrollViewType.mezonin,
+              ),
+              WellScrollView(
+                type: WellScrollViewType.service,
+              ),
+            ])));
+  }
+}
+
+class WellScrollView extends StatelessWidget {
+  const WellScrollView({super.key, required this.type});
+
+  final WellScrollViewType type;
+
+  @override
+  Widget build(BuildContext context) {
+    final maxCount = type.isMezonin ? 40 : 20;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Row(
-                children: [
-                  SizedBox(
-                    width: 40,
-                  ),
-                  WhellScrollTitleWidget(
-                    title: 'Поверх',
-                  ),
-                  WhellScrollTitleWidget(
-                    title: 'Ряд',
-                  ),
-                  WhellScrollTitleWidget(
-                    title: 'Стелаж',
-                  ),
-                  WhellScrollTitleWidget(
-                    title: 'Поверх Стелажа',
-                  ),
-                  WhellScrollTitleWidget(
-                    title: 'Комірка',
-                  )
-                ],
+              SizedBox(
+                width: type.isMezonin || type.isService ? 30 : 0,
               ),
-              const SizedBox(
-                height: 10,
+              type.isMezonin || type.isService
+                  ? const WhellScrollTitleWidget(
+                      title: 'Поверх',
+                    )
+                  : const SizedBox(),
+              const WhellScrollTitleWidget(
+                title: 'Ряд',
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    const Text(
-                      "M",
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-                    ),
-
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    WellScrollWidget(
-                      maxValue: 5,
-                      onChanged: (value) =>
-                          context.read<CelLGeneratorCubit>().setFloor(value),
-                    ),
-                    WellScrollWidget(
-                      maxValue: 26,
-                      onChanged: (value) =>
-                          context.read<CelLGeneratorCubit>().setRange(value),
-                    ),
-                    WellScrollWidget(
-                      maxValue: 6,
-                      onChanged: (value) =>
-                          context.read<CelLGeneratorCubit>().setRack(value),
-                    ),
-                    WellScrollWidget(
-                      maxValue: 4,
-                      onChanged: (value) => context
-                          .read<CelLGeneratorCubit>()
-                          .setFloorRack(value),
-                    ),
-                    WellScrollWidget(
-                      maxValue: 10,
-                      onChanged: (value) =>
-                          context.read<CelLGeneratorCubit>().setCell(value),
-                    ),
-                  ],
-                ),
+              const WhellScrollTitleWidget(
+                title: 'Стелаж',
               ),
-              const SizedBox(
-                height: 30,
+              const WhellScrollTitleWidget(
+                title: 'Поверх Стелажа',
               ),
-              GeneralButton(
-                  lable: 'Друкувати',
-                  onPressed: () {
-                  context.read<CelLGeneratorCubit>().printLable();
-                  })
+              const WhellScrollTitleWidget(
+                title: 'Комірка',
+              )
             ],
           ),
-        ));
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                type.isMezonin
+                    ? const Text(
+                        "M",
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
+                      )
+                    : type.isService
+                        ? const Text(
+                            "S",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w500),
+                          )
+                        : const SizedBox(),
+                const SizedBox(
+                  width: 5,
+                ),
+                type.isMezonin || type.isService
+                    ? WellScrollWidget(
+                        maxValue: maxCount,
+                        onChanged: (value) =>
+                            context.read<CelLGeneratorCubit>().setFloor(value),
+                      )
+                    : const SizedBox(),
+                WellScrollWidget(
+                  maxValue: maxCount,
+                  onChanged: (value) =>
+                      context.read<CelLGeneratorCubit>().setRange(value),
+                ),
+                WellScrollWidget(
+                  maxValue: maxCount,
+                  onChanged: (value) =>
+                      context.read<CelLGeneratorCubit>().setRack(value),
+                ),
+                WellScrollWidget(
+                  maxValue: maxCount,
+                  onChanged: (value) =>
+                      context.read<CelLGeneratorCubit>().setFloorRack(value),
+                ),
+                WellScrollWidget(
+                  maxValue: maxCount,
+                  onChanged: (value) =>
+                      context.read<CelLGeneratorCubit>().setCell(value),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          GeneralButton(
+              lable: 'Друкувати',
+              onPressed: () {
+                type.isMezonin
+                    ? context.read<CelLGeneratorCubit>().printMezoninLable()
+                    : type.isService
+                        ? context.read<CelLGeneratorCubit>().printServiceLable()
+                        : context.read<CelLGeneratorCubit>().printPalletLable();
+              })
+        ],
+      ),
+    );
   }
 }
 
@@ -135,8 +197,9 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = AdaptiveTheme.of(context).mode;
-    final Color borderColor = theme.isLight?Colors.black:Colors.grey;
-    final Color selectedTextColor =  theme.isLight?Colors.black:const Color.fromARGB(255, 255, 255, 255);
+    final Color borderColor = theme.isLight ? Colors.black : Colors.grey;
+    final Color selectedTextColor =
+        theme.isLight ? Colors.black : const Color.fromARGB(255, 255, 255, 255);
 
     return NumberPicker(
       minValue: 1,
@@ -146,7 +209,7 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
       infiniteLoop: true,
       itemWidth: 58,
       itemHeight: 50,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(
               top: BorderSide(color: borderColor),
               bottom: BorderSide(color: borderColor))),
@@ -157,7 +220,7 @@ class _WellScrollWidgetState extends State<WellScrollWidget> {
         });
       },
       textStyle: const TextStyle(color: Colors.grey, fontSize: 20),
-      selectedTextStyle:  TextStyle(
+      selectedTextStyle: TextStyle(
           color: selectedTextColor, fontSize: 25, fontWeight: FontWeight.w500),
       textMapper: (numberText) {
         String res = '';

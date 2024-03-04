@@ -31,7 +31,8 @@ class MovingOutOrderDataRepository {
             docNumber: nom.docNumber ?? '',
             qty: nom.qty ?? 0,
             count: nom.count ?? 0,
-            isMyne: nom.itsMyne ?? 0))
+            isMyne: nom.itsMyne ?? 0,
+               taskNumber: nom.taskNumber ?? ''))
         .toList();
     return Noms(noms: noms, status: listNom.status ?? 1);
   }
@@ -58,6 +59,7 @@ class MovingOutOrderDataRepository {
         docNumber: nom.docNumber ?? '',
         qty: nom.qty ?? 0,
         count: nom.count ?? 0,
-        isMyne: nom.itsMyne ?? 0);
+        isMyne: nom.itsMyne ?? 0,
+           taskNumber: nom.taskNumber ?? '');
   }
 }

@@ -6,7 +6,6 @@ import 'package:virok_wms/feature/moving/moving_out/cubit/moving_out_order_head_
 import 'package:virok_wms/feature/moving/moving_out/ui/widgets/app_bar_button.dart';
 import 'package:virok_wms/feature/moving/moving_out/ui/widgets/table.dart';
 import 'package:virok_wms/models/noms_model.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 
 import '../../../../ui/widgets/widgets.dart';
 import 'dart:math' as math;

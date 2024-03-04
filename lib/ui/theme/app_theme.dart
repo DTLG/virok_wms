@@ -70,7 +70,7 @@ final elevatedButtonTheme = ElevatedButtonThemeData(
       ))),
 );
 
-final floatingActionButtonTheme =
+const floatingActionButtonTheme =
     FloatingActionButtonThemeData(backgroundColor: AppColors.darkRed);
 
 @immutable

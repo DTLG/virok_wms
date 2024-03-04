@@ -22,7 +22,7 @@ class TableElement extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
+        margin: EdgeInsets.only(bottom: lastIndex == index ? 5 : 0),
         height: 45,
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(

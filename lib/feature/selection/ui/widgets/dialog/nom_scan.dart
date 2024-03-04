@@ -4,10 +4,7 @@ import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/ui.dart';
-import 'package:virok_wms/ui/widgets/alerts.dart';
 
-import '../../../../../ui/custom_keyboard/keyboard.dart';
-import '../../../../../ui/widgets/widgets.dart';
 import 'count_input.dart';
 
 showNomInput(BuildContext context, String docId, String nomBarcode,
@@ -51,16 +48,15 @@ class _NomInputDialogState extends State<NomInputDialog> {
 
   @override
   void initState() {
-    context
-        .read<SelectionOrderDataCubit>()
-        .getNom(widget.docId, widget.nomBarcode, widget.cellBarcode);
+    context.read<SelectionOrderDataCubit>().getNom(widget.docId,
+        widget.nomBarcode, widget.cellBarcode, widget.nom.taskNumber);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-        final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
 
     return WillPopScope(
       onWillPop: () async {
@@ -71,7 +67,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         icon: DialogHead(
-          article: widget.nom.article,
+          title: widget.nom.article,
           onPressed: () {
             context.read<SelectionOrderDataCubit>().clear();
             Navigator.pop(context);
@@ -95,7 +91,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                   height: 45,
                   child: TextField(
                     textAlignVertical: TextAlignVertical.bottom,
-              autofocus: cameraScaner ? false : true,
+                    autofocus: cameraScaner ? false : true,
                     textInputAction: TextInputAction.next,
                     controller: cellController,
                     focusNode: cellFocusNode,
@@ -112,21 +108,18 @@ class _NomInputDialogState extends State<NomInputDialog> {
                         cellFocusNode.requestFocus();
                       }
                     },
-                    decoration:
-                         InputDecoration(hintText: 'Відскануйте комірку',
-                         suffixIcon: cameraScaner
-                    ? CameraScanerButton(
-                        scan: (value) {
-                          context
-                          .read<SelectionOrderDataCubit>()
-                          .checkCell(
-                              cellController.text,
-                              state.nom.cells.isEmpty
-                                  ? widget.nom.cells
-                                  : state.nom.cells);
-                        },
-                      )
-                    : null),
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте комірку',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  context
+                                      .read<SelectionOrderDataCubit>()
+                                      .checkCell(cellController.text,
+                                          widget.nom.cells);
+                                },
+                              )
+                            : null),
                   ),
                 ),
                 const SizedBox(
@@ -141,23 +134,22 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     onSubmitted: (value) {
                       context
                           .read<SelectionOrderDataCubit>()
-                          .scan(value, state.nom);
+                          .scan(value, widget.nom);
                       nomController.clear();
                       nomFocusNode.requestFocus();
                       setState(() {});
                     },
-                    decoration:
-                         InputDecoration(hintText: 'Відскануйте товар',
-                          suffixIcon: cameraScaner
-                    ? CameraScanerButton(
-                        scan: (value) {
-                             context
-                          .read<SelectionOrderDataCubit>()
-                          .scan(value, state.nom);
-                        },
-                      )
-                    : null),
-                        
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте товар',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  context
+                                      .read<SelectionOrderDataCubit>()
+                                      .scan(value, state.nom);
+                                },
+                              )
+                            : null),
                   ),
                 ),
                 const SizedBox(
@@ -176,14 +168,17 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     children: [
                       Text(
                         'Кількість в замовленні:',
-                        style: theme.textTheme.titleSmall!.copyWith(color: Colors.black),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
                       ),
                       Text(
                         state.nom == Nom.empty
                             ? widget.nom.qty.toStringAsFixed(0)
                             : state.nom.qty.toStringAsFixed(0),
                         style: const TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w600,color: Colors.black),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
                       ),
                     ],
                   ),

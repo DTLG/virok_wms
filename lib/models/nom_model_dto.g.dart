@@ -37,6 +37,7 @@ NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
       baskets: (json['baskets'] as List<dynamic>?)
           ?.map((e) => BascketDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      taskNumber: json['task_number'] as String?,
     );
 
 Map<String, dynamic> _$NomDTOToJson(NomDTO instance) => <String, dynamic>{
@@ -51,6 +52,7 @@ Map<String, dynamic> _$NomDTOToJson(NomDTO instance) => <String, dynamic>{
       'table': instance.table,
       'its_myne': instance.itsMyne,
       'baskets': instance.baskets,
+      'task_number': instance.taskNumber,
       'count': instance.count,
     };
 

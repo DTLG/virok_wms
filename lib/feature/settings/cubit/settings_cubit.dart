@@ -9,7 +9,6 @@ part 'settings_state.dart';
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit() : super(const SettingsState());
 
-
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -33,6 +32,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
+    final refreshTime = prefs.getInt('refreshTime') ?? 10;
 
     emit(state.copyWith(
         status: SettingsStatus.success,
@@ -51,7 +51,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         rechargeButton: rechargeButton,
         printerHost: printerHost,
         printerPort: printerPort,
-        cameraScaner: cameraScaner));
+        cameraScaner: cameraScaner,
+        autoRefreshTime: refreshTime));
   }
 
   Future<void> writeToSP(String key, bool value) async {
@@ -85,5 +86,12 @@ class SettingsCubit extends Cubit<SettingsState> {
       case 'returning_button':
         return emit(state.copyWith(returningButton: value));
     }
+  }
+
+  changeRefreshTime(int newTime) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('refreshTime', newTime);
+
+    emit(state.copyWith(autoRefreshTime: newTime));
   }
 }

@@ -38,6 +38,7 @@ NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
           ?.map((e) => BascketDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       taskNumber: json['task_number'] as String?,
+      statusNom: json['status_nom'] as String?
     );
 
 Map<String, dynamic> _$NomDTOToJson(NomDTO instance) => <String, dynamic>{

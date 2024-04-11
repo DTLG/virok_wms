@@ -183,7 +183,7 @@ class _ArticleInputState extends State<ArticleInput> {
 class NomsList extends StatelessWidget {
   const NomsList({super.key, required this.noms});
 
-  final BarcodesNoms noms;
+  final Noms noms;
 
   @override
   Widget build(BuildContext context) {

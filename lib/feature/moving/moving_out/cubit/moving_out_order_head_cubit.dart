@@ -67,15 +67,5 @@ class MovingOutOrdersHeadCubit extends Cubit<MovingOutOrdersHeadState> {
         buskeStatus: false));
   }
 
-  Future<void> checkTsdType() async {
-    try {
-      bool itsMezonine = await MovingGateOrderDataClient().checkTsdType();
-      emit(state.copyWith(
-          itsMezonine: itsMezonine, status: MovingOutOrdersHeadStatus.success));
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('its_mezonine', itsMezonine);
-    } catch (e) {
-      emit(state.copyWith(status: MovingOutOrdersHeadStatus.failure));
-    }
-  }
+
 }

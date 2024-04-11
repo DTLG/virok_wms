@@ -10,11 +10,13 @@ class BarcodeLablePrintCLient {
 
   Future<BarcodesNomsDTO> getNoms(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String username = prefs.getString('username') ?? '';
-    String password = prefs.getString('password') ?? '';
+    String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+    String password = prefs.getString('password') ?? '';
+
+
     final url = '$baseUrl$query $body';
-    final basicAuth = base64.encode(utf8.encode('$username:$password'));
+    final basicAuth = base64.encode(utf8.encode('$zone:$password'));
 
     try {
       final response = await client.post(

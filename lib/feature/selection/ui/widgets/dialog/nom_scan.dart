@@ -87,6 +87,30 @@ class _NomInputDialogState extends State<NomInputDialog> {
                 const SizedBox(
                   height: 8,
                 ),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.dialogOrange),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Стан:',
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                      ),
+                      Text(
+                        widget.nom.statusNom,
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
                 SizedBox(
                   height: 45,
                   child: TextField(
@@ -382,24 +406,28 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                               msg: 'Введена більша кількість ніж в замовленні',
                               context: context)
                           .showError();
-                    } else if (inputCount < widget.count) {
+                      return;
+                    }
+                    if (inputCount < widget.count) {
                       Alerts(
                               msg: 'Введена менаша кількість ніж  відскановано',
                               context: context)
                           .showError();
-                    } else if (inputCount == widget.qty) {
+                      return;
+                    }
+                    if (inputCount == widget.qty) {
                       Alerts(
                               msg:
                                   'Введена та сама кількість що й в замовленні',
                               context: context)
                           .showError();
-                    } else {
-                      context
-                          .read<SelectionOrderDataCubit>()
-                          .changeQty(controller.text, widget.nom, widget.docId);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      return;
                     }
+                    context
+                        .read<SelectionOrderDataCubit>()
+                        .changeQty(controller.text, widget.nom, widget.docId);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text('Змінити'))

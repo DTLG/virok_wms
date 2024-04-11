@@ -35,7 +35,8 @@ class MovingGateOrderDataRepository {
             qty: nom.qty ?? 0,
             count: nom.count ?? 0,
             isMyne: nom.itsMyne ?? 0,
-            taskNumber: nom.taskNumber ?? ''))
+            taskNumber: nom.taskNumber ?? '',
+        statusNom: nom.statusNom ?? ''))
         .toList();
     return Noms(noms: noms, status: listNom.status ?? 1);
   }
@@ -64,6 +65,7 @@ class MovingGateOrderDataRepository {
         qty: nom.qty ?? 0,
         count: nom.count ?? 0,
         isMyne: nom.itsMyne ?? 0,
-        taskNumber: nom.taskNumber ?? '');
+        taskNumber: nom.taskNumber ?? '',
+        statusNom: nom.statusNom ?? '');
   }
 }

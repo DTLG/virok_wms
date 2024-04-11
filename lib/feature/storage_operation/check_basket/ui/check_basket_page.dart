@@ -1,9 +1,7 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
-
-import '../check_basket_repository/models/basket_info.dart';
 import '../cubit/check_basket_cubit.dart';
 
 class ChackBasketPage extends StatelessWidget {
@@ -27,173 +25,255 @@ class ChackBasketView extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Кошик'),
+          title: const Text('Корзини'),
           actions: [
-            Padding(
-              padding: const EdgeInsets.all(7),
-              child: ElevatedButton(
-                style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                        Color.fromARGB(255, 91, 79, 179)),
-                    maximumSize: MaterialStatePropertyAll(Size.fromWidth(90)),
-                    padding: MaterialStatePropertyAll(EdgeInsets.all(10))),
-                child: Text('Очистити',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .copyWith(color: Colors.white)),
-                onPressed: () {
-                  context.read<CheckBasketCubit>().clear();
-                },
-              ),
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            const BarcodeInput(),
             BlocBuilder<CheckBasketCubit, CheckBasketState>(
               builder: (context, state) {
-                if (state.status.isSuccess) {
-                  return state.basket.basket.isNotEmpty
-                      ? BasketInfo(
-                          basket: state.basket,
-                        )
-                      : const Row(
-                          children: [
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(Icons.error_outline_outlined),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Кошик не знайдено',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w400),
-                            )
-                          ],
-                        );
-                }
-                if (state.status.isFailure) {
-                  return Expanded(
-                    child: Center(
-                        child: WentWrong(
-                      errorDescription: state.errorMassage,
-                      buttonTrue: false,
-                    )),
-                  );
-                }
-                if (state.status.isLoading) {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                return const Center();
+                return state.basketOperation
+                    ? IconButton(
+                        onPressed: () {
+                          createNewBasket(context);
+                        },
+                        icon: const Icon(Icons.add))
+                    : const SizedBox();
               },
             )
           ],
         ),
+        body: BlocConsumer<CheckBasketCubit, CheckBasketState>(
+          listener: (context, state) {
+            if (state.status.isNotFound) {
+              Alerts(msg: state.errorMassage, context: context).showError();
+            }
+          },
+          builder: (context, state) {
+            if (state.status.isInitial) {
+              context.read<CheckBasketCubit>().getStateBasketOperations();
+              context.read<CheckBasketCubit>().getBaskets();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state.status.isFailure) {
+              return Center(
+                child: WentWrong(
+                  errorDescription: state.errorMassage,
+                  onPressed: () {
+                    context.read<CheckBasketCubit>().getBaskets();
+                  },
+                ),
+              );
+            }
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<CheckBasketCubit>().getBaskets();
+              },
+              child: const Column(
+                children: [BasketSearchField(), ListBaskets()],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class BarcodeInput extends StatefulWidget {
-  const BarcodeInput({super.key});
+class BasketSearchField extends StatefulWidget {
+  const BasketSearchField({super.key});
 
   @override
-  State<BarcodeInput> createState() => _BarcodeInputState();
+  State<BasketSearchField> createState() => _BasketSearchFieldState();
 }
 
-class _BarcodeInputState extends State<BarcodeInput> {
+class _BasketSearchFieldState extends State<BasketSearchField> {
   final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select((CheckBasketCubit cubit) => cubit.state);
-    state.status.isInitial ? controller.clear() : controller;
-    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: controller,
-        autofocus: cameraScaner ? false : true,
-        onSubmitted: (value) {
-          context.read<CheckBasketCubit>().getBasket(value);
+        onChanged: (value) {
+          context.read<CheckBasketCubit>().searchBasket(value);
         },
-        decoration: InputDecoration(
-          suffixIcon: cameraScaner
-              ? CameraScanerButton(
-                  scan: (value) {
-                    context.read<CheckBasketCubit>().getBasket(value);
-                  },
-                )
-              : null,
-          hintText: 'Відскануйте штрихкод',
+        decoration: const InputDecoration(
+          hintText: 'Введіть номер',
         ),
       ),
     );
   }
 }
 
-class BasketInfo extends StatelessWidget {
-  const BasketInfo({super.key, required this.basket});
-
-  final BasketData basket;
+class ListBaskets extends StatelessWidget {
+  const ListBaskets({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        ListTile(
-          title: Text(
-            'Назва кошика:',
-            style: theme.textTheme.titleLarge,
+    return BlocBuilder<CheckBasketCubit, CheckBasketState>(
+      builder: (context, state) {
+        return Expanded(
+          child: ListView.separated(
+            itemCount: state.filterdBaskets.baskets.length,
+            itemBuilder: (context, index) {
+              final basket = state.filterdBaskets.baskets[index];
+              return ListTile(
+                onTap: () {
+                  context
+                      .read<CheckBasketCubit>()
+                      .getBasket(state.filterdBaskets.baskets[index].barcode);
+                  basketInfoDialog(context);
+                },
+                title: Text(basket.name),
+              );
+            },
+            separatorBuilder: (context, index) => const Divider(
+              height: 0,
+              indent: 15,
+              endIndent: 15,
+            ),
           ),
-          trailing: Text(
-            basket.basket,
-            style: theme.textTheme.headlineSmall,
-          ),
-        ),
-        ListTile(
-          title: Text(
-            'Стіл:',
-            style: theme.textTheme.titleLarge,
-          ),
-          trailing: Text(
-            basket.table.name,
-            style: theme.textTheme.headlineSmall,
-
-          ),
-        ),
-        ListTile(
-          title: Text(
-            'Штрихкод столу:',
-            style: theme.textTheme.titleLarge,
-          ),
-          trailing: Text(
-            basket.table.barcode,
-            style: theme.textTheme.headlineSmall,
-          ),
-        ),
-        ListTile(
-          title: Text(
-            'Номер документу:',
-            style: theme.textTheme.titleLarge,
-          ),
-          trailing: Text(
-            basket.docNumber,
-            style: theme.textTheme.headlineSmall,
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
+}
+
+basketInfoDialog(BuildContext context) {
+  final theme = Theme.of(context);
+  Widget infoItem({required String title, required String trailing}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleMedium!
+                .copyWith(fontWeight: FontWeight.w400),
+          ),
+          Text(
+            trailing,
+            style: theme.textTheme.titleMedium!
+                .copyWith(fontWeight: FontWeight.w600),
+          )
+        ],
+      ),
+    );
+  }
+
+  showDialog(
+      context: context,
+      builder: (_) => BlocProvider.value(
+            value: context.read<CheckBasketCubit>(),
+            child: BlocBuilder<CheckBasketCubit, CheckBasketState>(
+              builder: (context, state) {
+                return AlertDialog(
+                  iconPadding: EdgeInsets.zero,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                  actionsPadding: const EdgeInsets.all(5),
+                  actionsAlignment: MainAxisAlignment.center,
+                  icon: DialogHead(
+                      title: 'Корзина',
+                      textStyle: theme.textTheme.titleLarge,
+                      onPressed: () => Navigator.pop(context)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      infoItem(title: 'Корзина:', trailing: state.basket.name),
+                      infoItem(
+                          title: 'Стіл:', trailing: state.basket.table.name),
+                      infoItem(
+                          title: '№ документу:',
+                          trailing: state.basket.docNumber),
+                    ],
+                  ),
+                  actions: [
+                    state.basketOperation
+                        ? ElevatedButton(
+                            onPressed: () {
+                              context.read<CheckBasketCubit>().printBasket();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Друк'))
+                        : const SizedBox()
+                  ],
+                );
+              },
+            ),
+          ));
+}
+
+createNewBasket(BuildContext context) {
+  final themeManager = AdaptiveTheme.of(context);
+
+  final theme = Theme.of(context);
+  showDialog(
+      context: context,
+      builder: (_) => BlocProvider.value(
+            value: context.read<CheckBasketCubit>(),
+            child: AlertDialog(
+              iconPadding: EdgeInsets.zero,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+              actionsPadding: const EdgeInsets.all(5),
+              actionsAlignment: MainAxisAlignment.center,
+              icon: DialogHead(
+                  title: 'Нова корзина',
+                  textStyle: theme.textTheme.titleLarge,
+                  onPressed: () => Navigator.pop(context)),
+              content: BlocBuilder<CheckBasketCubit, CheckBasketState>(
+                builder: (context, state) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      state.basketType.isBasket ? 'Корзина' : 'Візок',
+                      style: theme.textTheme.titleMedium!,
+                    ),
+                    trailing: Switch(
+                        value: state.basketType.isBasket ? false : true,
+                        onChanged: (value) {
+                          context.read<CheckBasketCubit>().changeBusketType();
+                        }),
+                  );
+                },
+              ),
+              actions: [
+                BlocBuilder<CheckBasketCubit, CheckBasketState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          final res = await context
+                              .read<CheckBasketCubit>()
+                              .addBasket();
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            if (res.isEmpty) return;
+
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                    duration: const Duration(seconds: 5),
+                                    elevation: 5,
+                                    content: Center(
+                                        child: Text(
+                                      'Створено - $res',
+                                      style: theme.textTheme.titleSmall!
+                                          .copyWith(
+                                              color: themeManager.mode.isDark
+                                                  ? Colors.black
+                                                  : Colors.white),
+                                    ))),
+                              );
+                          }
+                        },
+                        child: const Text('Створити'));
+                  },
+                )
+              ],
+            ),
+          ));
 }

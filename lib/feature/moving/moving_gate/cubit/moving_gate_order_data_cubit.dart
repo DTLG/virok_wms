@@ -50,27 +50,7 @@ class MovingGateOrderDataCubit extends Cubit<MovingGateOrderDataState> {
     }
   }
 
-  bool checkCell(String cellBarcode, List<Cell> cells) {
-    bool res = false;
-    emit(state.copyWith(cellBarcode: ''));
 
-    for (var cell in cells) {
-      if (cellBarcode == cell.codeCell) {
-        emit(state.copyWith(cellBarcode: cellBarcode));
-        res = true;
-        return res;
-      }
-    }
-    if (state.cellBarcode.isEmpty) {
-      emit(state.copyWith(
-          status: MovingGateOrderDataStatus.notFound,
-          errorMassage: 'Дана комірка не відповідає вибраному товару',
-          time: DateTime.now().millisecondsSinceEpoch));
-    }
-    emit(state.copyWith(status: MovingGateOrderDataStatus.success));
-    res = false;
-    return false;
-  }
 
   void scan(String nomBar, Nom nom) {
     double count = state.count == 0 ? nom.count : state.count;

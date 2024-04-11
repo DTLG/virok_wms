@@ -38,9 +38,9 @@ class CustomTable extends StatelessWidget {
             textStyle: theme.textTheme.labelMedium
                 ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
           ),
-          CellName(
+          RowElement(
             flex: 6,
-            value: noms[index].nameCell,
+            value: noms[index].nameCell,textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
           ),
           RowElement(
             flex: 2,

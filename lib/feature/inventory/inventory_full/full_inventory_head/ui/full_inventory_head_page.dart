@@ -99,6 +99,7 @@ class TableData extends StatelessWidget {
           child: ListView.builder(
             itemCount: docs.length,
             itemBuilder: (context, index) => TableElement(
+              bottomMargin: 60,
               dataLenght: docs.length,
               rowElement: [
                 RowElement(flex: 1, value: (index + 1).toString()),

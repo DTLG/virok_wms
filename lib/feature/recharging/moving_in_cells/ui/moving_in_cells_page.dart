@@ -76,6 +76,11 @@ class MovingInCellsView extends StatelessWidget {
                 errorDescription: state.errorMassage,
               ));
             }
+            if (state.status.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
             return Body(
               title: state.isPlacement ? 'Розміщення' : 'Списання',
             );
@@ -94,6 +99,7 @@ class MovingInCellsView extends StatelessWidget {
                       GeneralButton(
                           lable: 'Списати та розмістити',
                           onPressed: () {
+                            if (state.status.isLoading) return;
                             context.read<MovingInCellsCubit>().send();
                           })
                     ],
@@ -161,11 +167,36 @@ class Body extends StatelessWidget {
                   ));
             },
           ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CountInfo(),
+              BlocBuilder<MovingInCellsCubit, MovingInCellsState>(
+                builder: (context, state) {
+                  return NomStatusWidget(
+                    nomStatus: state.nomStatus,
+                    onSelected: (value) {
+                      context.read<MovingInCellsCubit>().setNomStatus(value);
+                    },
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 120,
+                width: 220,
+                child: FittedBox(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: CountInfo(),
+                  ),
+                ),
+              ),
             ],
+          ),
+          const SizedBox(
+            height: 5,
           ),
           const CellPutInput()
         ],
@@ -189,7 +220,7 @@ class _CellTakeInputState extends State<CellTakeInput> {
   @override
   Widget build(BuildContext context) {
     final state = context.select((MovingInCellsCubit cubit) => cubit.state);
-     controller.text = state.cellTake;
+    controller.text = state.cellTake;
     final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
     final status = state.status;
     if (cameraScaner != true) {
@@ -218,10 +249,9 @@ class _CellTakeInputState extends State<CellTakeInput> {
               suffixIcon: cameraScaner
                   ? CameraScanerButton(
                       scan: (value) async {
-                     await context
+                        await context
                             .read<MovingInCellsCubit>()
                             .getCellTake(value);
-       
                       },
                     )
                   : null),
@@ -493,7 +523,7 @@ class CountInfo extends StatelessWidget {
       builder: (context, state) {
         return Text(
           state.count.toString(),
-          style: const TextStyle(fontSize: 110, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
         );
       },
     );

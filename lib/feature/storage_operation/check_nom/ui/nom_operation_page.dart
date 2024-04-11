@@ -1,3 +1,5 @@
+import 'package:animations/animations.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -151,6 +153,26 @@ class BarcodesCard extends StatelessWidget {
                         itemCount: nom.barodes.length,
                         itemBuilder: (context, index) {
                           return InkWell(
+                            onLongPress: () {
+                              showModal(
+                                configuration:
+                                    const FadeScaleTransitionConfiguration(),
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: BarcodeWidget(
+                                      data: nom.barodes[index].barcode,
+                                      barcode:
+                                          nom.barodes[index].barcode.length ==
+                                                  13
+                                              ? Barcode.ean13()
+                                              : Barcode.itf(),
+                                              color: Colors.black,
+                                              style: const TextStyle(color: Colors.black),
+                                              ),
+                                ),
+                              );
+                            },
                             onTap: () {
                               barcodeLablePrintButton
                                   ? showPrintAlertAlert(
@@ -227,7 +249,10 @@ class CellsCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Комірка (${nom.cells.length})'),
+                    SizedBox(
+                        width: 120,
+                        child: Text('Комірка (${nom.cells.length})')),
+                    const Text('Cтатус'),
                     const Text('К-ть'),
                   ],
                 ),
@@ -240,14 +265,25 @@ class CellsCard extends StatelessWidget {
                   itemCount: nom.cells.length,
                   itemBuilder: (context, index) {
                     return SizedBox(
-                      height: 30,
+                      height: 35,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(nom.cells[index].nameCell,
+                          SizedBox(
+                            width: 150,
+                            child: Text(nom.cells[index].nameCell,
+                                maxLines: 2, style: theme.textTheme.titleSmall),
+                          ),
+                          Text(nom.cells[index].nomStatus,
                               style: theme.textTheme.titleSmall),
-                          Text(nom.cells[index].count.toStringAsFixed(0),
-                              style: theme.textTheme.titleSmall),
+                          SizedBox(
+                            width: 50,
+                            child: Text(
+                              nom.cells[index].count.toStringAsFixed(0),
+                              style: theme.textTheme.titleSmall,
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -616,7 +652,7 @@ class _PrintAlertState extends State<PrintAlert> {
 
                   if (count > 99) {
                     Alerts(
-                            msg: 'Максемальне кількість друку 99',
+                            msg: 'Максимальна кількість друку 99',
                             context: context)
                         .showError();
                     return;

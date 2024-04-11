@@ -36,8 +36,13 @@ class AppRoutes {
   static const barcodeGeneration = '/barcode_generation';
   static const checkCell = '/check_cell';
   static const barcodeLablePrint = '/barcode_Lable_print';
+  static const productLablePrint = '/product_Lable_print';
+
   static const checkBasket = '/check_basket';
   static const cellGeneratorPage = '/cell_generator_page';
+  static const  lvivCellsPage = 'lvivCellsPage'; 
+    static const  kyivCellsPage = 'kyivCellsPage'; 
+
   static const checkNomListPage = '/check_nom_list_page';
   static const checkNomPage = '/check_nom_page';
   static const settings = '/settings';
@@ -51,7 +56,8 @@ class AppRoutes {
   static const inventoryByNomTasksPage = '/inventory_by_nom_tasks_page';
   static const inventoryByNomTaskPage = '/inventory_by_nom_task_page';
 
-    static const inventoryNomInCellTasksPage = '/inventory_nom_in_cell_tasks_page';
+  static const inventoryNomInCellTasksPage =
+      '/inventory_nom_in_cell_tasks_page';
 
   static const fullInventoryHeadPage = '/full_inventory_head_page';
   static const fullInventoryDataPage = '/full_inventory_data_page';

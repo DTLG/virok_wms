@@ -1,28 +1,49 @@
-import 'package:json_annotation/json_annotation.dart';
+class BasketsData {
+  final List<BasketData> baskets;
 
-part 'basket_info.g.dart';
+  factory BasketsData.fromJson(Map<String, dynamic> json) => BasketsData(
+      baskets: ((json['Baskets'] ?? []) as List<dynamic>)
+          .map((e) => BasketData.fromJson(e))
+          .toList());
 
-@JsonSerializable()
-class BasketDataDTO {
-  @JsonKey(name: 'doc_number')
-  String? docNumber;
-  TableDTO table;
-  String? basket;
+  BasketsData({required this.baskets});
 
-  BasketDataDTO({required this.docNumber,required this.table,required this.basket});
-
-  
-   factory BasketDataDTO.fromJson(Map<String, dynamic> json) => _$BasketDataDTOFromJson(json);
+  static final empty = BasketsData(baskets: []);
 }
-@JsonSerializable()
-class TableDTO {
-  String? name;
-  String? barcode;
+enum BasketType { basket, cart }
 
-  TableDTO({required this.name,required this.barcode});
-  factory TableDTO.fromJson(Map<String, dynamic> json) => _$TableDTOFromJson(json);
- 
+
+
+class BasketData {
+  String docNumber;
+  Table table;
+  String name;
+  String barcode;
+
+  BasketData(
+      {required this.docNumber,
+      required this.table,
+      required this.name,
+      required this.barcode});
+
+  factory BasketData.fromJson(Map<String, dynamic> json) => BasketData(
+      docNumber: json['doc_number'] ?? '',
+      table: Table.fromJson((json['table'] ?? <String,dynamic>{}) as Map<String, dynamic>),
+      name: json['Name' ] ?? '',
+      barcode: json['Barcode'] ?? '');
+
+  static final empty =
+      BasketData(docNumber: '', table: Table.empty, name: '', barcode: '');
 }
 
+class Table {
+  String name;
+  String barcode;
 
-
+  Table({required this.name, required this.barcode});
+  factory Table.fromJson(Map<String, dynamic> json) => Table(
+        name: json['name'] ?? '',
+        barcode: json['barcode'] ?? '',
+      );
+  static final empty = Table(name: '', barcode: '');
+}

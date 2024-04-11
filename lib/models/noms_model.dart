@@ -24,6 +24,7 @@ class  Nom {
   final int isMyne;
   final List<Bascket> baskets;
   final String taskNumber;
+  final String statusNom;
 
   Nom(
       {required this.name,
@@ -38,7 +39,8 @@ class  Nom {
       required this.table,
       required this.isMyne,
       required this.baskets,
-      required this.taskNumber
+      required this.taskNumber,
+      required this.statusNom
       });
 
   static final empty = Nom(
@@ -54,7 +56,9 @@ class  Nom {
       count: 0,
       isMyne: 0,
       taskNumber: '',
-      baskets: [Bascket.empty]);
+      baskets: [Bascket.empty],
+      statusNom: ''
+      );
 }
 
 

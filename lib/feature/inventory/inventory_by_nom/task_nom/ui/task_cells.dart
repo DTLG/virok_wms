@@ -71,23 +71,36 @@ class _InventoryByCellsTaskNomsViewState
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              BlocBuilder<InventoryByNomCellsTaskCubit,
-                  InventoryByNomCellsTaskState>(
-                builder: (context, state) {
-                  return Text(state.cells.nom);
-                },
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              const _TableHead(),
-              _TableData(
-                task: task,
-                focusNode: focusNode,
-              )
-            ],
+          child: BlocBuilder<InventoryByNomCellsTaskCubit,
+              InventoryByNomCellsTaskState>(
+            builder: (context, state) {
+              if (state.status.isFailure) {
+                return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 60),
+                      child: WentWrong(
+                                        errorDescription: state.errorMassage,
+                                        onPressed: () {
+                      context.read<InventoryByNomCellsTaskCubit>().getCells(task);
+                                        },
+                                      ),
+                    ));
+              }
+
+              return Column(
+                children: [
+                  Text(state.cells.nom),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  const _TableHead(),
+                  _TableData(
+                    task: task,
+                    focusNode: focusNode,
+                  )
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -203,7 +216,8 @@ class _TableData extends StatelessWidget {
         return Expanded(
           child: ListView.builder(
             itemCount: nomData.cells.length,
-            itemBuilder: (context, index) => TableElement(
+            itemBuilder: (context, index) => TableElement(              bottomMargin: 60,
+
               dataLenght: nomData.cells.length,
               rowElement: [
                 RowElement(

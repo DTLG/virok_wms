@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 class DialogHead extends StatelessWidget {
-  const DialogHead({super.key, required this.title, required this.onPressed});
+  const DialogHead(
+      {super.key,
+      required this.title,
+      required this.onPressed,
+      this.textStyle});
 
   final String title;
   final VoidCallback? onPressed;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +23,9 @@ class DialogHead extends StatelessWidget {
           title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-              fontSize: title.length.toSize, fontWeight: FontWeight.w500),
+          style: textStyle ??
+              TextStyle(
+                  fontSize: title.length.toSize, fontWeight: FontWeight.w500),
         ),
         IconButton(onPressed: onPressed, icon: const Icon(Icons.close)),
       ],
@@ -27,7 +33,7 @@ class DialogHead extends StatelessWidget {
   }
 }
 
-extension  on int {
+extension on int {
   double get toSize {
     switch (this) {
       case < 9:

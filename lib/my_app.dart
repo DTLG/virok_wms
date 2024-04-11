@@ -1,20 +1,50 @@
+import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local_session_timeout/local_session_timeout.dart';
+import 'package:virok_wms/auth/view/auth_view.dart';
+import 'package:virok_wms/const.dart';
 
 import 'feature/home_page/cubit/home_page_cubit.dart';
 import 'route/route.dart';
 import 'ui/ui.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.savedThemeMode, required this.isLogin});
+  MyApp({super.key, required this.savedThemeMode});
 
   final AdaptiveThemeMode? savedThemeMode;
-  final bool isLogin;
+
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  NavigatorState get _navigator => _navigatorKey.currentState!;
+
+  final sessionStateStream = StreamController<SessionState>();
 
   @override
   Widget build(BuildContext context) {
+    final sessionConfig = SessionConfig(
+      invalidateSessionForAppLostFocus: const Duration(minutes: timeOut),
+      invalidateSessionForUserInactivity: const Duration(minutes: timeOut),
+    );
+    sessionConfig.stream.listen((SessionTimeoutState timeoutEvent) {
+      sessionStateStream.add(SessionState.stopListening);
+      if (timeoutEvent == SessionTimeoutState.userInactivityTimeout) {
+        _navigator.pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (_) => AuthPage(
+                      sessionStateStream: sessionStateStream,
+                    )),
+            (route) => false);
+      } else if (timeoutEvent == SessionTimeoutState.appFocusTimeout) {
+        _navigator.pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (_) => AuthPage(
+                      sessionStateStream: sessionStateStream,
+                    )),
+            (route) => false);
+      }
+    });
     return AdaptiveTheme(
       debugShowFloatingThemeButton: true,
       light: AppTheme.light,
@@ -23,65 +53,23 @@ class MyApp extends StatelessWidget {
       builder: (light, dark) {
         return BlocProvider(
           create: (context) => HomePageCubit(),
-          child: MaterialApp(
-            initialRoute: getInitialPage(),
-            onGenerateRoute: RouteGenerator.generateRoute,
-            theme: light,
-            darkTheme: dark,
-            debugShowCheckedModeBanner: false,
+          child: SessionTimeoutManager(
+            userActivityDebounceDuration: const Duration(seconds: 1),
+            sessionConfig: sessionConfig,
+            sessionStateStream: sessionStateStream.stream,
+            child: MaterialApp(
+              navigatorKey: _navigatorKey,
+              home: AuthPage(
+                sessionStateStream: sessionStateStream,
+              ),
+              onGenerateRoute: RouteGenerator.generateRoute,
+              theme: light,
+              darkTheme: dark,
+              debugShowCheckedModeBanner: false,
+            ),
           ),
         );
       },
     );
   }
-
-  String getInitialPage() => isLogin ? AppRoutes.homePage : AppRoutes.login;
 }
-
-// class PCApp extends StatefulWidget {
-//   const PCApp({super.key});
-
-//   @override
-//   State<PCApp> createState() => _PCAppState();
-// }
-
-// class _PCAppState extends State<PCApp> {
-//   double sliderValue = 100;
-//   double height = 100;
-//   double width = 300;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(),
-//       body: Center(
-//           child: Column(
-//         children: [
-//           Slider(
-//             max: 300,
-//             min: 100,
-//             value: height,
-//             onChanged: (value) {
-//               setState(() {
-//                 sliderValue = value;
-//                 height = value;
-//               });
-//             },
-//           ),
-//           BarcodeWidget(
-//             backgroundColor: Colors.white,
-//             height: height,
-//             width: height*2.5,
-//             padding: EdgeInsets.all(height*2.5 / 40),
-//             barcode: Barcode.code128(),
-//             data: '5906083851209',
-//             style: Theme.of(context)
-//                 .textTheme
-//                 .titleSmall!
-//                 .copyWith(color: Colors.black),
-//           ),
-//         ],
-//       )),
-//     );
-//   }
-// }

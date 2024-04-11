@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/models/barcode_model.dart';
 
 import 'package:virok_wms/models/noms_model.dart';
@@ -19,9 +18,7 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
       emit(state.copyWith(status: ReturningOutOrderDataStatus.loading));
       await Future.delayed(const Duration(milliseconds: 500),(){});
 
-      final prefs = await SharedPreferences.getInstance();
-      final bool itsMezonine = prefs.getBool('its_mezonine') ?? false;
-      emit(state.copyWith(itsMezonine: itsMezonine));
+ 
       final orders = await ReturningOutOrderDataRepository()
           .movingRepo('get_orders_data', docId);
       emit(state.copyWith(

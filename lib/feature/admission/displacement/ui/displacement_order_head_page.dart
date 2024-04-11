@@ -7,7 +7,7 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
 import '../cubits/displacement_order_head_cubit.dart';
-import '../displacement_repository/models/order.dart';
+import '../models/models.dart';
 
 class DisplacementOrdersHeadPage extends StatelessWidget {
   const DisplacementOrdersHeadPage({super.key});

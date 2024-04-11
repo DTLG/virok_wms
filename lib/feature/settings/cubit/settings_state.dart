@@ -21,43 +21,48 @@ class SettingsState extends Equatable {
   final bool admissionButton;
   final bool movingButton;
   final bool returningButton;
-
   final bool rechargeButton;
+  final bool cameraScaner;
+  final bool basketOperation;
 
   final String printerHost;
   final String printerPort;
-
-  final bool cameraScaner;
   final String errorCounter;
   final String errorCounterH;
   final String scanH;
   final String scan;
   final int autoRefreshTime;
 
-  const SettingsState({
-    this.status = SettingsStatus.initial,
-    this.dbPath = '',
-    this.generationButton = false,
-    this.printButton = false,
-    this.cellInfoButton = false,
-    this.basketInfoButton = false,
-    this.cellGeneratorButton = false,
-    this.placementButton = false,
-    this.writeOffButton = false,
-    this.selectionButton = false,
-    this.admissionButton = false,
-    this.movingButton = false,
-    this.rechargeButton = false,
-    this.returningButton = false,
-    this.printerHost = '',
-    this.printerPort = '',
-    this.cameraScaner = false,
-    this.errorCounter = '',
-    this.errorCounterH = '',
-    this.scan = '',
-    this.scanH = '',
-    this.autoRefreshTime = 10,
-  });
+  final String deviceId;
+  final DeviceIds deviceIds;
+
+  const SettingsState(
+      {this.status = SettingsStatus.initial,
+      this.dbPath = '',
+      this.generationButton = false,
+      this.printButton = false,
+      this.cellInfoButton = false,
+      this.basketInfoButton = false,
+      this.cellGeneratorButton = false,
+      this.placementButton = false,
+      this.writeOffButton = false,
+      this.selectionButton = false,
+      this.admissionButton = false,
+      this.movingButton = false,
+      this.rechargeButton = false,
+      this.returningButton = false,
+      this.basketOperation = false,
+      this.printerHost = '',
+      this.printerPort = '',
+      this.cameraScaner = false,
+      this.errorCounter = '',
+      this.errorCounterH = '',
+      this.scan = '',
+      this.scanH = '',
+      this.autoRefreshTime = 10,
+      this.deviceId = '',
+      DeviceIds? deviceIds})
+      : deviceIds = deviceIds ?? DeviceIds.empty;
 
   SettingsState copyWith(
       {SettingsStatus? status,
@@ -74,6 +79,7 @@ class SettingsState extends Equatable {
       bool? movingButton,
       bool? returningButton,
       bool? rechargeButton,
+      bool? basketOperation,
       String? printerHost,
       String? printerPort,
       bool? cameraScaner,
@@ -81,7 +87,9 @@ class SettingsState extends Equatable {
       String? errorCounterH,
       String? scan,
       String? scanH,
-      int? autoRefreshTime}) {
+      int? autoRefreshTime,
+      String? deviceId,
+      DeviceIds? deviceIds}) {
     return SettingsState(
         status: status ?? this.status,
         dbPath: dbPath ?? this.dbPath,
@@ -95,6 +103,7 @@ class SettingsState extends Equatable {
         selectionButton: selectionButton ?? this.selectionButton,
         admissionButton: admissionButton ?? this.admissionButton,
         movingButton: movingButton ?? this.movingButton,
+        basketOperation: basketOperation ?? this.basketOperation,
         returningButton: returningButton ?? this.returningButton,
         rechargeButton: rechargeButton ?? this.rechargeButton,
         printerHost: printerHost ?? this.printerHost,
@@ -104,7 +113,9 @@ class SettingsState extends Equatable {
         errorCounterH: errorCounterH ?? this.errorCounterH,
         scan: scan ?? this.scan,
         scanH: scanH ?? this.scanH,
-        autoRefreshTime: autoRefreshTime ?? this.autoRefreshTime);
+        autoRefreshTime: autoRefreshTime ?? this.autoRefreshTime,
+        deviceId: deviceId ?? this.deviceId,
+        deviceIds: deviceIds ?? this.deviceIds);
   }
 
   @override
@@ -122,6 +133,7 @@ class SettingsState extends Equatable {
         basketInfoButton,
         selectionButton,
         admissionButton,
+        basketOperation,
         movingButton,
         returningButton,
         rechargeButton,
@@ -130,6 +142,8 @@ class SettingsState extends Equatable {
         errorCounterH,
         scan,
         scanH,
-        autoRefreshTime
+        autoRefreshTime,
+        deviceId,
+        deviceIds
       ];
 }

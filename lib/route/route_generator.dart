@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:virok_wms/feature/admission/admission_placement/ui/admission/admission_placement_page.dart';
-import 'package:virok_wms/feature/admission_placement/ui/placement_data_page.dart';
-import 'package:virok_wms/feature/admission_placement/ui/placement_head_page.dart';
+import 'package:virok_wms/feature/admission/placement/ui/placement_data_page.dart';
+import 'package:virok_wms/feature/admission/placement/ui/placement_head_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_cells/task_noms/ui/task_noms.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_cells/tasks/ui/tasks_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_nom/task_nom/ui/task_cells.dart';
@@ -19,10 +18,13 @@ import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_
 import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
 import 'package:virok_wms/feature/return/ui/return_data_page.dart';
 import 'package:virok_wms/feature/return/ui/return_head_page.dart';
+import 'package:virok_wms/feature/storage_operation/cell_generator/cell_generator.dart';
+import 'package:virok_wms/feature/storage_operation/cell_generator/kyiv_page.dart';
+import 'package:virok_wms/feature/storage_operation/product_lable/view/product_lable_view.dart';
+import 'package:virok_wms/login/login_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/home_page/home_page.dart';
 import 'package:virok_wms/feature/settings/settings_page.dart';
-import 'package:virok_wms/feature/login/login_page.dart';
 
 import '../feature/admission/admission_page.dart';
 import '../feature/admission/displacement/ui/diplacement_order_data_page.dart';
@@ -37,7 +39,7 @@ import '../feature/selection/ui/selection_order_data_page.dart';
 import '../feature/selection/ui/selection_order_head_page.dart';
 import '../feature/storage_operation/barcode_generation/ui/barcode_generation.dart';
 import '../feature/storage_operation/barcode_lable_print/ui/barcode_lable_print_page.dart';
-import '../feature/storage_operation/cell_generator/cell_generator_page.dart';
+import '../feature/storage_operation/cell_generator/lviv_page.dart';
 import '../feature/storage_operation/check_basket/ui/check_basket_page.dart';
 import '../feature/storage_operation/check_cell/ui/check_cell_page.dart';
 import '../feature/storage_operation/check_nom/ui/check_nom_list_page.dart';
@@ -109,17 +111,20 @@ class RouteGenerator {
 
       case AppRoutes.admissionOlacementOrderHeadPage:
         return buildRoute(const PlacementOrdersHeadPage(), settings: settings);
-
-      case AppRoutes.admissionPlacementPage:
-        return buildRoute(const AdmissingPlacementPage(), settings: settings);
       case AppRoutes.barcodeGeneration:
         return buildRoute(const BarcodeGenerationPage(), settings: settings);
       case AppRoutes.barcodeLablePrint:
         return buildRoute(const BarcodeLeblePrintPage(), settings: settings);
+      case AppRoutes.productLablePrint:
+        return buildRoute(const ProductLablesPage(), settings: settings);
       case AppRoutes.checkBasket:
         return buildRoute(const ChackBasketPage(), settings: settings);
       case AppRoutes.cellGeneratorPage:
-        return buildRoute(const CellGeneratorPage(), settings: settings);
+        return buildRoute(const CellGenerationPage(), settings: settings);
+      case AppRoutes.lvivCellsPage:
+        return buildRoute(const LvivCellGeneratorPage(), settings: settings);
+      case AppRoutes.kyivCellsPage:
+        return buildRoute(const KyivCellGeneratorPage(), settings: settings);
       case AppRoutes.checkCell:
         return buildRoute(const CheckCellPage(), settings: settings);
       case AppRoutes.settings:

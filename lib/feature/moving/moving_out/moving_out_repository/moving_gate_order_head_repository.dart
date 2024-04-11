@@ -21,7 +21,9 @@ class MovingGateOrderHeadRepository {
               baskets:
                   e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList(),
               fullOrder: e.fullOrdfer ?? 0,
-              importanceMark: e.importanceMark ?? 0),
+              importanceMark: e.importanceMark ?? 0,
+                    mMark: e.mMark ?? 0),
+              
         )
         .toList();
     return Orders(orders: orders, status: listNom.status ?? 1);

@@ -30,7 +30,7 @@ class CheckCellRepository {
         errorMasssage: ceel.errorMasssage ?? '');
   }
 
-  Future<BarcodesNoms> getNoms(String query, String body) async {
+  Future<Noms> getNoms(String query, String body) async {
     final nomsDTO = await _cellClient.getNoms(query, body);
     List<BarcodesNom> noms = nomsDTO.noms
         .map(
@@ -47,11 +47,13 @@ class CheckCellRepository {
                   .map((c) => Cell(
                       codeCell: c.codeCell ?? '',
                       nameCell: c.nameCell ?? '',
-                      count: c.count ?? 0))
+                      count: c.count ?? 0,
+                      nomStatus: c.nomStatus ?? ''
+                      ))
                   .toList(),
                   totalCount: 0),
         )
         .toList();
-    return BarcodesNoms(noms: noms);
+    return Noms(noms: noms);
   }
 }

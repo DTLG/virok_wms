@@ -317,7 +317,7 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                     .setBasketToOrder(controller.text, widget.docId);
 
                 if (status == true) {
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.pop(context);
 
                   Navigator.pushNamed(context, AppRoutes.returningOutDataPage,

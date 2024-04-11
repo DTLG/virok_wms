@@ -31,7 +31,7 @@ class CheckNomListCubit extends Cubit<CheckNomListState> {
   void clear() {
     emit(state.copyWith(
         status: ChecknomStatus.initial,
-        noms: BarcodesNoms.empty,
+        noms: Noms.empty,
         errorMassage: ''));
   }
 }

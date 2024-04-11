@@ -9,7 +9,7 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../../../../ui/theme/app_color.dart';
 import '../cubits/displacement_order_data_cubit.dart';
 import '../cubits/displacement_order_head_cubit.dart';
-import '../displacement_repository/models/order.dart';
+import '../models/displacement_order.dart';
 import 'widgets/barcode_input.dart';
 
 class DiplacementOrderDataPage extends StatelessWidget {
@@ -106,12 +106,13 @@ class DiplacementOrderDataView extends StatelessWidget {
           ),
         ),
       ),
-      bottomSheet: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      bottomSheet:
           BlocBuilder<DisplacementOrderDataCubit, DisplacementOrderDataState>(
-            builder: (context, state) {
-              return GeneralButton(
+        builder: (context, state) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GeneralButton(
                   lable: 'Завершити',
                   onPressed: () {
                     final int checkFullScan = context
@@ -126,12 +127,37 @@ class DiplacementOrderDataView extends StatelessWidget {
                       context
                           .read<DisplacementOrderDataCubit>()
                           .closeOrder(state.noms.invoice);
+                      diplacementOrderHeadCubit.getOrders();
+
                       Navigator.pop(context);
                     }
-                  });
-            },
-          ),
-        ],
+                  }),
+              ElevatedButton(
+                  child: const SizedBox(
+                    height: 50,
+                    width: 150,
+                    child: Center(child: Text('Завершити та розмістити',textAlign: TextAlign.center,))),
+                  onPressed: () {
+                    final int checkFullScan = context
+                        .read<DisplacementOrderDataCubit>()
+                        .checkFullOrder();
+                    if (checkFullScan == 0) {
+                      Alerts(
+                              msg: 'Не відскановано жодного товару',
+                              context: context)
+                          .showError();
+                    } else {
+                      context
+                          .read<DisplacementOrderDataCubit>()
+                          .closeOrderAndPlace(state.noms.invoice);
+                      diplacementOrderHeadCubit.getOrders();
+
+                      Navigator.pop(context);
+                    }
+                  })
+            ],
+          );
+        },
       ),
     );
   }

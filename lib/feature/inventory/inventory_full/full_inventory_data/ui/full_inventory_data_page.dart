@@ -211,6 +211,7 @@ class _CellsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+    final theme = Theme.of(context);
     return BlocBuilder<FullInventoryDataCubit, FullInventoryDataState>(
       builder: (context, state) {
         final cells = state.nom.cells;
@@ -230,9 +231,10 @@ class _CellsTable extends StatelessWidget {
                     itemCount: cells.length,
                     itemBuilder: (context, index) {
                       return TableElement(
+                        bottomMargin: 60,
                         dataLenght: cells.length,
                         rowElement: [
-                          RowElement(flex: 4, value: cells[index].cellName),
+                          RowElement(flex: 4, value: cells[index].cellName, textStyle: theme.textTheme.titleSmall,),
                           RowElement(flex: 2, value: cells[index].nomStatus),
                           RowElement(
                               flex: 1,

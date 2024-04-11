@@ -50,11 +50,14 @@ abstract class AppTheme {
 }
 
 final inputDecorationTheme = InputDecorationTheme(
+  
     focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
         borderSide: const BorderSide(
           color: Color.fromARGB(255, 111, 111, 111),
         )),
+        
+        disabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(18),borderSide: BorderSide(color: Colors.grey[500]!)),
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(18)));
 
 final elevatedButtonTheme = ElevatedButtonThemeData(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/noms_model.dart';
-import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
+
 import 'package:virok_wms/feature/admission/displacement/ui/widgets/dialog/count_input.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/ui/widgets/camera_scaner_button.dart';
 
 import '../../cubits/displacement_order_data_cubit.dart';
+import '../../models/models.dart';
 
 class DisplacementBarcodeInput extends StatefulWidget {
   const DisplacementBarcodeInput({super.key, required this.order});
@@ -58,7 +58,7 @@ class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
         context.read<DisplacementOrderDataCubit>().scan(value);
     if (nom != DisplacementNom.empty) {
       showManualCountIncrementAlert(
-          context, nom.barcode.first.barcode, invoice, nom);
+          context, nom.barcodes.first.barcode, invoice, nom);
     }
   }
 }

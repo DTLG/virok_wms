@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/moving/moving_out/cubit/moving_out_order_data_cubit.dart';
 
 import 'package:virok_wms/feature/moving/moving_out/cubit/moving_out_order_head_cubit.dart';
@@ -8,8 +9,6 @@ import 'package:virok_wms/feature/moving/moving_out/ui/widgets/table.dart';
 import 'package:virok_wms/models/noms_model.dart';
 
 import '../../../../ui/widgets/widgets.dart';
-import 'dart:math' as math;
-
 import '../../../returning/returning_out/ui/widgets/table_head.dart';
 
 
@@ -37,7 +36,7 @@ class MovingGateOrderDataView extends StatelessWidget {
     final String docId = argument['docId'] ?? '';
     final MovingOutOrdersHeadCubit movingOutOrdersHeadCubit = argument['cubit'];
     final String basket = argument['basket'];
-    final bool itsMezonine = argument['itsMezonine'];
+    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     //----
 
 
@@ -65,65 +64,60 @@ class MovingGateOrderDataView extends StatelessWidget {
         onRefresh: () async {
           context.read<MovingOutOrderDataCubit>().getNoms(docId);
         },
-        child: Stack(
-          children: [
-            WatermarkWidget(itsMezonine: itsMezonine),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TableInfo(),
-                      itsMezonine
-                          ? BascketInfo(
-                              docId: docId,
-                            )
-                          : const SizedBox()
-                    ],
-                  ),
-                  const TableHead(),
-                  BlocConsumer<MovingOutOrderDataCubit,
-                      MovingOutOrderDataState>(
-                    listener: (context, state) {
-                      if (state.status.isNotFound) {
-                        Alerts(msg: state.errorMassage, context: context)
-                            .showError();
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state.status.isInitial) {
-                        context
-                            .read<MovingOutOrderDataCubit>()
-                            .writeBasket(basket);
-                        context.read<MovingOutOrderDataCubit>().getNoms(docId);
-                        return  const Expanded(
-                            child: Center(child: CircularProgressIndicator()));
-                      }
-                      if (state.status.isLoading) {
-                        return const Expanded(
-                            child: Center(child: CircularProgressIndicator()));
-                      }
-                      if (state.status.isFailure) {
-                        return Expanded(
-                          child: WentWrong(
-                            errorDescription: state.errorMassage,
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        );
-                      }
-                      return CustomTable(
-                        noms: state.noms.noms,
-                        docId: docId,
-                      );
-                    },
-                  ),
+                  const TableInfo(),
+                  itsMezonine
+                      ? BascketInfo(
+                          docId: docId,
+                        )
+                      : const SizedBox()
                 ],
               ),
-            ),
-          ],
+              const TableHead(),
+              BlocConsumer<MovingOutOrderDataCubit,
+                  MovingOutOrderDataState>(
+                listener: (context, state) {
+                  if (state.status.isNotFound) {
+                    Alerts(msg: state.errorMassage, context: context)
+                        .showError();
+                  }
+                },
+                builder: (context, state) {
+                  if (state.status.isInitial) {
+                    context
+                        .read<MovingOutOrderDataCubit>()
+                        .writeBasket(basket);
+                    context.read<MovingOutOrderDataCubit>().getNoms(docId);
+                    return  const Expanded(
+                        child: Center(child: CircularProgressIndicator()));
+                  }
+                  if (state.status.isLoading) {
+                    return const Expanded(
+                        child: Center(child: CircularProgressIndicator()));
+                  }
+                  if (state.status.isFailure) {
+                    return Expanded(
+                      child: WentWrong(
+                        errorDescription: state.errorMassage,
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    );
+                  }
+                  return CustomTable(
+                    noms: state.noms.noms,
+                    docId: docId,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
       bottomSheet: Row(
@@ -140,28 +134,7 @@ class MovingGateOrderDataView extends StatelessWidget {
   }
 }
 
-class WatermarkWidget extends StatelessWidget {
-  const WatermarkWidget({super.key, required this.itsMezonine});
 
-  final bool itsMezonine;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Transform.rotate(
-        angle: -math.pi / 4,
-        child: Text(
-          itsMezonine ? 'Мезонін' : 'Палетний склад',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-              fontSize: 70,
-              color: Color.fromARGB(6, 17, 29, 57),
-              fontWeight: FontWeight.w800),
-        ),
-      ),
-    );
-  }
-}
 
 class TableInfo extends StatelessWidget {
   const TableInfo({super.key});

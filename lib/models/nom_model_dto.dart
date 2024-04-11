@@ -37,6 +37,8 @@ class NomDTO {
   @JsonKey(name: 'task_number')
   final String? taskNumber;
   final double? count;
+  @JsonKey(name: 'status_nom')
+  final String? statusNom;
 
   NomDTO(
       {required this.name,
@@ -51,7 +53,9 @@ class NomDTO {
       required this.count,
       required this.itsMyne,
       required this.baskets,
-      required this.taskNumber});
+      required this.taskNumber,
+      required this.statusNom
+      });
 
   factory NomDTO.fromJson(Map<String, dynamic> json) => _$NomDTOFromJson(json);
 }

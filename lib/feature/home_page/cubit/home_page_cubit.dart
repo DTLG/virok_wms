@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../home_page_api_client/home_page_api_client.dart';
 
 part 'home_page_state.dart';
 
@@ -11,10 +10,10 @@ class HomePageCubit extends Cubit<HomePageState> {
 
   Future<void> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final String username = prefs.getString('username') ?? '';
+    final String zone = prefs.getString('zone') ?? '';
     emit(state.copyWith(
       status: HomePageStatus.success,
-      username: username,
+      zone: zone,
     ));
   }
 
@@ -30,7 +29,6 @@ class HomePageCubit extends Cubit<HomePageState> {
     final bool admissionButton = prefs.getBool('admission_button') ?? false;
     final bool movingButton = prefs.getBool('moving_button') ?? false;
     final bool returningButton = prefs.getBool('returning_button') ?? false;
-
     final bool rechargeButton = prefs.getBool('recharge_button') ?? false;
     final bool cameraScaner = prefs.getBool('camera_scaner') ?? false;
 
@@ -46,11 +44,10 @@ class HomePageCubit extends Cubit<HomePageState> {
 
   Future<void> checkTsdType() async {
     try {
-      bool itsMezonine = await HomePageApiCLient().checkTsdType();
+      final prefs = await SharedPreferences.getInstance();
+      final itsMezonine = prefs.getBool('its_mezonine') ?? false;
       emit(state.copyWith(
           itsMezonine: itsMezonine, status: HomePageStatus.success));
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('its_mezonine', itsMezonine);
     } catch (e) {
       emit(state.copyWith(status: HomePageStatus.failure));
     }

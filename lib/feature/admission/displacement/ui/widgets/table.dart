@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/admission/displacement/cubits/displacement_order_data_cubit.dart';
-import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/order.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-import '../../displacement_repository/models/noms_model.dart';
+import '../../models/models.dart';
 import 'dialog/count_input.dart';
 
 class DisplacementTable extends StatelessWidget {
@@ -58,9 +57,9 @@ class DisplacementTable extends StatelessWidget {
             ],
             index: index,
             onTap: () {
-              final barcode = noms.noms[index].barcode.isEmpty
+              final barcode = noms.noms[index].barcodes.isEmpty
                   ? ''
-                  : noms.noms[index].barcode.first.barcode;
+                  : noms.noms[index].barcodes.first.barcode;
 
               if (barcode.isEmpty) {
                 Alerts(

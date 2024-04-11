@@ -11,5 +11,5 @@ class PrinterConnect {
       socket.write(lable);
       socket.close();
     });
-   }
+  }
 }

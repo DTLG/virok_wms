@@ -78,9 +78,7 @@ class _InventoryByCellsTaskNomsViewState
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              // _BarcodeInput(
-              //   focusNode: focusNode,
-              // ),
+
               const SizedBox(
                 height: 8,
               ),
@@ -198,6 +196,7 @@ class _TableData extends StatelessWidget {
           child: ListView.builder(
             itemCount: noms.length,
             itemBuilder: (context, index) => TableElement(
+              bottomMargin: 60,
               dataLenght: noms.length,
               rowElement: [
                 RowElement(

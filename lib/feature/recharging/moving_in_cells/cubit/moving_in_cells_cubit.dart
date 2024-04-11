@@ -16,7 +16,8 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
         emit(state.copyWith(
             status: MovingInCellsStatus.success,
             cell: cell,
-            cellTake: barcode, cellTakeName: cell.nameCell));
+            cellTake: barcode,
+            cellTakeName: cell.nameCell));
         return true;
       } else {
         emit(state.copyWith(
@@ -48,15 +49,14 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
                   time: DateTime.now().microsecondsSinceEpoch,
                   errorMassage:
                       'Введена більша кількість.\n Доступна кількість: ${state.nom.qty}'));
-                      notFound = false;
-                                  break;
-
+              notFound = false;
+              break;
             } else {
               emit(state.copyWith(
                   status: MovingInCellsStatus.success,
                   nom: nom,
                   count: state.count + barcode.ratio));
-                  notFound = false;
+              notFound = false;
             }
             break;
           } else {
@@ -71,21 +71,22 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
       for (var barcode in state.nom.barcodes) {
         if (barcode.barcode == nomBarcode) {
           if (state.count + barcode.ratio > state.nom.qty) {
-            emit(state.copyWith(
+            emit(
+              state.copyWith(
                 status: MovingInCellsStatus.notFound,
                 time: DateTime.now().microsecondsSinceEpoch,
                 errorMassage:
                     'Введена більша кількість.\n Доступна кількість: ${state.nom.qty}',
-                    ),
-                    );
-                    notFound = false;
+              ),
+            );
+            notFound = false;
 
             break;
           } else {
             emit(state.copyWith(
                 status: MovingInCellsStatus.success,
                 count: state.count + barcode.ratio));
-                notFound = false;
+            notFound = false;
             break;
           }
         } else {
@@ -114,6 +115,14 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
     emit(state.copyWith(status: MovingInCellsStatus.success, count: newCount));
   }
 
+  setNomStatus(String nomStatus) {
+    emit(state.copyWith(
+      nomStatus: nomStatus,
+      time: DateTime.now().millisecondsSinceEpoch,
+      status: MovingInCellsStatus.success,
+    ));
+  }
+
   Future<bool> getCellPut(String barcode) async {
     try {
       final cell =
@@ -139,16 +148,18 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
 
   Future<void> send() async {
     String body =
-        '${state.nom.barcodes.first.barcode} ${state.count} ${state.cellTake} ${state.cellPut}';
+        '${state.nom.barcodes.first.barcode} ${state.count} ${state.nomStatus} ${state.cellTake} ${state.cellPut}';
     try {
+      emit(state.copyWith(status: MovingInCellsStatus.loading));
       final res = await MovingInCellsRepository().send('move_sku', body);
       res == 'OK'
           ? emit(state.copyWith(
-              status: MovingInCellsStatus.placement,
+              status: MovingInCellsStatus.initial,
               cell: CheckCell.empty,
               cellPut: '',
               cellTake: '',
               count: 0,
+              nomStatus: 'Кондиція',
               nom: Nom.empty,
               errorMassage: ''))
           : emit(state.copyWith(
@@ -170,6 +181,7 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
         cellTake: '',
         count: 0,
         nom: Nom.empty,
-        errorMassage: ''));
+        errorMassage: '',
+        nomStatus: 'Кондиція'));
   }
 }

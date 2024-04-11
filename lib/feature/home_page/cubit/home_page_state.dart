@@ -16,7 +16,7 @@ extension HomePageStatusX on HomePageStatus {
 
 final class HomePageState extends Equatable {
   const HomePageState(
-      {this.username = '',
+      {this.zone = '',
       this.status = HomePageStatus.initial,
       this.selectionButton = false,
       this.admissionButton = false,
@@ -25,9 +25,10 @@ final class HomePageState extends Equatable {
       this.rechargeButton = false,
       this.itsMezonine = true,
       this.cameraScaner = false,
-      this.refreshTime = 10});
+      this.refreshTime = 10,
+      });
 
-  final String username;
+  final String zone;
   final HomePageStatus status;
   final bool selectionButton;
   final bool admissionButton;
@@ -38,19 +39,21 @@ final class HomePageState extends Equatable {
   final bool itsMezonine;
   final int refreshTime;
 
-  HomePageState copyWith(
-      {String? username,
-      HomePageStatus? status,
-      bool? selectionButton,
-      bool? admissionButton,
-      bool? movingButton,
-      bool? returningButton,
-      bool? rechargeButton,
-      bool? itsMezonine,
-      bool? cameraScaner,
-      int? refreshTime}) {
+  HomePageState copyWith({
+    String? zone,
+    HomePageStatus? status,
+    bool? selectionButton,
+    bool? admissionButton,
+    bool? movingButton,
+    bool? returningButton,
+    bool? rechargeButton,
+    bool? itsMezonine,
+    bool? cameraScaner,
+    int? refreshTime,
+    int? count,
+  }) {
     return HomePageState(
-        username: username ?? this.username,
+        zone: zone ?? this.zone,
         status: status ?? this.status,
         selectionButton: selectionButton ?? this.selectionButton,
         admissionButton: admissionButton ?? this.admissionButton,
@@ -64,7 +67,7 @@ final class HomePageState extends Equatable {
 
   @override
   List<Object?> get props => [
-        username,
+        zone,
         status,
         selectionButton,
         admissionButton,

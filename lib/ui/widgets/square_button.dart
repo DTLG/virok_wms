@@ -8,7 +8,8 @@ class SquareButton extends StatelessWidget {
       required this.color,
       required this.onTap,
       this.lableWidth = 0,
-      this.imagePath = ''});
+      this.imagePath = '',
+     });
 
   final String lable;
   final Color color;
@@ -44,8 +45,7 @@ class SquareButton extends StatelessWidget {
             image: imagePath.isNotEmpty
                 ? DecorationImage(image: AssetImage(imagePath))
                 : null,
-            borderRadius: BorderRadius.circular(5)
-            ),
+            borderRadius: BorderRadius.circular(5)),
         margin: const EdgeInsets.all(3),
         height: double.infinity,
         child: Align(
@@ -70,7 +70,6 @@ Color lighter(Color color) {
   return Color.fromARGB(
       color.alpha, color.red + 25, color.green + 20, color.blue);
 }
-
 
 extension A on int {
   get buttonColor {

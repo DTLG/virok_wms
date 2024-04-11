@@ -22,7 +22,7 @@ class InventoryByNomTasksCubit extends Cubit<InventoryByNomTasksState> {
             errorMassage: tasks.errorMassage));
       }
     } catch (e) {
-      emit(state.copyWith(status: InventoryStatus.failure));
+      emit(state.copyWith(status: InventoryStatus.failure,errorMassage: e.toString()));
     }
   }
 

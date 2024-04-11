@@ -62,7 +62,6 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
               },
               builder: (context, state) {
                 if (state.status.isInitial) {
-                  context.read<SelectionOrdersHeadCubit>().checkTsdType();
                   context.read<SelectionOrdersHeadCubit>().getOrders();
                   final refreshTime =
                       context.read<HomePageCubit>().state.refreshTime;
@@ -75,10 +74,7 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                   return const Expanded(
                       child: Center(child: CircularProgressIndicator()));
                 }
-                if (state.status.isLoading) {
-                  return const Expanded(
-                      child: Center(child: CircularProgressIndicator()));
-                }
+
                 if (state.status.isFailure) {
                   return Expanded(
                     child: WentWrong(
@@ -88,12 +84,9 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                     ),
                   );
                 }
-                if (state.status.isSuccess) {
-                  return _CustomTable(
-                    orders: state.orders,
-                  );
-                }
-                return const Center();
+                return _CustomTable(
+                  orders: state.orders,
+                );
               },
             )
           ],
@@ -105,7 +98,7 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
           GeneralButton(
               lable: 'Оновити',
               onPressed: () {
-                if (isSelected) return;              
+                if (isSelected) return;
                 isSelected = true;
                 context.read<SelectionOrdersHeadCubit>().getOrders();
                 Timer(const Duration(seconds: 1), () {
@@ -125,8 +118,7 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool itsMezonine =
-        context.read<SelectionOrdersHeadCubit>().state.itsMezonine;
+     final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     final theme = Theme.of(context);
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
 
@@ -150,20 +142,30 @@ class _CustomTable extends StatelessWidget {
                   flex: 4,
                   value: orders.orders[index].date,
                   textStyle: theme.textTheme.titleSmall),
-              orders.orders[index].importanceMark == 1
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
+              SizedBox(
+                width: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (orders.orders[index].importanceMark == 1)
+                      const Text(
                         '!',
                         style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.w900,
                             color: Color.fromARGB(255, 255, 6, 6)),
                       ),
-                    )
-                  : const SizedBox(
-                      width: 29,
-                    ),
+                    if (orders.orders[index].mMark == 1)
+                      const Text(
+                        'M',
+                        style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w700,
+                            color: Color.fromARGB(255, 6, 60, 255)),
+                      ),
+                  ],
+                ),
+              ),
             ],
             index: index,
             onTap: () {
@@ -185,7 +187,6 @@ class _CustomTable extends StatelessWidget {
                         'docId': orders.orders[index].docId,
                         'cubit': context.read<SelectionOrdersHeadCubit>(),
                         'basket': orders.orders[index].baskets.first.bascet,
-                        'itsMezonine': itsMezonine
                       });
                 }
               } else {
@@ -194,7 +195,6 @@ class _CustomTable extends StatelessWidget {
                       'docId': orders.orders[index].docId,
                       'cubit': context.read<SelectionOrdersHeadCubit>(),
                       'basket': '',
-                      'itsMezonine': itsMezonine
                     });
               }
             },
@@ -233,7 +233,7 @@ class _TableHead extends StatelessWidget {
         textStyle: theme.textTheme.titleSmall,
       ),
       const SizedBox(
-        width: 29,
+        width: 50,
       )
     ]);
   }
@@ -297,7 +297,6 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                         'docId': widget.docId,
                         'cubit': context.read<SelectionOrdersHeadCubit>(),
                         'basket': controller.text,
-                        'itsMezonine': widget.itsMezonine
                       });
                 }
               }

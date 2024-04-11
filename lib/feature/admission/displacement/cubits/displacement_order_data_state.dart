@@ -17,7 +17,7 @@ extension DiplacementOrderDataStatusX on DisplacementOrderDataStatus {
 }
 
 final class DisplacementOrderDataState extends Equatable {
-  DisplacementOrderDataState({
+  const DisplacementOrderDataState({
     this.status = DisplacementOrderDataStatus.initial,
     this.time = 0,
     DisplacementNoms? noms,

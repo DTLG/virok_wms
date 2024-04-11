@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/selection/selection_repository/selection_order_head_repository.dart';
 import 'package:virok_wms/models/order.dart';
 
@@ -64,15 +63,5 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
         buskeStatus: false));
   }
 
-  Future<void> checkTsdType() async {
-    try {
-      bool itsMezonine = await SelectionOrderDataClient().checkTsdType();
-      emit(state.copyWith(
-          itsMezonine: itsMezonine, status: SelectioOrdersHeadStatus.success));
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('its_mezonine', itsMezonine);
-    } catch (e) {
-      emit(state.copyWith(status: SelectioOrdersHeadStatus.failure));
-    }
-  }
+
 }

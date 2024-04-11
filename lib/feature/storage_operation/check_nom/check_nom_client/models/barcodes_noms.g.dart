@@ -8,14 +8,13 @@ part of 'barcodes_noms.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BarcodesNomsDTO _$BarcodesNomsDTOFromJson(Map<String, dynamic> json) =>
-    BarcodesNomsDTO(
+NomsDTO _$BarcodesNomsDTOFromJson(Map<String, dynamic> json) => NomsDTO(
       noms: (json['noms'] as List<dynamic>)
           .map((e) => BarcodesNomDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$BarcodesNomsDTOToJson(BarcodesNomsDTO instance) =>
+Map<String, dynamic> _$BarcodesNomsDTOToJson(NomsDTO instance) =>
     <String, dynamic>{
       'noms': instance.noms,
     };
@@ -54,10 +53,10 @@ Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>
     };
 
 CellDTO _$CellDTOFromJson(Map<String, dynamic> json) => CellDTO(
-      codeCell: json['code_cell'] as String?,
-      nameCell: json['name_cell'] as String?,
-      count: (json['count'] as num?)?.toDouble(),
-    );
+    codeCell: json['code_cell'] as String?,
+    nameCell: json['name_cell'] as String?,
+    count: (json['count'] as num?)?.toDouble(),
+    nomStatus: json['nom_status'] as String?);
 
 Map<String, dynamic> _$CellDTOToJson(CellDTO instance) => <String, dynamic>{
       'code_cell': instance.codeCell,

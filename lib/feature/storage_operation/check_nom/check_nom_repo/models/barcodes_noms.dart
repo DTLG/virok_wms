@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
-class BarcodesNoms extends Equatable {
+class Noms extends Equatable {
   final List<BarcodesNom> noms;
 
-  const BarcodesNoms({required this.noms});
+  const Noms({required this.noms});
 
   @override
   List<Object?> get props => [noms];
 
-  static const empty = BarcodesNoms(noms: []);
+  static const empty = Noms(noms: []);
 }
 
 class BarcodesNom extends Equatable {
@@ -49,10 +49,11 @@ class Cell extends Equatable{
   final String codeCell;
   final String nameCell;
   final double count;
+  final String nomStatus;
 
-  const Cell({required this.codeCell, required this.nameCell, required this.count});
+  const Cell({required this.codeCell, required this.nameCell, required this.count, required this.nomStatus});
 
-  static const empty =  Cell(codeCell: '', nameCell: '', count: 0);
+  static const empty =  Cell(codeCell: '', nameCell: '', count: 0, nomStatus: '');
   @override
   List<Object?> get props => [codeCell, nameCell, count];
 }

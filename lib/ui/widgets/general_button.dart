@@ -19,7 +19,7 @@ class GeneralButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style:  ButtonStyle(
-            fixedSize: const MaterialStatePropertyAll(Size(200, 50)),
+            fixedSize: const MaterialStatePropertyAll(Size(150, 50)),
              backgroundColor:
                       MaterialStatePropertyAll(color),
             ),

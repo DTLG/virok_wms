@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/models/order.dart';
-
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
@@ -51,8 +51,6 @@ class MovingOutOrdersHeadView extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state.status.isInitial) {
-                  context.read<MovingOutOrdersHeadCubit>().checkTsdType();
-
                   context.read<MovingOutOrdersHeadCubit>().getOrders();
                   return const Expanded(
                       child: Center(child: CircularProgressIndicator()));
@@ -102,8 +100,8 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool itsMezonine =
-        context.read<MovingOutOrdersHeadCubit>().state.itsMezonine;
+    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
+
     final theme = Theme.of(context);
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
 
@@ -149,7 +147,6 @@ class _CustomTable extends StatelessWidget {
                         'docId': orders.orders[index].docId,
                         'cubit': context.read<MovingOutOrdersHeadCubit>(),
                         'basket': orders.orders[index].baskets.first.bascet,
-                        'itsMezonine': itsMezonine
                       });
                 }
               } else {
@@ -158,7 +155,6 @@ class _CustomTable extends StatelessWidget {
                       'docId': orders.orders[index].docId,
                       'cubit': context.read<MovingOutOrdersHeadCubit>(),
                       'basket': '',
-                      'itsMezonine': itsMezonine
                     });
               }
             },
@@ -168,97 +164,11 @@ class _CustomTable extends StatelessWidget {
                     ? myColors.tableDarkColor
                     : myColors.tableLightColor,
           );
-
-          // InkWell(
-          //   onTap: () {
-          //     if (itsMezonine) {
-          //       if (orders.orders[index].baskets.isEmpty) {
-          //         showDialog(
-          //           context: context,
-          //           builder: (_) => BlocProvider.value(
-          //             value: context.read<MovingOutOrdersHeadCubit>(),
-          //             child: SetBuscetDialog(
-          //               docId: orders.orders[index].docId,
-          //               itsMezonine: itsMezonine,
-          //             ),
-          //           ),
-          //         );
-          //       } else {
-          //         Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
-          //             arguments: {
-          //               'docId': orders.orders[index].docId,
-          //               'cubit': context.read<MovingOutOrdersHeadCubit>(),
-          //               'basket': orders.orders[index].baskets.first.bascet,
-          //               'itsMezonine': itsMezonine
-          //             });
-          //       }
-          //     } else {
-          //       Navigator.pushNamed(context, AppRoutes.movingOutDataPage,
-          //           arguments: {
-          //             'docId': orders.orders[index].docId,
-          //             'cubit': context.read<MovingOutOrdersHeadCubit>(),
-          //             'basket': '',
-          //             'itsMezonine': itsMezonine
-          //           });
-          //     }
-          //   },
-          //   child: _CustomTableRow(
-          //     index: index,
-          //     lastIndex: orders.orders.length - 1,
-          //     order: orders.orders[index],
-          //   ),
-          // );
         },
       ),
     );
   }
 }
-
-// class _CustomTableRow extends StatelessWidget {
-//   const _CustomTableRow(
-//       {required this.index, required this.lastIndex, required this.order});
-//   final Order order;
-//   final int index;
-//   final int lastIndex;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     return Container(
-//       margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-//       height: 45,
-//       padding: const EdgeInsets.all(3),
-//       decoration: BoxDecoration(
-//           color: order.fullOrder != 0
-//               ? const Color.fromARGB(255, 132, 255, 142)
-//               : index % 2 == 0
-//                   ? Colors.grey[200]
-//                   : Colors.white,
-//           border: const Border.symmetric(
-//               vertical: BorderSide(width: 1),
-//               horizontal: BorderSide(width: 0.5)),
-//           borderRadius: BorderRadius.only(
-//               bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-//               bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-//       child: Row(
-//         children: [
-//           RowElement(
-//               flex: 1,
-//               value: (index + 1).toString(),
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.docId,
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.date,
-//               textStyle: theme.textTheme.titleSmall),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class _TableHead extends StatelessWidget {
   const _TableHead();
@@ -267,25 +177,23 @@ class _TableHead extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TableHeads(
-  
-        children: [
-          RowElement(
-            flex: 1,
-            value: "№",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 4,
-            value: "№ документу",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-          RowElement(
-            flex: 4,
-            value: "Дата",
-            textStyle: theme.textTheme.titleSmall,
-          ),
-        ],
-      
+      children: [
+        RowElement(
+          flex: 1,
+          value: "№",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+        RowElement(
+          flex: 4,
+          value: "№ документу",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+        RowElement(
+          flex: 4,
+          value: "Дата",
+          textStyle: theme.textTheme.titleSmall,
+        ),
+      ],
     );
   }
 }

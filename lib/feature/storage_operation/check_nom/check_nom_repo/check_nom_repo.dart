@@ -1,4 +1,3 @@
-
 import '../check_nom_client/check_nom_client.dart';
 import 'models/barcodes_noms.dart';
 
@@ -8,7 +7,7 @@ class ChackNomRepository {
 
   final ChackNomClient _chackNomClient;
 
-  Future<BarcodesNoms> getNoms(String query, String body) async {
+  Future<Noms> getNoms(String query, String body) async {
     final nomsDTO = await _chackNomClient.getNoms(query, body);
     List<BarcodesNom> noms = nomsDTO.noms
         .map(
@@ -25,7 +24,8 @@ class ChackNomRepository {
                   .map((c) => Cell(
                       codeCell: c.codeCell ?? '',
                       nameCell: c.nameCell ?? '',
-                      count: c.count ?? 0))
+                      count: c.count ?? 0,
+                      nomStatus: c.nomStatus ?? ''))
                   .toList(),
               totalCount: nom.cells.fold(
                   0,
@@ -33,7 +33,7 @@ class ChackNomRepository {
                       previousValue + (cell.count ?? 0).toInt())),
         )
         .toList();
-    return BarcodesNoms(noms: noms);
+    return Noms(noms: noms);
   }
 
   Future<int> insertGenerationBarcode(String query, String body) async {

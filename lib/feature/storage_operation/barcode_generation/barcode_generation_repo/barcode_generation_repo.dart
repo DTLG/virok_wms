@@ -30,7 +30,8 @@ class BarcodeGenerationRepo {
             table: '',
             qty: 0,
             count: 0,
-            taskNumber: nom.taskNumber ?? ''))
+            taskNumber: nom.taskNumber ?? '',
+            statusNom: nom.statusNom ?? ''))
         .toList();
     return Noms(noms: noms, status: nomsDTO.status ?? 0);
   }

@@ -12,13 +12,13 @@ class ReturnDataClient {
   Future<ReturnNomsDTO> getNoms(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String username = prefs.getString('username') ?? '';
-    String password = prefs.getString('password') ?? '';
+    String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+    String password = prefs.getString('password') ?? '';
+
 
     final url = '$baseUrl$query $body';
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
     try {
       final response = await client.post(Uri.parse(url), headers: {
@@ -39,17 +39,17 @@ class ReturnDataClient {
       client.close();
     }
   }
-  
-    Future<ReturnNomDTO> getNom(String query, String body) async {
+
+  Future<ReturnNomDTO> getNom(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String username = prefs.getString('username') ?? '';
-    String password = prefs.getString('password') ?? '';
+    String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+    String password = prefs.getString('password') ?? '';
+
 
     final url = '$baseUrl$query $body';
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
     try {
       final response = await client.post(Uri.parse(url), headers: {
@@ -70,16 +70,17 @@ class ReturnDataClient {
       client.close();
     }
   }
+
   Future<void> closeOrder(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String username = prefs.getString('username') ?? '';
-    String password = prefs.getString('password') ?? '';
+    String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+    String password = prefs.getString('password') ?? '';
+
 
     final url = '$baseUrl$query $body';
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
     try {
       final response = await client.post(Uri.parse(url), headers: {
@@ -98,18 +99,17 @@ class ReturnDataClient {
       client.close();
     }
   }
- 
 
   Future<ReturnOrdersDTO> getOrders(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String username = prefs.getString('username') ?? '';
-    String password = prefs.getString('password') ?? '';
+    String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
+    String password = prefs.getString('password') ?? '';
+
 
     final url = '$baseUrl$query $body';
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
     try {
       final response = await client.post(Uri.parse(url), headers: {
@@ -130,7 +130,4 @@ class ReturnDataClient {
       client.close();
     }
   }
-
-  
-
 }

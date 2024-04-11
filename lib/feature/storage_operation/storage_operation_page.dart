@@ -34,18 +34,19 @@ class StorageOperationView extends StatelessWidget {
       builder: (context, state) {
         context.read<StorageOperationsCubit>().getActivButton();
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Складські операції'),
-          ),
-          body: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: GridButton(
-                children: buildButtons(placementButton, writingOffButton, cellInfoButton, basketInfoButton, cellGenerationButton, context)
-               
-              )
-
-          )
-        );
+            appBar: AppBar(
+              title: const Text('Складські операції'),
+            ),
+            body: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: GridButton(
+                    children: buildButtons(
+                        placementButton,
+                        writingOffButton,
+                        cellInfoButton,
+                        basketInfoButton,
+                        cellGenerationButton,
+                        context))));
       },
     );
   }
@@ -55,13 +56,13 @@ List<Widget> buildButtons(
     placement, writingOff, cell, basket, lablePrint, context) {
   List<Map<String, String>> a = [];
 
-  if (placement) a.add({'name': 'РОЗМІЩЕННЯ ТОВАРІВ', 'path': 'placement'});
-  if (writingOff) a.add({'name': 'СПИСАННЯ ТОВАРІВ', 'path': 'writing_off'});
-  if (cell) a.add({'name': 'КОМІРКА', 'path': 'cell'});
-  if (basket) a.add({'name': 'КОШИК', 'path': 'basket'});
-  if (lablePrint) a.add({'name': 'ДРУК ЕТИКЕТКИ КОМІРКИ', 'path': 'lable_print'});
-    a.add({'name': 'ПЕРЕВІРКА НОМЕНКЛАТУРИ', 'path': 'check_nom'});
-
+  if (placement) a.add({'name': 'ВНЕСЕННЯ ЗАЛИШКУ', 'path': 'placement', 'icon_path':"placement"});
+  if (writingOff) a.add({'name': 'СПИСАННЯ ТОВАРІВ', 'path': 'writing_off', 'icon_path':"writing_off"});
+  if (cell) a.add({'name': 'КОМІРКА', 'path': 'cell', 'icon_path':"cell"});
+  if (basket) a.add({'name': 'КОРЗИНА', 'path': 'basket', 'icon_path':"basket"});
+  if (lablePrint)a.add({'name': 'ДРУК ЕТИКЕТКИ КОМІРКИ', 'path': 'lable_print', 'icon_path':"lable_print"});
+  a.add({'name': 'ПЕРЕВІРКА НОМЕНКЛАТУРИ', 'path': 'check_nom', 'icon_path':"check_nom"});
+  a.add({'name': 'ДРУК ЕТИКЕТКИ ПРОДУКТУ', 'path': 'product_lable_print', 'icon_path':"lable_print"});
 
   List<Widget> buttons = [];
 
@@ -71,7 +72,7 @@ List<Widget> buildButtons(
       color: i.buttonColor == 'r'
           ? const Color.fromRGBO(148, 39, 32, 1)
           : const Color.fromRGBO(217, 219, 218, 1),
-      imagePath: 'assets/image/${a[i]['path']}_${i.buttonColor}.png',
+      imagePath: 'assets/image/${a[i]['icon_path']}_${i.buttonColor}.png',
       lableWidth: 180,
       onTap: () {
         Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
@@ -79,11 +80,8 @@ List<Widget> buildButtons(
     ));
   }
 
-
   return buttons;
 }
-
-
 
 extension on String {
   get toAppRoutes {
@@ -98,9 +96,10 @@ extension on String {
         return AppRoutes.checkBasket;
       case 'lable_print':
         return AppRoutes.cellGeneratorPage;
+      case 'product_lable_print':
+        return AppRoutes.productLablePrint;
       case 'check_nom':
         return AppRoutes.checkNomListPage;
-      
     }
   }
 }

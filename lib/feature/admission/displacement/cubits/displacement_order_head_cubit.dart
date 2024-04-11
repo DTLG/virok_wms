@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../displacement_repository/displacement_order_head_repository.dart';
-import '../displacement_repository/models/order.dart';
+import 'package:virok_wms/feature/admission/displacement/displacement_client/displacement_api_client.dart';
+
+import '../models/models.dart';
 
 part 'displacement_order_head_state.dart';
 
@@ -12,7 +13,7 @@ class DisplacementOrdersHeadCubit extends Cubit<DisplacementOrdersHeadState> {
     try {
       await Future<void>.delayed(const Duration(seconds: 1));
 
-      final orders = await DiplacementOrderHeadRepository()
+      final orders = await DisplacementOrderDataClient()
           .getOrders('IncomingInvoice_list', '');
       emit(state.copyWith(
           status: DisplacementOrdersHeadStatus.success, orders: orders));

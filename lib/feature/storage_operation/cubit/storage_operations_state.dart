@@ -23,7 +23,7 @@ final class StorageOperationsState extends Equatable {
   final bool itsMezonine;
 
   StorageOperationsState copyWith(
-      {String? username,
+      {
       bool? genBarButton,
       bool? barcodeLablePrintButton,
       bool? cellInfoButton,

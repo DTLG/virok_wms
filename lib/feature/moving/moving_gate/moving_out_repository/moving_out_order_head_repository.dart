@@ -3,8 +3,10 @@ import 'package:virok_wms/models/order.dart';
 import '../moving_out_client/moving_out_api_client.dart';
 
 class MovingOutOrderHeadRepository {
-  MovingOutOrderHeadRepository({MovingOutOrderDataClient? movingOrderDataClient})
-      : _movingOrderDataClient = movingOrderDataClient ?? MovingOutOrderDataClient();
+  MovingOutOrderHeadRepository(
+      {MovingOutOrderDataClient? movingOrderDataClient})
+      : _movingOrderDataClient =
+            movingOrderDataClient ?? MovingOutOrderDataClient();
 
   final MovingOutOrderDataClient _movingOrderDataClient;
 
@@ -12,11 +14,16 @@ class MovingOutOrderHeadRepository {
     final listNom = await _movingOrderDataClient.getMovingList(query, body);
 
     final List<Order> orders = listNom.orders
-        .map((e) => Order(
-            docId: e.docId ?? '',
-            date: e.date ?? '',
-            baskets:
-                e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList(), fullOrder: e.fullOrdfer ?? 0, importanceMark: e.importanceMark ?? 0))
+        .map(
+          (e) => Order(
+              docId: e.docId ?? '',
+              date: e.date ?? '',
+              baskets:
+                  e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList(),
+              fullOrder: e.fullOrdfer ?? 0,
+              importanceMark: e.importanceMark ?? 0,
+              mMark: e.mMark ?? 0),
+        )
         .toList();
     return Orders(orders: orders, status: listNom.status ?? 1);
   }

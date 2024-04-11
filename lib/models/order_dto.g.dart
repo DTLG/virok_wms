@@ -19,27 +19,18 @@ Map<String, dynamic> _$OrdersDTOToJson(OrdersDTO instance) => <String, dynamic>{
     };
 
 OrderDTO _$OrderDTOFromJson(Map<String, dynamic> json) => OrderDTO(
-      docId: json['number'] as String?,
-      date: json['date'] as String?,
-      baskets: (json['baskets'] as List<dynamic>)
-          .map((e) => BasketDTO.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      fullOrdfer: json['full_order'] as int?,
-      importanceMark: json['importance_mark'] as int?,
-    );
+    docId: json['number'] as String?,
+    date: json['date'] as String?,
+    baskets: (json['baskets'] as List<dynamic>)
+        .map((e) => BasketDTO.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    fullOrdfer: json['full_order'] as int?,
+    importanceMark: json['importance_mark'] as int?,
+    mMark: json["m_mark"] as int?);
 
-Map<String, dynamic> _$OrderDTOToJson(OrderDTO instance) => <String, dynamic>{
-      'number': instance.docId,
-      'date': instance.date,
-      'baskets': instance.baskets,
-      'full_order': instance.fullOrdfer,
-      'importance_mark': instance.importanceMark,
-    };
+
 
 BasketDTO _$BasketDTOFromJson(Map<String, dynamic> json) => BasketDTO(
       basket: json['basket'] as String?,
     );
 
-Map<String, dynamic> _$BasketDTOToJson(BasketDTO instance) => <String, dynamic>{
-      'basket': instance.basket,
-    };

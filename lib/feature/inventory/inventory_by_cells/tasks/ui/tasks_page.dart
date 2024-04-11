@@ -53,7 +53,9 @@ class InventoryByCellsTasksView extends StatelessWidget {
                 height: 8,
               ),
               const _TableHead(),
-               _TableData(focusNode: focusNode,)
+              _TableData(
+                focusNode: focusNode,
+              )
             ],
           ),
         ),
@@ -99,7 +101,7 @@ class _TableData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
-
+    final theme = Theme.of(context);
     return BlocConsumer<InventoryByCellsTasksCubit, InventoryByCellsTasksState>(
       listener: (context, state) {
         if (state.status.isNotFound) {
@@ -121,11 +123,16 @@ class _TableData extends StatelessWidget {
           child: ListView.builder(
             itemCount: tasks.length,
             itemBuilder: (context, index) => TableElement(
+              bottomMargin: 60,
               dataLenght: tasks.length,
               rowElement: [
                 RowElement(flex: 1, value: (index + 1).toString()),
                 RowElement(flex: 3, value: tasks[index].taskNumber),
-                RowElement(flex: 3, value: tasks[index].nameCell),
+                RowElement(
+                  flex: 3,
+                  value: tasks[index].nameCell,
+                  textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
+                ),
               ],
               index: index,
               color: index % 2 != 0
@@ -138,7 +145,7 @@ class _TableData extends StatelessWidget {
                       'tasksCubit': context.read<InventoryByCellsTasksCubit>(),
                       'task': tasks[index]
                     });
-                    focusNode.requestFocus();
+                focusNode.requestFocus();
               },
             ),
           ),

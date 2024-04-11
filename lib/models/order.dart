@@ -18,19 +18,21 @@ class Order extends Equatable {
   final List<Bascet> baskets;
   final int fullOrder;
   final int importanceMark;
+  final int mMark;
 
   const Order(
       {required this.docId,
       required this.date,
       required this.baskets,
       required this.fullOrder,
-      required this.importanceMark});
+      required this.importanceMark,
+      required this.mMark});
 
   @override
   List<Object?> get props => [docId, date, baskets];
 
   static const empty =
-      Order(docId: '', date: '', baskets: [], fullOrder: 0, importanceMark: 0);
+      Order(docId: '', date: '', baskets: [], fullOrder: 0, importanceMark: 0, mMark: 0);
 }
 
 class Bascet extends Equatable {

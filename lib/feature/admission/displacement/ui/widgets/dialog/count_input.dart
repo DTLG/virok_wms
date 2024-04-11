@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:virok_wms/feature/admission/displacement/displacement_repository/models/noms_model.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../../../ui/custom_keyboard/keyboard.dart';
 import '../../../cubits/displacement_order_data_cubit.dart';
+import '../../../models/models.dart';
 
 void showManualCountIncrementAlert(BuildContext context, String nomBarcode,
     String invoice, DisplacementNom nom) {
@@ -168,7 +168,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                         String barcode = '';
                         if (controller.text.isNotEmpty &&
                             controller.text != "0") {
-                          for (var element in state.nom.barcode) {
+                          for (var element in state.nom.barcodes) {
                             if (element.ratio == 1) {
                               barcode = element.barcode;
                               break;

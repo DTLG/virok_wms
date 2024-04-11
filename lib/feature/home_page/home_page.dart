@@ -1,13 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/const.dart';
-
-import '../../ui/custom_keyboard/keyboard.dart';
-import '../../ui/widgets/widgets.dart';
-
+import 'package:virok_wms/ui/ui.dart';
+import '../../main.dart';
 import 'cubit/home_page_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -16,12 +16,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = context.select((HomePageCubit cubit) => cubit.state);
-    final selectionButton = state.selectionButton;
-    final admissionButton = state.admissionButton;
-    final movinButton = state.movingButton;
-    final rechargeButton = state.rechargeButton;
-    final returninigButton = state.returningButton;
 
     return WillPopScope(
         onWillPop: () async {
@@ -36,45 +30,19 @@ class HomePage extends StatelessWidget {
                 child: SizedBox(
                   width: 50,
                   child: Text(
-                    '2.1.8',
+                    appVersion,
                     style: theme.textTheme.titleMedium!.copyWith(
                         fontSize: 12,
                         color: Colors.white,
                         fontWeight: FontWeight.w500),
                   ),
                 )),
-
-            //  Row(
-            //   mainAxisSize: MainAxisSize.min,
-            //   children: [
-            //     const SizedBox(width: 3),
-            //     CircleAvatar(
-            //       backgroundColor: Colors.black,
-            //       radius: 25,
-            //         child: ClipOval(
-            //             child: Image.asset('assets/image/vasul.jpeg',width: 40,))),
-            //             const SizedBox(width: 5,),
-            //     Align(
-            //         alignment: const Alignment(-0.5, 0),
-            //         child: SizedBox(
-            //           width: 50,
-            //           child: Text(
-            //             'Vasul Edition',
-            //             style: theme.textTheme.titleMedium!.copyWith(
-            //               fontSize: 12,
-            //                 color: Colors.white, fontWeight: FontWeight.w500),
-            //           ),
-            //         )),
-            //   ],
-            // ),
             titleSpacing: 0,
+            centerTitle: false,
             title: const Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Text('Virok WMS'),
-                ),
+                Text('Virok WMS'),
                 Text(
                   'Designed by Bodya',
                   style: TextStyle(
@@ -101,10 +69,10 @@ class HomePage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
-                        width: 110,
+                        width: 114,
                         height: 40,
                         child: Center(
-                          child: Text(state.username,
+                          child: Text(state.zone,
                               textAlign: TextAlign.end,
                               style: theme.textTheme.titleMedium!.copyWith(
                                   color: Colors.white,
@@ -119,9 +87,18 @@ class HomePage extends StatelessWidget {
           ),
           body: Padding(
               padding: const EdgeInsets.all(3.0),
-              child: GridButton(
-                  children: buildButtons(selectionButton, admissionButton,
-                      movinButton, returninigButton, rechargeButton, context))),
+              child: BlocBuilder<HomePageCubit, HomePageState>(
+                builder: (context, state) {
+                  return GridButton(
+                      children: buildButtons(
+                          state.selectionButton,
+                          state.admissionButton,
+                          state.movingButton,
+                          state.returningButton,
+                          state.rechargeButton,
+                          context));
+                },
+              )),
         ));
   }
 }
@@ -173,7 +150,7 @@ class _PinDialogState extends State<PinDialog> {
               closeKeyboardWhenCompleted: false,
               forceErrorState: true,
               obscureText: true,
-              obscuringCharacter: "1",
+              obscuringCharacter: "●",
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: 8),
               validator: (value) {
@@ -269,7 +246,7 @@ class CheckLogoutDialog extends StatelessWidget {
                       context, AppRoutes.login, (route) => false);
                   final prefs = await SharedPreferences.getInstance();
                   prefs.remove('password');
-                  prefs.remove('username');
+                  prefs.remove('zone');
                 },
                 lable: 'Так',
               ),

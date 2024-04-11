@@ -31,7 +31,7 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
             time: DateTime.now().millisecondsSinceEpoch));
       }
     } catch (e) {
-      emit(state.copyWith(status: InventoryStatus.failure));
+      emit(state.copyWith(status: InventoryStatus.failure,errorMassage: e.toString()));
     }
   }
 

@@ -136,7 +136,7 @@ class _TableData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
-
+final theme = Theme.of(context);
     return BlocConsumer<InventoryNomInCellCubit, InventoryNomInCellState>(
       listener: (context, state) {
         if (state.status.isNotFound) {
@@ -195,7 +195,7 @@ class _TableData extends StatelessWidget {
                 rowElement: [
                   RowElement(flex: 1, value: (index +1).toString()),
                   RowElement(flex: 4, value: tasks[index].article),
-                  RowElement(flex: 5, value: tasks[index].nameCell),
+                  RowElement(flex: 5, value: tasks[index].nameCell, textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),),
                   RowElement(flex: 4, value: tasks[index].nomStatus),
                   RowElement(flex: 2, value: tasks[index].count.toString(),),
                   RowElement(

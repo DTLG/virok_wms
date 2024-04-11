@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virok_wms/feature/settings/models/device_ids.dart';
+import 'package:virok_wms/feature/settings/settings_api_client/settings_client.dart';
 
 part 'settings_state.dart';
 
@@ -17,6 +19,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     final printButton = prefs.getBool('barcode_print_lable_button') ?? false;
     final cellInfoButton = prefs.getBool('cell_info_button') ?? false;
     final basketInfoButton = prefs.getBool('basket_info_button') ?? false;
+    final basketOperation = prefs.getBool('basketOperation') ?? false;
+
     final cellGeneratorButton = prefs.getBool('cell_generator_button') ?? false;
 
     final placementButton = prefs.getBool('placement_button') ?? false;
@@ -33,6 +37,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
     final refreshTime = prefs.getInt('refreshTime') ?? 10;
+    final deviceId = prefs.getString('deviceId') ?? '';
 
     emit(state.copyWith(
         status: SettingsStatus.success,
@@ -46,13 +51,16 @@ class SettingsCubit extends Cubit<SettingsState> {
         writeOffButton: writeOffButton,
         selectionButton: selectionButton,
         admissionButton: admissionButton,
+        basketOperation: basketOperation,
         movingButton: movingButton,
         returningButton: returningButton,
         rechargeButton: rechargeButton,
         printerHost: printerHost,
         printerPort: printerPort,
         cameraScaner: cameraScaner,
-        autoRefreshTime: refreshTime));
+        autoRefreshTime: refreshTime,
+        deviceId: deviceId));
+    await getDeviceIds();
   }
 
   Future<void> writeToSP(String key, bool value) async {
@@ -61,6 +69,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     switch (key) {
       case 'barcode_print_lable_button':
         return emit(state.copyWith(printButton: value));
+      case 'basketOperation':
+        return emit(state.copyWith(basketOperation: value));
       case 'cell_info_button':
         return emit(state.copyWith(cellInfoButton: value));
       case 'basket_info_button':
@@ -93,5 +103,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     prefs.setInt('refreshTime', newTime);
 
     emit(state.copyWith(autoRefreshTime: newTime));
+  }
+
+  Future<void> getDeviceIds() async {
+    final ids = await SettingsClient().getListId();
+    emit(state.copyWith(deviceIds: ids));
+  }
+
+  Future<void> selectDeviceId(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('deviceId', id);
+
+    emit(state.copyWith(deviceId: id));
   }
 }

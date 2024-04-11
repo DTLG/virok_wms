@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:math' as math;
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../../../home_page/cubit/home_page_cubit.dart';
@@ -59,58 +58,51 @@ class ReturningOutOrderDataView extends StatelessWidget {
         onRefresh: () async {
           context.read<ReturningOutOrderDataCubit>().getNoms(docId);
         },
-        child: Stack(
-          children: [
-                        WatermarkWidget(itsMezonine: itsMezonine),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TableInfo(),
-                      itsMezonine ? const BascketInfo() : const SizedBox()
-                    ],
-                  ),
-                  const TableHead(),
-                  BlocConsumer<ReturningOutOrderDataCubit,
-                      ReturningOutOrderDataState>(
-                    listener: (context, state) {
-                      if (state.status.isNotFound) {
-                        Alerts(msg: state.errorMassage, context: context)
-                            .showError();
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state.status.isInitial) {
-                        context.read<ReturningOutOrderDataCubit>().getNoms(docId);
-                      }
-                      if (state.status.isLoading) {
-                        return const Expanded(
-                            child: Center(child: CircularProgressIndicator()));
-                      }
-                      if (state.status.isFailure) {
-                        return Expanded(
-                          child: WentWrong(
-                            errorDescription: state.errorMassage,
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        );
-                      }
-                      return CustomTable(
-                        noms: state.noms.noms,
-                        docId: docId,
-                      );
-                    },
-                  ),
+                  const TableInfo(),
+                  itsMezonine ? const BascketInfo() : const SizedBox()
                 ],
               ),
-            ),
-            
-          ],
+              const TableHead(),
+              BlocConsumer<ReturningOutOrderDataCubit,
+                  ReturningOutOrderDataState>(
+                listener: (context, state) {
+                  if (state.status.isNotFound) {
+                    Alerts(msg: state.errorMassage, context: context)
+                        .showError();
+                  }
+                },
+                builder: (context, state) {
+                  if (state.status.isInitial) {
+                    context.read<ReturningOutOrderDataCubit>().getNoms(docId);
+                  }
+                  if (state.status.isLoading) {
+                    return const Expanded(
+                        child: Center(child: CircularProgressIndicator()));
+                  }
+                  if (state.status.isFailure) {
+                    return Expanded(
+                      child: WentWrong(
+                        errorDescription: state.errorMassage,
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    );
+                  }
+                  return CustomTable(
+                    noms: state.noms.noms,
+                    docId: docId,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
       bottomSheet: Row(
@@ -127,30 +119,7 @@ class ReturningOutOrderDataView extends StatelessWidget {
   }
 }
 
-class WatermarkWidget extends StatelessWidget {
-  const WatermarkWidget({super.key, required this.itsMezonine});
 
-  final bool itsMezonine;
-
-  @override
-  Widget build(BuildContext context) {
-    return  Center(
-              child: Transform.rotate(
-                angle: -math.pi / 4,
-                child:  Text(
-                  itsMezonine?
-                  'Мезонін':'Палетний склад',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 70,
-                      
-                      color: Color.fromARGB(6, 17, 29, 57),
-                      fontWeight: FontWeight.w800),
-                ),
-              ),
-            );
-  }
-}
 
 class TableInfo extends StatelessWidget {
   const TableInfo({super.key});

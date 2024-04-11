@@ -14,16 +14,16 @@ final class CheckNomListState extends Equatable {
   const CheckNomListState(
       {this.status = ChecknomStatus.initial,
       this.errorMassage = '',
-      BarcodesNoms? noms})
-      : noms = noms ?? BarcodesNoms.empty;
+      Noms? noms})
+      : noms = noms ?? Noms.empty;
 
   final ChecknomStatus status;
-  final BarcodesNoms noms;
+  final Noms noms;
   final String errorMassage;
 
   CheckNomListState copyWith(
       {ChecknomStatus? status,
-      BarcodesNoms? noms,
+      Noms? noms,
       String? errorMassage,
 }) {
     return CheckNomListState(

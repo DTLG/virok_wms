@@ -28,48 +28,72 @@ class CelLGeneratorCubit extends Cubit<CellGeneratorState> {
     emit(state.copyWith(cell: value.toStr));
   }
 
+  changeArrow() {
+    emit(state.copyWith(arrowUp: !state.arrowUp));
+  }
+
+  init() {
+    emit(state.copyWith(
+        floor: '01',
+        range: '01',
+        rack: '01',
+        floorRack: '01',
+        cell: '01',
+        arrowUp: false));
+  }
+
   Future<void> printMezoninLable() async {
     final barcode =
         'M${state.floor}${state.range}${state.rack}${state.floorRack}${state.cell}';
     final title = 'M${state.floor} ${state.range} ';
     final subtitle = '${state.rack} ${state.floorRack} ${state.cell}';
-    final errowUp = state.floorRack == '04'?true:false;
+    // final errowUp = state.floorRack == '04'?true:false;
 
-    PrinterConnect().connectToPrinter(
-        PrinterLables.mezoninCellLable(barcode, title, subtitle, errowUp));
+    PrinterConnect().connectToPrinter(PrinterLables.mezoninCellLable(
+        barcode, title, subtitle, state.arrowUp));
   }
 
-  Future<void> printPalletLable() async {
+  Future<void> printKyivPalletLable() async {
     final barcode =
+        'P${state.floor.replaceFirst("0", '')}${state.range}${state.rack}${state.floorRack}${state.cell}';
+    final title =
+        'P${state.floor.replaceFirst("0", '')} ${state.range} ${state.rack} ${state.floorRack} ${state.cell}';
+
+    PrinterConnect().connectToPrinter(
+        PrinterLables.palletCellLable(barcode, title, state.arrowUp));
+  }
+    Future<void> printLvivPalletLable() async {
+  final barcode =
         '${state.range}${state.rack}${state.floorRack}${state.cell}';
     final title =
         '${state.range} ${state.rack} ${state.floorRack} ${state.cell}';
 
-    PrinterConnect().connectToPrinter(PrinterLables.palletCellLable(
-      barcode,
-      title,
-    ));
+    PrinterConnect().connectToPrinter(
+        PrinterLables.palletCellLableLviv(barcode, title));
   }
 
-    Future<void> printServiceLable() async {
+  Future<void> printKyivEpicentreLable() async {
+    final barcode = 'E${state.range}${state.rack}${state.floorRack}';
+    final title = 'E ${state.range} ${state.rack} ${state.floorRack}';
+
+    PrinterConnect().connectToPrinter(
+        PrinterLables.epicentrCellLable(barcode, title, state.arrowUp));
+  }
+
+  Future<void> printServiceLable() async {
     final barcode =
         'S${state.floor}${state.range}${state.rack}${state.floorRack}${state.cell}';
     final title = 'S${state.floor} ${state.range} ';
     final subtitle = '${state.rack} ${state.floorRack} ${state.cell}';
-    final errowUp = state.floorRack == '04'?true:false;
+    // final errowUp = state.floorRack == '04'?true:false;
 
-    PrinterConnect().connectToPrinter(
-        PrinterLables.serviceCellLable(barcode, title, subtitle, errowUp));
+    PrinterConnect().connectToPrinter(PrinterLables.serviceCellLable(
+        barcode, title, subtitle, state.arrowUp));
   }
-
 }
-
-
-
 
 extension on int {
   String get toStr {
     return this < 10 ? '0$this' : toString();
   }
 }
-

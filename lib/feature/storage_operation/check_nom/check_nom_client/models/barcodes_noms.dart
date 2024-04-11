@@ -2,14 +2,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'barcodes_noms.g.dart';
 
-
 @JsonSerializable()
-class BarcodesNomsDTO{
+class NomsDTO {
   final List<BarcodesNomDTO> noms;
 
-  BarcodesNomsDTO({required this.noms});
+  NomsDTO({required this.noms});
 
-factory BarcodesNomsDTO.fromJson(Map<String, dynamic> json) =>
+  factory NomsDTO.fromJson(Map<String, dynamic> json) =>
       _$BarcodesNomsDTOFromJson(json);
 }
 
@@ -21,12 +20,14 @@ class BarcodesNomDTO {
   final List<BarcodeDTO> barcodes;
   final List<CellDTO> cells;
 
-
   factory BarcodesNomDTO.fromJson(Map<String, dynamic> json) =>
       _$BarcodesNomDTOFromJson(json);
 
   BarcodesNomDTO(
-      {required this.name, required this.article, required this.barcodes, required this.cells});
+      {required this.name,
+      required this.article,
+      required this.barcodes,
+      required this.cells});
 }
 
 @JsonSerializable()
@@ -43,14 +44,16 @@ class BarcodeDTO {
 
 @JsonSerializable()
 class CellDTO {
-    @JsonKey(name: "code_cell")
-
+  @JsonKey(name: "code_cell")
   final String? codeCell;
   @JsonKey(name: "name_cell")
   final String? nameCell;
   final double? count;
+  @JsonKey(name: "nom_status")
+  final String? nomStatus;
 
-  CellDTO({required this.codeCell, required this.nameCell, required this.count});
+  CellDTO(
+      {required this.codeCell, required this.nameCell, required this.count, required this.nomStatus});
 
   factory CellDTO.fromJson(Map<String, dynamic> json) =>
       _$CellDTOFromJson(json);

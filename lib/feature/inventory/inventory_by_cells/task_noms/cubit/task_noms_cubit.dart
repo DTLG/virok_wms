@@ -96,7 +96,7 @@ class InventoryByCellsTaskNomsCubit
         status: InventoryStatus.success));
   }
 
-  Future<void> sendNom(String nomBarcode, int count, String docNumber,
+  Future<void> sendNom(String nomBarcode, String count, String docNumber,
       String nomStatus, String cellBarcode) async {
     try {
       final noms = await IventoryByCellsRepository().getNoms(

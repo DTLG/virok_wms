@@ -14,7 +14,7 @@ class MovingInNom {
   final String number;
   final String name;
   final String article;
-  final List<Barcode> barcode;
+  final List<Barcode> barcodes;
 
   final double qty;
   final double count;
@@ -23,7 +23,7 @@ class MovingInNom {
     required this.number,
     required this.name,
     required this.article,
-    required this.barcode,
+    required this.barcodes,
     required this.qty,
     required this.count,
   });
@@ -32,7 +32,7 @@ class MovingInNom {
     number: '',
     name: '',
     article: '',
-    barcode: [],
+    barcodes: [],
     qty: 0,
     count: 0,
   );

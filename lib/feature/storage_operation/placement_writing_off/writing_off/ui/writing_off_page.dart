@@ -47,7 +47,7 @@ class _WritingOffViewState extends State<WritingOffView> {
               if (count > 0) {
                 showDialog(
                   context: context,
-                  builder: (context) => ClosingCheckDialog(
+                  builder: (context) => YesOrNoDialog(
                     massage: "Ви дійсно хочете завершити дії",
                     noButton: () {
                       Navigator.pop(context);
@@ -202,7 +202,7 @@ class _WritingOffViewState extends State<WritingOffView> {
                         context: context,
                         builder: (_) => BlocProvider.value(
                           value: context.read<WritingOffCubit>(),
-                          child: ClosingCheckDialog(
+                          child: YesOrNoDialog(
                             massage: "Ви дійсно хочете списати товар",
                             yesButton: () {
                               context.read<WritingOffCubit>().sendNom(

@@ -40,8 +40,8 @@ class AppRoutes {
 
   static const checkBasket = '/check_basket';
   static const cellGeneratorPage = '/cell_generator_page';
-  static const  lvivCellsPage = 'lvivCellsPage'; 
-    static const  kyivCellsPage = 'kyivCellsPage'; 
+  static const lvivCellsPage = 'lvivCellsPage';
+  static const kyivCellsPage = 'kyivCellsPage';
 
   static const checkNomListPage = '/check_nom_list_page';
   static const checkNomPage = '/check_nom_page';
@@ -61,4 +61,9 @@ class AppRoutes {
 
   static const fullInventoryHeadPage = '/full_inventory_head_page';
   static const fullInventoryDataPage = '/full_inventory_data_page';
+
+  // КиЇв розміщення
+  static const placementFromAdmissionPage = 'placementfromadmissionPage';
+  static const placementFromReturnPage = 'placementFromReturnPage';
+  // ---------------
 }

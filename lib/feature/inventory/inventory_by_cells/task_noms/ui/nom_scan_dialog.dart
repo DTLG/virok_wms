@@ -31,7 +31,6 @@ class _CountInputDialog extends StatefulWidget {
 }
 
 class _CountInputDialogState extends State<_CountInputDialog> {
-  final cellController = TextEditingController();
   final nomController = TextEditingController();
 
   final cellFocusNode = FocusNode();
@@ -115,37 +114,38 @@ class _CountInputDialogState extends State<_CountInputDialog> {
             const SizedBox(
               height: 10,
             ),
-            TextField(
-              autofocus: cameraScaner ? false : true,
-              controller: cellController,
-              focusNode: cellFocusNode,
-              textInputAction: TextInputAction.next,
-              onSubmitted: (value) {
-                final res = context
-                    .read<InventoryByCellsTaskNomsCubit>()
-                    .scanCell(value, widget.nom.codCell);
+            // TextField(
+            //   autofocus: cameraScaner ? false : true,
+            //   controller: cellController,
+            //   focusNode: cellFocusNode,
+            //   textInputAction: TextInputAction.next,
+            //   onSubmitted: (value) {
+            //     final res = context
+            //         .read<InventoryByCellsTaskNomsCubit>()
+            //         .scanCell(value, widget.nom.codCell);
 
-                if (res == false) {
-                  cellController.clear();
-                  cellFocusNode.requestFocus();
-                }
-              },
-              decoration: InputDecoration(
-                  hintText: 'Відскануйте комірку',
-                  suffixIcon: cameraScaner
-                      ? CameraScanerButton(
-                          scan: (value) {
-                            context
-                                .read<InventoryByCellsTaskNomsCubit>()
-                                .scanCell(value, widget.nom.codCell);
-                          },
-                        )
-                      : null),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
+            //     if (res == false) {
+            //       cellController.clear();
+            //       cellFocusNode.requestFocus();
+            //     }
+            //   },
+            //   decoration: InputDecoration(
+            //       hintText: 'Відскануйте комірку',
+            //       suffixIcon: cameraScaner
+            //           ? CameraScanerButton(
+            //               scan: (value) {
+            //                 context
+            //                     .read<InventoryByCellsTaskNomsCubit>()
+            //                     .scanCell(value, widget.nom.codCell);
+            //               },
+            //             )
+            //           : null),
+            // ),
+            // const SizedBox(
+            //   height: 5,
+            // ),
             TextField(
+              autofocus: true,
               focusNode: nomFocusNode,
               controller: nomController,
               onSubmitted: (value) {
@@ -206,15 +206,14 @@ class _CountInputDialogState extends State<_CountInputDialog> {
               return ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(
-                          state.nomBarcode.isEmpty &&
-                                  cellController.text.isEmpty
+                          state.nomBarcode.isEmpty 
+                                
                               ? Colors.grey
                               : Colors.green)
                               ),
                   onPressed: () {
                     final state = context.read<InventoryByCellsTaskNomsCubit>().state;
-                    if (state.nomBarcode.isNotEmpty &&
-                        cellController.text.isNotEmpty) {
+                    if (state.nomBarcode.isNotEmpty) {
                       showManualCountDialog(context);
                     }
                   },
@@ -225,14 +224,13 @@ class _CountInputDialogState extends State<_CountInputDialog> {
               onPressed: () {
                 final state = context.read<InventoryByCellsTaskNomsCubit>().state;
 
-                if (state.nomBarcode.isNotEmpty &&
-                    cellController.text.isNotEmpty) {
+                if (state.nomBarcode.isNotEmpty) {
                   context.read<InventoryByCellsTaskNomsCubit>().sendNom(
                       state.nomBarcode,
-                      state.count,
+                      state.count.toString(),
                       widget.nom.taskNumber,
                       widget.nom.nomStatus,
-                      cellController.text);
+                      widget.nom.codCell);
                   Navigator.pop(context);
                 }
               },

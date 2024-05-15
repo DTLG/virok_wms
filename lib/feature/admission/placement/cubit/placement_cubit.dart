@@ -12,8 +12,8 @@ class PlacementCubit extends Cubit<PlacementState> {
   Future<void> getNoms(String incomingInvoice) async {
     try {
       await Future.delayed(const Duration(seconds: 2), () {});
-      final noms =
-          await PlacementRepository().getNoms('Admision_placement_by_document_list', incomingInvoice);
+      final noms = await PlacementRepository()
+          .getNoms('Admision_placement_by_document_list', incomingInvoice);
       emit(state.copyWith(status: PlacementStatus.success, noms: noms));
     } catch (e) {
       emit(state.copyWith(
@@ -23,8 +23,8 @@ class PlacementCubit extends Cubit<PlacementState> {
 
   Future<void> getNom(String nomNar, String invoice, String taskNumber) async {
     try {
-      final nom = await PlacementRepository()
-          .getNom('Admision_placement_by_document_sku', '$nomNar $invoice $taskNumber');
+      final nom = await PlacementRepository().getNom(
+          'Admision_placement_by_document_sku', '$nomNar $invoice $taskNumber');
 
       emit(state.copyWith(status: PlacementStatus.success, nom: nom));
     } catch (e) {
@@ -54,9 +54,8 @@ class PlacementCubit extends Cubit<PlacementState> {
     }
   }
 
-  void scan(String nomBar, AdmissionNom nom) {
+  bool scan(String nomBar, AdmissionNom nom) {
     double count = state.count == 0 ? nom.count : state.count;
-    String checkNomBar = '';
 
     for (var barcode in nom.barcodes) {
       if (barcode.barcode == nomBar) {
@@ -65,27 +64,26 @@ class PlacementCubit extends Cubit<PlacementState> {
               status: PlacementStatus.notFound,
               time: DateTime.now().millisecondsSinceEpoch,
               errorMassage: 'Відсканована більша кількість'));
-          checkNomBar = nomBar;
+          return false;
         } else {
           count += barcode.ratio;
           emit(state.copyWith(
               count: count,
               nomBarcode: nomBar,
               status: PlacementStatus.success));
-          checkNomBar = nomBar;
-          break;
+          return true;
         }
       }
     }
-    if (checkNomBar.isEmpty) {
-      emit(state.copyWith(status: PlacementStatus.success));
-      emit(state.copyWith(
-          status: PlacementStatus.notFound, errorMassage: 'Товар не знайдено'));
-    }
+
+    emit(state.copyWith(status: PlacementStatus.success));
+    emit(state.copyWith(
+        status: PlacementStatus.notFound, errorMassage: 'Товар не знайдено'));
+    return false;
   }
 
   void manualCountIncrement(String count, double qty, double nomCount) {
-    if ((int.tryParse(count) ?? qty) > qty ) {
+    if ((int.tryParse(count) ?? qty) > qty) {
       emit(state.copyWith(status: PlacementStatus.success));
       emit(state.copyWith(
           status: PlacementStatus.notFound,
@@ -97,12 +95,13 @@ class PlacementCubit extends Cubit<PlacementState> {
     }
   }
 
-  Future<void> send(
-      String barcode, String cell, String incomingInvoice, double qty, String taskNumber) async {
+  Future<void> send(String barcode, String cell, String incomingInvoice,
+      double qty, String taskNumber) async {
     double count = state.count - qty;
     try {
       final noms = await PlacementRepository().getNoms(
-          'Admision_placement_by_document_scan', '$barcode $count $incomingInvoice $taskNumber $cell');
+          'Admision_placement_by_document_scan',
+          '$barcode $count $incomingInvoice $taskNumber $cell');
       emit(state.copyWith(status: PlacementStatus.success, noms: noms));
       clear();
     } catch (e) {
@@ -143,7 +142,8 @@ class PlacementCubit extends Cubit<PlacementState> {
   Future<void> changeQty(String qty, AdmissionNom nom) async {
     try {
       emit(state.copyWith(status: PlacementStatus.loading));
-      final orders = await PlacementRepository().getNoms('Change_Admision_placement_task', '${nom.taskNumber} $qty');
+      final orders = await PlacementRepository()
+          .getNoms('Change_Admision_placement_task', '${nom.taskNumber} $qty');
       emit(state.copyWith(status: PlacementStatus.success, noms: orders));
       clear();
     } catch (e) {
@@ -151,10 +151,12 @@ class PlacementCubit extends Cubit<PlacementState> {
           status: PlacementStatus.failure, errorMassage: e.toString()));
     }
   }
+
   Future<void> cancelTask(AdmissionNom nom) async {
     try {
       emit(state.copyWith(status: PlacementStatus.loading));
-      final orders = await PlacementRepository().getNoms('Cancel_Admision_placement_task', nom.taskNumber);
+      final orders = await PlacementRepository()
+          .getNoms('Cancel_Admision_placement_task', nom.taskNumber);
       emit(state.copyWith(status: PlacementStatus.success, noms: orders));
       clear();
     } catch (e) {

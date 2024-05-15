@@ -149,26 +149,6 @@ class _NomScanDialogState extends State<NomScanDialog> {
         actions: [
           Column(
             children: [
-              // Row(
-              //   children: [
-              //     // ElevatedButton(
-              //     //     style: const ButtonStyle(
-              //     //         backgroundColor: MaterialStatePropertyAll(
-              //     //             Color.fromARGB(255, 140, 193, 219))),
-              //     //     onPressed: () {
-              //     //       correctTaslDialog(context, widget.nom);
-              //     //     },
-              //     //     child: const SizedBox(
-              //     //       width: 130,
-              //     //       child: Text(
-              //     //         'Коригувати ',
-              //     //         style: TextStyle(fontSize: 20),
-              //     //         textAlign: TextAlign.center,
-              //     //         maxLines: 2,
-              //     //       ),
-              //     //     )),
-              //   ],
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -224,8 +204,11 @@ class _CellInputState extends State<CellInput> {
             hintText: 'Відскануйте комірку',
             suffixIcon: cameraScaner
                 ? CameraScanerButton(
-                    scan: (value) {
-                      context.read<PlacementCubit>().checkCell(value);
+                    scan: (value) async {
+                      final res =
+                          await context.read<PlacementCubit>().checkCell(value);
+                      if (res == 0) return;
+                      controller.text = value;
                     },
                   )
                 : null),
@@ -269,7 +252,12 @@ class _NomInputState extends State<NomInput> {
             suffixIcon: cameraScaner
                 ? CameraScanerButton(
                     scan: (value) {
-                      context.read<PlacementCubit>().scan(value, widget.nom);
+                      final res = context
+                          .read<PlacementCubit>()
+                          .scan(value, widget.nom);
+                      if (res) {
+                        controller.text = value;
+                      }
                     },
                   )
                 : null),

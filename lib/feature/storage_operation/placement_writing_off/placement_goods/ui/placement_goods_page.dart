@@ -48,7 +48,7 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
               if (count > 0) {
                 showDialog(
                   context: context,
-                  builder: (context) => ClosingCheckDialog(
+                  builder: (context) => YesOrNoDialog(
                     massage: "Ви дійсно хочете завершити дії",
                     noButton: () {
                       Navigator.pop(context);
@@ -220,7 +220,7 @@ class _PlacementGoodsViewState extends State<PlacementGoodsView> {
                             context: context,
                             builder: (_) => BlocProvider.value(
                                   value: context.read<PlacementGoodsCubit>(),
-                                  child: ClosingCheckDialog(
+                                  child: YesOrNoDialog(
                                     massage:
                                         "Ви дійсно хочете розмістити товар",
                                     yesButton: () {

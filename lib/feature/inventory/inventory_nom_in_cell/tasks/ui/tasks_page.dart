@@ -169,7 +169,7 @@ final theme = Theme.of(context);
                             builder: (_) => BlocProvider.value(
                                   value:
                                       context.read<InventoryNomInCellCubit>(),
-                                  child: ClosingCheckDialog(
+                                  child: YesOrNoDialog(
                                     massage:
                                         'Ви дійсно бажаєте завершити завдання?',
                                     noButton: () {

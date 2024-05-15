@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/admission/placement/placement_repository/model/admission_nom.dart';
@@ -46,11 +48,13 @@ class _PlacementBarcodeInputState extends State<PlacementBarcodeInput> {
             suffixIcon: cameraScaner
                 ? CameraScanerButton(
                     scan: (value) {
-                      final AdmissionNom nom =
-                          context.read<PlacementCubit>().search(value);
-                      if (nom != AdmissionNom.empty) {
-                        showPlacementNomScanDialog(context, nom);
-                      }
+                      Timer(const Duration(milliseconds: 1), () {
+                        final AdmissionNom nom =
+                            context.read<PlacementCubit>().search(value);
+                        if (nom != AdmissionNom.empty) {
+                          showPlacementNomScanDialog(context, nom);
+                        }
+                      });
                     },
                   )
                 : null),

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/route/route.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
-import '../check_nom_repo/models/barcodes_noms.dart';
 import '../cubit/check_nom_list_cubit.dart';
+
+String _query = byArcticle;
+String _value = '';
+const byArcticle = 'get_from_article';
+const byBarcode = 'get_from_barcode';
 
 class CheckNomListPage extends StatelessWidget {
   const CheckNomListPage({super.key});
@@ -145,8 +150,9 @@ class _ArticleInputState extends State<ArticleInput> {
         autofocus: true,
         onSubmitted: (value) {
           context.read<CheckNomListCubit>().getNoms(
-              _switchValue == true ? 'get_from_article' : 'get_from_barcode',
+              _switchValue == true ? byArcticle : byBarcode,
               value);
+          _value = value;
         },
         decoration: InputDecoration(
             hintText: _switchValue ? 'Введіть артикул' : 'Відскануйте штрихкод',
@@ -160,7 +166,8 @@ class _ArticleInputState extends State<ArticleInput> {
                             scan: (value) {
                               context
                                   .read<CheckNomListCubit>()
-                                  .getNoms('get_from_barcode', value);
+                                  .getNoms(byBarcode, value);
+                              _value = value;
                             },
                           )
                     : const SizedBox(),
@@ -170,6 +177,7 @@ class _ArticleInputState extends State<ArticleInput> {
                     value: _switchValue,
                     onChanged: (value) {
                       setState(() => _switchValue = value);
+                      _query = value ? byArcticle : byBarcode;
                     },
                   ),
                 ),
@@ -212,8 +220,12 @@ class NomsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
+
         Navigator.pushNamed(context, AppRoutes.checkNomPage, arguments: {
           'nom': nom,
+          "nomsListCubit": context.read<CheckNomListCubit>(),
+          'searchValue': _value,
+          'query': _query
         });
       },
       title: Text(

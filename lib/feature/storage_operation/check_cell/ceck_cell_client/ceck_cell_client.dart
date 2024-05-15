@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_client/models/barcodes_noms.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/models/check_cell_model.dart';
 
 class CheckCellClient {
@@ -41,7 +41,7 @@ class CheckCellClient {
     }
   }
 
-  Future<NomsDTO> getNoms(String query, String body) async {
+  Future<Noms> getNoms(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String zone = prefs.getString('zone') ?? '';
@@ -63,7 +63,7 @@ class CheckCellClient {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(utf8.decode(response.bodyBytes));
-        return NomsDTO.fromJson(json);
+        return Noms.fromJson(json);
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');

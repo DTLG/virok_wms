@@ -65,7 +65,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     return false;
   }
 
-  void scan(String nomBar, Nom nom) {
+  bool scan(String nomBar, Nom nom) {
     double count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcode) {
@@ -75,7 +75,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
               status: SelectionOrderDataStatus.notFound,
               errorMassage: 'Відсканована більша кількість',
               time: DateTime.now().millisecondsSinceEpoch));
-          return;
+          return false;
         }
 
         count += barcode.ratio;
@@ -85,17 +85,28 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
             nomBarcode: nomBar,
             status: SelectionOrderDataStatus.success));
 
-        return;
+        return true;
       }
     }
     emit(state.copyWith(
         status: SelectionOrderDataStatus.notFound,
         errorMassage: 'Відскановано не той товар',
         time: DateTime.now().millisecondsSinceEpoch));
+    return false;
   }
 
   void manualCountIncrement(String count, double qty, double nomCount) {
-    if ((int.tryParse(count) ?? qty) > qty) {
+    if (count.length > 6) {
+      emit(state.copyWith(
+          status: SelectionOrderDataStatus.notFound,
+          errorMassage:
+              'Введена завелика кількість - "$count", максимальна довжина до 6 символів',
+          time: DateTime.now().millisecondsSinceEpoch));
+      return;
+    }
+    final formatingCount = int.tryParse(count);
+
+    if ((formatingCount ?? qty) > qty) {
       emit(state.copyWith(
           status: SelectionOrderDataStatus.notFound,
           errorMassage: 'Введена більша кількість',
@@ -108,7 +119,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   Future<void> send(String barcode, String docNum, String cell, String bascket,
-      double qty) async {
+      double qty, String taskNumber) async {
     double count = state.count - qty;
     try {
       final orders = await SelectionOrderDataRepository().selectionRepo(
@@ -141,18 +152,13 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
 
   int checkFullOrder() {
     final noms = state.noms;
-    int res = 0;
 
     for (var nom in noms.noms) {
       if (nom.count < nom.qty) {
-        res = 0;
         return 0;
-      } else {
-        res = 1;
       }
     }
-
-    return res;
+    return 1;
   }
 
   Future<void> closeOrder(String docId, SelectionOrdersHeadCubit cubit) async {
@@ -200,7 +206,10 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
             time: DateTime.now().millisecondsSinceEpoch));
         res = false;
       } else if (bascketStatus == '1') {
-        emit(state.copyWith(basketStatus: true, basket: barcode, status: SelectionOrderDataStatus.success));
+        emit(state.copyWith(
+            basketStatus: true,
+            basket: barcode,
+            status: SelectionOrderDataStatus.success));
         res = true;
         getNoms(docId);
       }

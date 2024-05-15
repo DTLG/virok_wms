@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:virok_wms/feature/storage_operation/check_cell/check_cell_repository/check_cell_repository.dart';
-import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_repo/models/barcodes_noms.dart';
 import 'package:virok_wms/models/check_cell.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart' as chackNom;
 
 part 'check_cell_state.dart';
 
@@ -50,7 +50,7 @@ class CheckCellCubit extends Cubit<CheckCellState> {
     }
   }
 
-  Future<List<Cell>> getNoms(String value) async {
+  Future<List<chackNom.Cell>> getNoms(String value) async {
     try {
       final noms =
           await CheckCellRepository().getNoms('get_from_article', value);

@@ -1,4 +1,5 @@
-import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_repo/models/barcodes_noms.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart'
+    as chackNom;
 import 'package:virok_wms/models/check_cell.dart';
 
 import '../../../../models/barcode_model.dart';
@@ -30,30 +31,27 @@ class CheckCellRepository {
         errorMasssage: ceel.errorMasssage ?? '');
   }
 
-  Future<Noms> getNoms(String query, String body) async {
+  Future<chackNom.Noms> getNoms(String query, String body) async {
     final nomsDTO = await _cellClient.getNoms(query, body);
-    List<BarcodesNom> noms = nomsDTO.noms
+    List<chackNom.BarcodesNom> noms = nomsDTO.noms
         .map(
-          (nom) => BarcodesNom(
-              name: nom.name ?? '',
-              article: nom.article ?? '',
-              barodes: nom.barcodes
-                  .map((bar) => Barcodee(
-                      barcode: bar.barcode ?? '',
-                      count: bar.count ?? 1,
-                      ratio: bar.ratio ?? 1))
-                  .toList(),
-              cells: nom.cells
-                  .map((c) => Cell(
-                      codeCell: c.codeCell ?? '',
-                      nameCell: c.nameCell ?? '',
-                      count: c.count ?? 0,
-                      nomStatus: c.nomStatus ?? ''
-                      ))
-                  .toList(),
-                  totalCount: 0),
+          (nom) => chackNom.BarcodesNom(
+            name: nom.name,
+            article: nom.article,
+            barcodes: nom.barcodes
+                .map((bar) => chackNom.Barcode(
+                    barcode: bar.barcode, count: bar.count, ratio: bar.ratio))
+                .toList(),
+            cells: nom.cells
+                .map((c) => chackNom.Cell(
+                    codeCell: c.codeCell,
+                    nameCell: c.nameCell,
+                    count: c.count,
+                    nomStatus: c.nomStatus))
+                .toList(),
+          ),
         )
         .toList();
-    return Noms(noms: noms);
+    return chackNom.Noms(noms: noms);
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:virok_wms/feature/admission/kyiv_placement/placement_from_admission/ui/placement_head_page.dart';
+import 'package:virok_wms/feature/admission/kyiv_placement/placement_from_return/ui/placement_from_return_page.dart';
 import 'package:virok_wms/feature/admission/placement/ui/placement_data_page.dart';
 import 'package:virok_wms/feature/admission/placement/ui/placement_head_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_cells/task_noms/ui/task_noms.dart';
@@ -160,6 +162,14 @@ class RouteGenerator {
       case AppRoutes.inventoryNomInCellTasksPage:
         return buildRoute(const InventoryNomInCellTasksPage(),
             settings: settings);
+      //* Київ розміщення
+        case AppRoutes.placementFromAdmissionPage:
+        return buildRoute(const PlacementFromAdmissionHeadPage(),
+            settings: settings);
+                    case AppRoutes.placementFromReturnPage:
+        return buildRoute(const PlacementFromReturnPage(),
+            settings: settings);
+      //* ---------------
       default:
         return buildRoute(const HomePage(), settings: settings);
     }

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/moving/moving_out/moving_out_client/moving_gate_api_client.dart';
 
 import 'package:virok_wms/models/order.dart';

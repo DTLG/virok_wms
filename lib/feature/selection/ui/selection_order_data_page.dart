@@ -1,7 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
+import 'package:virok_wms/feature/storage_operation/placement_writing_off/writing_off/ui/ui.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/selection_order_head_cubit.dart';
@@ -29,7 +31,7 @@ class SelectionOrderDataView extends StatelessWidget {
     final String docId = argument['docId'] ?? '';
     final SelectionOrdersHeadCubit selectionOrderHeadCubit = argument['cubit'];
     final String basket = argument['basket'];
- final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
+    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -64,15 +66,14 @@ class SelectionOrderDataView extends StatelessWidget {
                 children: [
                   const TableInfo(),
                   itsMezonine
-                      ? BascketInfo(
+                      ? NewBascketInfo(
                           docId: docId,
                         )
                       : const SizedBox()
                 ],
               ),
               const TableHead(),
-              BlocConsumer<SelectionOrderDataCubit,
-                  SelectionOrderDataState>(
+              BlocConsumer<SelectionOrderDataCubit, SelectionOrderDataState>(
                 listener: (context, state) {
                   if (state.status.isNotFound) {
                     Alerts(msg: state.errorMassage, context: context)
@@ -81,9 +82,7 @@ class SelectionOrderDataView extends StatelessWidget {
                 },
                 builder: (context, state) {
                   if (state.status.isInitial) {
-                    context
-                        .read<SelectionOrderDataCubit>()
-                        .writeBasket(basket);
+                    context.read<SelectionOrderDataCubit>().writeBasket(basket);
                     context.read<SelectionOrderDataCubit>().getNoms(docId);
                     return const Expanded(
                         child: Center(child: CircularProgressIndicator()));
@@ -124,8 +123,6 @@ class SelectionOrderDataView extends StatelessWidget {
   }
 }
 
-
-
 class TableInfo extends StatelessWidget {
   const TableInfo({super.key});
 
@@ -155,6 +152,7 @@ class TableInfo extends StatelessWidget {
                     width: 8,
                   ),
                   Text(
+                    
                     state.noms.noms.isNotEmpty
                         ? state.noms.noms.first.table
                         : '',
@@ -255,6 +253,8 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
   final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return AlertDialog(
       iconPadding: EdgeInsets.zero,
       icon: Row(
@@ -276,7 +276,13 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
       content: TextField(
         controller: controller,
         autofocus: true,
-        decoration: const InputDecoration(hintText: "Відскануйте кошик"),
+        decoration: InputDecoration(
+            hintText: "Відскануйте кошик",
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(scan: (value) {
+                    controller.text = value;
+                  })
+                : const SizedBox()),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actionsPadding: EdgeInsets.zero,
@@ -294,4 +300,139 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
       ],
     );
   }
+}
+
+class NewBascketInfo extends StatelessWidget {
+  const NewBascketInfo({super.key, required this.docId});
+
+  final String docId;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocBuilder<SelectionOrderDataCubit, SelectionOrderDataState>(
+        buildWhen: (previous, current) => !current.status.isLoading,
+        builder: (context, state) {
+          final baskets = state.noms.noms.isEmpty
+              ? [Bascket.empty]
+              : state.noms.noms.first.baskets;
+
+          return InkWell(
+            onTap: () {
+              showListDasket(context, docId);
+            },
+            child: Card(
+              color: const Color.fromARGB(255, 219, 219, 219),
+              margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
+              shape: OutlineInputBorder(
+                  borderSide: const BorderSide(),
+                  borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/icons/basket_icon.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      baskets[0].name,
+                      style: theme.textTheme.titleSmall!
+                          .copyWith(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+showListDasket(BuildContext context, String docId) {
+  final theme = Theme.of(context);
+  showModal(
+    context: context,
+    builder: (_) => BlocProvider.value(
+      value: context.read<SelectionOrderDataCubit>(),
+      child: AlertDialog(
+        iconPadding: EdgeInsets.zero,
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+        actionsPadding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+        icon: DialogHead(
+            title: 'Корзини',
+            textStyle:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        content: BlocBuilder<SelectionOrderDataCubit, SelectionOrderDataState>(
+          builder: (context, state) {
+            final baskets = state.noms.noms.isEmpty
+                ? [Bascket.empty]
+                : state.noms.noms.first.baskets;
+            return SizedBox(
+              height: baskets.length * 50,
+              child: ListView.builder(
+                  itemCount: baskets.length,
+                  itemBuilder: (context, index) {
+                    double size = index == 0? 25: 20;
+                    Color color =index == 0? Colors.black: Colors.grey;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          baskets[index].name.startsWith('К')
+                              ? Image.asset(
+                                  'assets/icons/basket_icon.png',
+                                  width: size,
+                                  height: size,
+                                  color:color
+                                )
+                              : baskets[index].name.startsWith("В")
+                                  ? Image.asset(
+                                      'assets/icons/cart.png',
+                                      width: size,
+                                      height: size,
+                                      color: color,
+                                    )
+                                  : const SizedBox(),
+                                  const SizedBox(width: 5,),
+                          Text(
+                            baskets[index].name,
+                            style: index == 0
+                                ? theme.textTheme.titleLarge!.copyWith(fontSize: 24)
+                                : theme.textTheme.titleLarge!
+                                    .copyWith(color: Colors.grey, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            );
+          },
+        ),
+        actions: [
+          FloatingActionButton(
+            onPressed: () {
+                showDialog(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: context.read<SelectionOrderDataCubit>(),
+                  child: SetBuscetDialog(
+                    docId: docId,
+                  ),
+                ),
+              );
+            },
+            child: const Icon(Icons.add),
+          )
+        ],
+      ),
+    ),
+  );
 }

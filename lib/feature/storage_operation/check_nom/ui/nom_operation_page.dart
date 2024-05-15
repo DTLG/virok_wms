@@ -1,15 +1,18 @@
 import 'package:animations/animations.dart';
-import 'package:barcode_widget/barcode_widget.dart';
+// ignore: library_prefixes
+import 'package:barcode_widget/barcode_widget.dart' as barcodeWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/cubit/check_nom_list_cubit.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/theme/app_color.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
-import '../check_nom_repo/models/barcodes_noms.dart';
 import '../cubit/nom_operations_cubit.dart';
 
 class CheckNomPage extends StatelessWidget {
@@ -17,23 +20,15 @@ class CheckNomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final arguments =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    final BarcodesNom nom = arguments['nom'] as BarcodesNom;
-
     return BlocProvider(
       create: (context) => NomOperationsCubit(),
-      child: CheckNomView(
-        nom: nom,
-      ),
+      child: const CheckNomView(),
     );
   }
 }
 
 class CheckNomView extends StatelessWidget {
-  const CheckNomView({super.key, required this.nom});
-
-  final BarcodesNom nom;
+  const CheckNomView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +36,19 @@ class CheckNomView extends StatelessWidget {
     final state = context.select((NomOperationsCubit cubit) => cubit.state);
 
     final bool barcodeGenerationButton = state.barcodeGenerationButton;
+
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final nom = arguments['nom'] as BarcodesNom;
+    final nomslistCubit = arguments['nomsListCubit'] as CheckNomListCubit;
+    final searchValue = arguments['searchValue'] as String;
+    final query = arguments["query"] as String;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
+              nomslistCubit.getNoms(query, searchValue);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
@@ -125,23 +129,23 @@ class BarcodesCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
       decoration: BoxDecoration(
           color: theme.cardColor, borderRadius: BorderRadius.circular(20)),
-      height: nom.barodes.length > 5
+      height: nom.barcodes.length > 5
           ? 225
-          : nom.barodes.isEmpty
+          : nom.barcodes.isEmpty
               ? 40
-              : 30 + (nom.barodes.length * 40),
+              : 30 + (nom.barcodes.length * 40),
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          nom.barodes.isNotEmpty
+          nom.barcodes.isNotEmpty
               ? Expanded(
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Штрихкод (${nom.barodes.length})'),
+                          Text('Штрихкод (${nom.barcodes.length})'),
                           const Text('Коефіцієнт'),
                         ],
                       ),
@@ -150,57 +154,64 @@ class BarcodesCard extends StatelessWidget {
                       ),
                       Expanded(
                           child: ListView.separated(
-                        itemCount: nom.barodes.length,
+                        itemCount: nom.barcodes.length,
                         itemBuilder: (context, index) {
                           return InkWell(
                             onLongPress: () {
-                              showModal(
-                                configuration:
-                                    const FadeScaleTransitionConfiguration(),
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                  backgroundColor: Colors.white,
-                                  title: BarcodeWidget(
-                                      data: nom.barodes[index].barcode,
-                                      barcode:
-                                          nom.barodes[index].barcode.length ==
-                                                  13
-                                              ? Barcode.ean13()
-                                              : Barcode.itf(),
-                                              color: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              ),
-                                ),
-                              );
+                              showBarcodeCard(
+                                  context,
+                                  nom.barcodes[index].barcode,
+                                  nom.barcodes[index].barcode.length == 13
+                                      ? barcodeWidget.Barcode.ean13()
+                                      : nom.barcodes[index].barcode.length == 14
+                                          ? barcodeWidget.Barcode.itf()
+                                          : barcodeWidget.Barcode.code128());
                             },
                             onTap: () {
                               barcodeLablePrintButton
                                   ? showPrintAlertAlert(
                                       context,
                                       nom,
-                                      nom.barodes[index].barcode,
+                                      nom.barcodes[index].barcode,
                                     )
                                   : () {};
                             },
-                            child: SizedBox(
-                              height: 30,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(nom.barodes[index].barcode,
-                                      style: theme.textTheme.titleSmall!
-                                          .copyWith(fontSize: 13)),
-                                  const Spacer(),
-                                  Text(nom.barodes[index].ratio.toString(),
-                                      style: theme.textTheme.titleSmall),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  barcodeLablePrintButton
-                                      ? const Icon(Icons.print)
-                                      : const SizedBox()
-                                ],
+                            child: Slidable(
+                              startActionPane: ActionPane(
+                                  extentRatio: 0.38,
+                                  motion: const DrawerMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (_) {
+                                        deleteBarcodeDialog(context,
+                                            nom.barcodes[index], nom.article);
+                                      },
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 229, 62, 62),
+                                      foregroundColor: Colors.white,
+                                      label: 'Видалити',
+                                    )
+                                  ]),
+                              child: SizedBox(
+                                height: 35,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(nom.barcodes[index].barcode,
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(fontSize: 13)),
+                                    const Spacer(),
+                                    Text(nom.barcodes[index].ratio.toString(),
+                                        style: theme.textTheme.titleSmall),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    barcodeLablePrintButton
+                                        ? const Icon(Icons.print)
+                                        : const SizedBox()
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -422,7 +433,7 @@ class _NewBarcodeInputState extends State<NewBarcodeInput> {
               onPressed: () {
                 bool barThisNom = false;
                 if (controller.text.isEmpty) return;
-                for (var bar in widget.nom.barodes) {
+                for (var bar in widget.nom.barcodes) {
                   if (bar.barcode == controller.text) {
                     barThisNom = true;
                   }
@@ -707,4 +718,40 @@ class AppBarButton extends StatelessWidget {
       ),
     );
   }
+}
+
+showBarcodeCard(BuildContext context, String data, barcodeWidget.Barcode type) {
+  showModal(
+    configuration: const FadeScaleTransitionConfiguration(),
+    context: context,
+    builder: (_) => AlertDialog(
+      backgroundColor: Colors.white,
+      title: barcodeWidget.BarcodeWidget(
+        data: data,
+        barcode: type,
+        color: Colors.black,
+        style: const TextStyle(color: Colors.black),
+      ),
+    ),
+  );
+}
+
+deleteBarcodeDialog(BuildContext context, Barcode barcode, String article) {
+  showModal(
+    context: context,
+    builder: (_) => BlocProvider.value(
+      value: context.read<NomOperationsCubit>(),
+      child: YesOrNoDialog(
+          massage: 'Ви дійсно хочете видалити штрихкод - ${barcode.barcode}',
+          noButton: () {
+            Navigator.pop(context);
+          },
+          yesButton: () {
+            context
+                .read<NomOperationsCubit>()
+                .deleteBarcdoe(barcode.barcode, article);
+            Navigator.pop(context);
+          }),
+    ),
+  );
 }

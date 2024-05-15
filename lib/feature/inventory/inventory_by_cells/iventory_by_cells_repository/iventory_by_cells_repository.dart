@@ -42,7 +42,7 @@ class IventoryByCellsRepository {
                 count: e.count ?? 0,
                 scannedCount: e.scannedCount ?? 0,
                 nomStatus: e.nomStatus ?? ''))
-            .toList(),
+            .toList().reversed.toList(),
         errorMassage: noms.errorMassage ?? '');
   }
 }

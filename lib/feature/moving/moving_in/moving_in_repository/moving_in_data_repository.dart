@@ -19,7 +19,7 @@ class MovingInDataRepository {
               number: nom.number ?? '',
               name: nom.name ?? '',
               article: nom.article ?? '',
-              barcode: nom.barcodes
+              barcodes: nom.barcodes
                   .map((e) =>
                       Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
                   .toList(),

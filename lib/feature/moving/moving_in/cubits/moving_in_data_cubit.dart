@@ -19,29 +19,36 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
               .movingInRepo('StartInvoice', order.docId)
           : await MovingInDataRepository()
               .movingInRepo('Invoice_data', order.invoice);
-      emit(state.copyWith(
-          status: MovingInDataStatus.success, noms: orders));
+      emit(state.copyWith(status: MovingInDataStatus.success, noms: orders));
     } catch (e) {
       emit(state.copyWith(status: MovingInDataStatus.success));
 
       emit(state.copyWith(
-          status: MovingInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: MovingInDataStatus.failure, errorMassage: e.toString()));
     }
   }
 
   Future<void> scan(String barcode, String invoice, double count) async {
+    if (count.toString().length > 6) {
+      emit(state.copyWith(
+          errorMassage: 'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
+          time: DateTime.now().millisecondsSinceEpoch,
+          status: MovingInDataStatus.notFound));
+      return;
+    }
     try {
       final noms = await MovingInDataRepository()
           .movingInRepo('Invoice_scan', '$barcode $count $invoice');
       noms.errorMassage != "OK"
-          ? emit(state.copyWith(errorMassage: noms.errorMassage,  time: DateTime.now().millisecondsSinceEpoch, status: MovingInDataStatus.notFound))
-          : emit(state.copyWith(
-              status: MovingInDataStatus.success, noms: noms));
+          ? emit(state.copyWith(
+              errorMassage: noms.errorMassage,
+              time: DateTime.now().millisecondsSinceEpoch,
+              status: MovingInDataStatus.notFound))
+          : emit(
+              state.copyWith(status: MovingInDataStatus.success, noms: noms));
     } catch (e) {
       emit(state.copyWith(
-          status: MovingInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: MovingInDataStatus.failure, errorMassage: e.toString()));
     }
   }
 
@@ -61,26 +68,44 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
     return res;
   }
 
-  Future<void> closeOrder(String invoice,) async {
- try {
+  Future<void> closeOrder(
+    String invoice,
+  ) async {
+    try {
       emit(state.copyWith(status: MovingInDataStatus.loading));
 
-      final orders = 
-          await MovingInDataRepository()
-              .movingInRepo('Close_invoice', invoice);
-      emit(state.copyWith(
-          status: MovingInDataStatus.success, noms: orders));
+      final orders =
+          await MovingInDataRepository().movingInRepo('Close_invoice', invoice);
+      emit(state.copyWith(status: MovingInDataStatus.success, noms: orders));
     } catch (e) {
       emit(state.copyWith(status: MovingInDataStatus.success));
 
       emit(state.copyWith(
-          status: MovingInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: MovingInDataStatus.failure, errorMassage: e.toString()));
     }
   }
 
   clear() {
+    emit(state.copyWith(status: MovingInDataStatus.success));
+  }
+
+  MovingInNom search(String barcode) {
+    for (var nom in state.noms.noms) {
+      for (var bar in nom.barcodes) {
+        if (bar.barcode == barcode) {
+          return nom;
+        }
+      }
+    }
+
     emit(state.copyWith(
-        status: MovingInDataStatus.success));
+        errorMassage: "Товар не знайдено, або штрихкод не належить товару",
+        time: DateTime.now().millisecondsSinceEpoch,
+        status: MovingInDataStatus.notFound));
+
+    return MovingInNom.empty;
   }
 }
+
+
+//4820146290433

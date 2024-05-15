@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/settings/models/device_ids.dart';
-import 'package:virok_wms/feature/settings/settings_api_client/settings_client.dart';
+import 'package:virok_wms/utils.dart';
 
 part 'settings_state.dart';
 
@@ -60,7 +60,6 @@ class SettingsCubit extends Cubit<SettingsState> {
         cameraScaner: cameraScaner,
         autoRefreshTime: refreshTime,
         deviceId: deviceId));
-    await getDeviceIds();
   }
 
   Future<void> writeToSP(String key, bool value) async {
@@ -105,16 +104,15 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(autoRefreshTime: newTime));
   }
 
-  Future<void> getDeviceIds() async {
-    final ids = await SettingsClient().getListId();
-    emit(state.copyWith(deviceIds: ids));
+  Future<void> setStorage(Storages value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('storage', value.name);
+    emit(state.copyWith(storage: value));
   }
 
-  Future<void> selectDeviceId(String id) async {
+  Future<void> getStorage() async {
     final prefs = await SharedPreferences.getInstance();
-
-    prefs.setString('deviceId', id);
-
-    emit(state.copyWith(deviceId: id));
+    final value = prefs.getString('storage') ?? 'lviv';
+    emit(state.copyWith(storage: value.toStorage));
   }
 }

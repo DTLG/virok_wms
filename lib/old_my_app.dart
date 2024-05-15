@@ -15,7 +15,7 @@ class OldMyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
-      debugShowFloatingThemeButton: true,
+      // debugShowFloatingThemeButton: true,
       light: AppTheme.light,
       dark: AppTheme.dark,
       initial: savedThemeMode ?? AdaptiveThemeMode.light,

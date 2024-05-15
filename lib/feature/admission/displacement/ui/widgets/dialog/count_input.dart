@@ -42,6 +42,7 @@ class ManualCountIncrementAlert extends StatefulWidget {
 
 class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
   final controller = TextEditingController();
+  final focusNode = FocusNode();
 
   @override
   void initState() {
@@ -144,8 +145,9 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                       height: 5,
                     ),
                     SizedBox(
-                      width: 70,
+                      width: 90,
                       child: TextField(
+                        focusNode: focusNode,
                         controller: controller,
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
@@ -179,7 +181,12 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                               barcode,
                               widget.invoice,
                               double.parse(controller.text));
-                          Navigator.pop(context);
+                          if (controller.text.length < 6) {
+                            Navigator.pop(context);
+                            return;
+                          }
+                          controller.clear();
+                          focusNode.requestFocus();
                         }
                       },
                       child: const Text(

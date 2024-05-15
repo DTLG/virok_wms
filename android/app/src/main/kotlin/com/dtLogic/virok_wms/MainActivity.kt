@@ -1,4 +1,4 @@
-package com.dtLogic.virok_wms
+package com.dtLogic.virok_vms
 
 import io.flutter.embedding.android.FlutterActivity
 

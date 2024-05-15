@@ -14,10 +14,7 @@ class CameraScanerButton extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: ((ctx) => AiBarcodeScanner(
-                        onScan: (value) {
-                          var a = value.trim();
-                          scan(a);
-                        },
+                        onScan: scan,
                         controller: MobileScannerController(
                           detectionTimeoutMs: 1000,
                           detectionSpeed: DetectionSpeed.normal,
@@ -25,7 +22,5 @@ class CameraScanerButton extends StatelessWidget {
                       ))));
         },
         icon: const Icon(Icons.qr_code_scanner_rounded));
-
- 
   }
 }

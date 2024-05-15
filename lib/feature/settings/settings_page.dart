@@ -32,6 +32,7 @@ class SettingsView extends StatelessWidget {
       builder: (context, state) {
         if (state.status.isInitial) {
           context.read<SettingsCubit>().init();
+          context.read<SettingsCubit>().getStorage();
         }
 
         return WillPopScope(
@@ -68,11 +69,11 @@ class SettingsView extends StatelessWidget {
                     DataBasePathWidget(),
                     HomePageSettingsWidget(),
                     StorageOperationSettingsWidget(),
+                    _StorageWidget(),
                     PrinterSettingsWidget(),
                     ThemeSettings(),
                     CameraSettings(),
                     AutoRefreshTimeSettings(),
-                    // DeviceIdWidget()
                   ],
                 )),
           ),
@@ -115,8 +116,8 @@ class _DataBasePathWidgetState extends State<DataBasePathWidget> {
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setString('api', value);
               },
-              decoration: const InputDecoration(
-                  hintText: 'Відскануйте шлях до бази'),
+              decoration:
+                  const InputDecoration(hintText: 'Відскануйте шлях до бази'),
             ),
           ),
         ],
@@ -372,6 +373,48 @@ class _PrinterSettingsWidgetState extends State<PrinterSettingsWidget> {
   }
 }
 
+class _StorageWidget extends StatefulWidget {
+  const _StorageWidget();
+
+  @override
+  State<_StorageWidget> createState() => _StorageWidgetState();
+}
+
+class _StorageWidgetState extends State<_StorageWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return SettingsCard(child: BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return PopupMenuButton(
+          shape: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderSide: BorderSide.none),
+          offset: const Offset(1, 51),
+          onSelected: (value) {
+            context.read<SettingsCubit>().setStorage(value);
+          },
+          itemBuilder: (context) {
+            return [
+              const PopupMenuItem(
+                value: Storages.lviv,
+                child: Text('Львів'),
+              ),
+              const PopupMenuItem(
+                value: Storages.kyiv,
+                child: Text('Київ'),
+              ),
+            ];
+          },
+          child: ListTile(
+            title: const Text('Склад'),
+            trailing: Text(state.storage.toStr),
+            shape: Border.all(color: Colors.transparent),
+          ),
+        );
+      },
+    ));
+  }
+}
 
 class SettingsCard extends StatelessWidget {
   const SettingsCard({super.key, required this.child});
@@ -392,31 +435,6 @@ class SettingsCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: child,
     );
-  }
-}
-
-class LogOutWidget extends StatelessWidget {
-  const LogOutWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SettingsCard(
-        child: ListTile(
-      contentPadding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-      title: const Text('Вийти'),
-      trailing: IconButton(
-          onPressed: () async {
-            Navigator.pushNamedAndRemoveUntil(
-                context, AppRoutes.login, (route) => false);
-            final prefs = await SharedPreferences.getInstance();
-            prefs.remove('password');
-            prefs.remove('zone');
-          },
-          icon: const Icon(
-            Icons.logout_rounded,
-            color: Color.fromARGB(255, 199, 0, 0),
-          )),
-    ));
   }
 }
 
@@ -552,136 +570,133 @@ class _AutoRefreshTimeSettingsState extends State<AutoRefreshTimeSettings> {
 const double _kItemExtent = 32.0;
 List<int> _seconds = List.generate(496, (index) => index + 5);
 
-class DeviceIdWidget extends StatefulWidget {
-  const DeviceIdWidget({super.key});
+// class DeviceIdWidget extends StatefulWidget {
+//   const DeviceIdWidget({super.key});
 
-  @override
-  State<DeviceIdWidget> createState() => _DeviceIdWidgetState();
-}
+//   @override
+//   State<DeviceIdWidget> createState() => _DeviceIdWidgetState();
+// }
 
-class _DeviceIdWidgetState extends State<DeviceIdWidget> {
-  final controller = TextEditingController();
-  InputType _inputType = InputType.popup;
+// class _DeviceIdWidgetState extends State<DeviceIdWidget> {
+//   final controller = TextEditingController();
+//   InputType _inputType = InputType.popup;
 
-  @override
-  Widget build(BuildContext context) {
-    final deviceId =
-        context.select((SettingsCubit cubit) => cubit.state.deviceId);
+//   @override
+//   Widget build(BuildContext context) {
+//     final deviceId =
+//         context.select((SettingsCubit cubit) => cubit.state.deviceId);
 
-    controller.text = deviceId;
+//     controller.text = deviceId;
 
-    final themeMode = AdaptiveTheme.of(context).mode;
+//     final themeMode = AdaptiveTheme.of(context).mode;
 
-    List<PopupMenuItem> popupItem = [];
-    final deviceIds =
-        context.select((SettingsCubit cubit) => cubit.state.deviceIds);
-    if (deviceIds.ids.isEmpty) {
-      popupItem.add(const PopupMenuItem(child: Text('Зону не знайдено')));
-    }
-    for (var id in deviceIds.ids) {
-      popupItem.add(PopupMenuItem(
-        value: id.id,
-        child: Text(id.id),
-      ));
-    }
-    return SettingsCard(child: BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        return ExpansionTile(
-          title: const Text('Серійний номер'),
-          shape: Border.all(color: Colors.transparent),
-          children: [
-            Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: _inputType.isPopup
-                      ? Container(
-                          width: double.infinity,
-                          height: 54,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: PopupMenuButton(
-                              offset: const Offset(0, 38),
-                              elevation: 5,
-                              onSelected: (value) {
-                                context
-                                    .read<SettingsCubit>()
-                                    .selectDeviceId(value);
-                              },
-                              itemBuilder: (context) => popupItem,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.keyboard_arrow_down_rounded,
-                                      color: themeMode.isDark
-                                          ? Colors.white
-                                          : Colors.black),
-                                  Text(
-                                    state.deviceId.isEmpty
-                                        ? 'Виберіть серійний номер'
-                                        : state.deviceId,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: themeMode.isDark
-                                            ? Colors.white
-                                            : Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ))
-                      : SizedBox(
-                        height: 54,
-                        child: TextField(
-                          style: const TextStyle(fontSize: 15),
-                            controller: controller,
-                            autofocus: true,
-                            onChanged: (value) async {
-                              context.read<SettingsCubit>().selectDeviceId(value);
-                            },
-                            textAlignVertical: TextAlignVertical.bottom,
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(35, 22, 5, 18),
-                                hintText: 'Введіть серійний номер'),
-                          ),
-                      ),
-                ),
-                Positioned(
-                    top: 20,
-                    right: 15,
-                    child: IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () {
-                          _inputType = _inputType.isPopup
-                              ? InputType.textField
-                              : InputType.popup;
-                          setState(() {});
-                        },
-                        icon: _inputType.isTextField
-                            ? const Icon(
-                                Icons.arrow_drop_down_outlined,
-                                color: Colors.grey,
-                              )
-                            : const Icon(
-                                Icons.mode,
-                                size: 18,
-                                color: Colors.grey,
-                              )))
-              ],
-            ),
-          ],
-        );
-      },
-    )
-
-     
-        );
-  }
-}
-
-
-
+//     List<PopupMenuItem> popupItem = [];
+//     final deviceIds =
+//         context.select((SettingsCubit cubit) => cubit.state.deviceIds);
+//     if (deviceIds.ids.isEmpty) {
+//       popupItem.add(const PopupMenuItem(child: Text('Зону не знайдено')));
+//     }
+//     for (var id in deviceIds.ids) {
+//       popupItem.add(PopupMenuItem(
+//         value: id.id,
+//         child: Text(id.id),
+//       ));
+//     }
+//     return SettingsCard(child: BlocBuilder<SettingsCubit, SettingsState>(
+//       builder: (context, state) {
+//         return ExpansionTile(
+//           title: const Text('Серійний номер'),
+//           shape: Border.all(color: Colors.transparent),
+//           children: [
+//             Stack(
+//               children: [
+//                 Padding(
+//                   padding: const EdgeInsets.all(5.0),
+//                   child: _inputType.isPopup
+//                       ? Container(
+//                           width: double.infinity,
+//                           height: 54,
+//                           decoration: BoxDecoration(
+//                             border: Border.all(color: Colors.grey),
+//                             borderRadius: BorderRadius.circular(18),
+//                           ),
+//                           child: Padding(
+//                             padding: const EdgeInsets.symmetric(horizontal: 10),
+//                             child: PopupMenuButton(
+//                               offset: const Offset(0, 38),
+//                               elevation: 5,
+//                               onSelected: (value) {
+//                                 context
+//                                     .read<SettingsCubit>()
+//                                     .selectDeviceId(value);
+//                               },
+//                               itemBuilder: (context) => popupItem,
+//                               child: Row(
+//                                 children: [
+//                                   Icon(Icons.keyboard_arrow_down_rounded,
+//                                       color: themeMode.isDark
+//                                           ? Colors.white
+//                                           : Colors.black),
+//                                   Text(
+//                                     state.deviceId.isEmpty
+//                                         ? 'Виберіть серійний номер'
+//                                         : state.deviceId,
+//                                     style: TextStyle(
+//                                         fontSize: 15,
+//                                         color: themeMode.isDark
+//                                             ? Colors.white
+//                                             : Colors.black),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ))
+//                       : SizedBox(
+//                           height: 54,
+//                           child: TextField(
+//                             style: const TextStyle(fontSize: 15),
+//                             controller: controller,
+//                             autofocus: true,
+//                             onChanged: (value) async {
+//                               context
+//                                   .read<SettingsCubit>()
+//                                   .selectDeviceId(value);
+//                             },
+//                             textAlignVertical: TextAlignVertical.bottom,
+//                             decoration: const InputDecoration(
+//                                 contentPadding:
+//                                     EdgeInsets.fromLTRB(35, 22, 5, 18),
+//                                 hintText: 'Введіть серійний номер'),
+//                           ),
+//                         ),
+//                 ),
+//                 Positioned(
+//                     top: 20,
+//                     right: 15,
+//                     child: IconButton(
+//                         padding: EdgeInsets.zero,
+//                         constraints: const BoxConstraints(),
+//                         onPressed: () {
+//                           _inputType = _inputType.isPopup
+//                               ? InputType.textField
+//                               : InputType.popup;
+//                           setState(() {});
+//                         },
+//                         icon: _inputType.isTextField
+//                             ? const Icon(
+//                                 Icons.arrow_drop_down_outlined,
+//                                 color: Colors.grey,
+//                               )
+//                             : const Icon(
+//                                 Icons.mode,
+//                                 size: 18,
+//                                 color: Colors.grey,
+//                               )))
+//               ],
+//             ),
+//           ],
+//         );
+//       },
+//     ));
+//   }
+// }

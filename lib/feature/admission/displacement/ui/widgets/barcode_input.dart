@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,14 +45,16 @@ class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
             hintText: 'Відскануйте штрихкод',
             suffixIcon: cameraScaner
                 ? CameraScanerButton(scan: (value) {
-                    onSubmited(value);
+                    Timer(const Duration(milliseconds: 1), () {
+                      onSubmited(value);
+                    });
                   })
-                : null),
+                : const SizedBox()),
       ),
     );
   }
 
-  onSubmited(String value) {
+  void onSubmited(String value) {
     final String invoice =
         context.read<DisplacementOrderDataCubit>().state.noms.invoice;
     context.read<DisplacementOrderDataCubit>().getNoms(widget.order);

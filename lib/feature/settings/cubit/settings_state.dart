@@ -36,6 +36,8 @@ class SettingsState extends Equatable {
   final String deviceId;
   final DeviceIds deviceIds;
 
+  final Storages storage;
+
   const SettingsState(
       {this.status = SettingsStatus.initial,
       this.dbPath = '',
@@ -61,6 +63,7 @@ class SettingsState extends Equatable {
       this.scanH = '',
       this.autoRefreshTime = 10,
       this.deviceId = '',
+      this.storage = Storages.lviv,
       DeviceIds? deviceIds})
       : deviceIds = deviceIds ?? DeviceIds.empty;
 
@@ -89,7 +92,8 @@ class SettingsState extends Equatable {
       String? scanH,
       int? autoRefreshTime,
       String? deviceId,
-      DeviceIds? deviceIds}) {
+      DeviceIds? deviceIds,
+      Storages? storage}) {
     return SettingsState(
         status: status ?? this.status,
         dbPath: dbPath ?? this.dbPath,
@@ -115,7 +119,8 @@ class SettingsState extends Equatable {
         scanH: scanH ?? this.scanH,
         autoRefreshTime: autoRefreshTime ?? this.autoRefreshTime,
         deviceId: deviceId ?? this.deviceId,
-        deviceIds: deviceIds ?? this.deviceIds);
+        deviceIds: deviceIds ?? this.deviceIds,
+        storage: storage ?? this.storage);
   }
 
   @override
@@ -144,6 +149,8 @@ class SettingsState extends Equatable {
         scanH,
         autoRefreshTime,
         deviceId,
-        deviceIds
+        deviceIds,
+        storage
       ];
 }
+

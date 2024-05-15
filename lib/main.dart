@@ -28,11 +28,7 @@ void main() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   appVersion = packageInfo.version;
   runApp(
-    
-    
     OldMyApp(savedThemeMode: savedThemeMode, isLogin: await isLogin())
-
- 
       );
 }
 

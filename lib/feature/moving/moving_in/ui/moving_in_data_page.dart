@@ -33,8 +33,7 @@ class MovingInDataView extends StatelessWidget {
     final argument =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final MovingInOrder order = argument['order'];
-    final MovingInHeadCubit movingInHeadCubit =
-        argument['cubit'];
+    final MovingInHeadCubit movingInHeadCubit = argument['cubit'];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -65,8 +64,7 @@ class MovingInDataView extends StatelessWidget {
                 height: 8,
               ),
               const MovingInTableHead(),
-              BlocConsumer<MovingInDataCubit,
-                  MovingInDataState>(
+              BlocConsumer<MovingInDataCubit, MovingInDataState>(
                 listener: (context, state) {
                   if (state.time.isFinite && state.status.isNotFound) {
                     Alerts(msg: state.errorMassage, context: context)
@@ -115,11 +113,11 @@ class MovingInDataView extends StatelessWidget {
 class AppBarButton extends StatelessWidget {
   const AppBarButton({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final invoice = context.select((MovingInDataCubit cubit) => cubit.state.noms.invoice);
+    final invoice =
+        context.select((MovingInDataCubit cubit) => cubit.state.noms.invoice);
     return Padding(
       padding: const EdgeInsets.all(7.0),
       child: ElevatedButton(

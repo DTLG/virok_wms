@@ -63,6 +63,14 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
   }
 
   Future<void> addNom(String barcode, String invoice, double count) async {
+
+        if(count.toString().length > 6){
+            emit(state.copyWith(
+          status: DisplacementOrderDataStatus.notFound,
+          errorMassage: 'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
+          time: DateTime.now().millisecondsSinceEpoch));
+      return;
+    }
     try {
       final noms = await DisplacementOrderDataClient()
           .getNoms('Invoice_scan', '$barcode $count $invoice');

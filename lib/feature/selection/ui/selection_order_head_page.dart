@@ -118,7 +118,7 @@ class _CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
+    final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     final theme = Theme.of(context);
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
 
@@ -254,6 +254,8 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
   final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return AlertDialog(
       iconPadding: EdgeInsets.zero,
       icon: Row(
@@ -275,7 +277,13 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
       content: TextField(
         controller: controller,
         autofocus: true,
-        decoration: const InputDecoration(hintText: "Відскануйте кошик"),
+        decoration: InputDecoration(
+            hintText: "Відскануйте кошик",
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(scan: (value) {
+                    controller.text = value;
+                  })
+                : const SizedBox()),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actionsPadding: EdgeInsets.zero,

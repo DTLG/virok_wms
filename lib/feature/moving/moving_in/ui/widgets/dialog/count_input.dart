@@ -118,7 +118,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                 height: 5,
               ),
               SizedBox(
-                width: 70,
+                width: 90,
                 child: TextField(
                   controller: controller,
                   textAlign: TextAlign.center,
@@ -141,7 +141,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                 onPressed: () {
                   String barcode = '';
                   if (controller.text.isNotEmpty && controller.text != "0") {
-                    for (var element in widget.nom.barcode) {
+                    for (var element in widget.nom.barcodes) {
                       if (element.ratio == 1) {
                         barcode = element.barcode;
                         break;

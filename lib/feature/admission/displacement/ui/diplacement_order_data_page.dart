@@ -63,6 +63,7 @@ class DiplacementOrderDataView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+       
               DisplacementBarcodeInput(
                 order: order,
               ),
@@ -134,9 +135,13 @@ class DiplacementOrderDataView extends StatelessWidget {
                   }),
               ElevatedButton(
                   child: const SizedBox(
-                    height: 50,
-                    width: 150,
-                    child: Center(child: Text('Завершити та розмістити',textAlign: TextAlign.center,))),
+                      height: 50,
+                      width: 150,
+                      child: Center(
+                          child: Text(
+                        'Завершити та розмістити',
+                        textAlign: TextAlign.center,
+                      ))),
                   onPressed: () {
                     final int checkFullScan = context
                         .read<DisplacementOrderDataCubit>()

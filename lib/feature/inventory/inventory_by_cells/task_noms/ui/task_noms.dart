@@ -40,6 +40,7 @@ class _InventoryByCellsTaskNomsViewState
     final InventoryByCellsTasksCubit tasksCubit = arguments['tasksCubit'];
     final InventoryByCellsTask task = arguments['task'];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -55,7 +56,7 @@ class _InventoryByCellsTaskNomsViewState
         actions: [
           IconButton(
               onPressed: () {
-                addNomDialog(context, task.taskNumber, focusNode);
+                addNomDialog(context, task.taskNumber, focusNode, task.codeCell);
               },
               icon: const Icon(Icons.add)),
           IconButton(
@@ -78,6 +79,7 @@ class _InventoryByCellsTaskNomsViewState
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              _BarcodeInput(focusNode: focusNode),
 
               const SizedBox(
                 height: 8,
@@ -99,7 +101,7 @@ class _InventoryByCellsTaskNomsViewState
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => ClosingCheckDialog(
+                  builder: (context) => YesOrNoDialog(
                     massage: "Ви дійсно бажаєте завершити завдання?",
                     noButton: () {
                       Navigator.pop(context);
@@ -118,6 +120,7 @@ class _InventoryByCellsTaskNomsViewState
     );
   }
 }
+
 
 class _TableHead extends StatelessWidget {
   const _TableHead();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//  import 'package:flutter_beep/flutter_beep.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
 
@@ -57,7 +57,8 @@ class Alerts {
         );
       },
     );
-    // FlutterBeep.beep(false);
+
+    FlutterBeep.beep(false);
   }
 }
 
@@ -175,37 +176,46 @@ class _InputCountAlertState extends State<InputCountAlert> {
 //   focusNode.requestFocus();
 // }
 
-class ClosingCheckDialog extends StatelessWidget {
-  const ClosingCheckDialog(
+class YesOrNoDialog extends StatelessWidget {
+  const YesOrNoDialog(
       {super.key,
-      required this.massage,
+      this.massage,
       required this.noButton,
-      required this.yesButton});
+      required this.yesButton,
+      this.yesLable = 'Так',
+      this.noLable = 'Ні',
+      this.buttonTextStyle
+      });
 
-  final String massage;
+  final String? massage;
   final VoidCallback yesButton;
   final VoidCallback noButton;
+  final String yesLable;
+  final String noLable;
+  final TextStyle? buttonTextStyle;
+
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Text(
-        massage,
-        style: Theme.of(context).textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ),
+      content: massage != null
+          ? Text(
+              massage!,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            )
+          : null,
       actionsAlignment: MainAxisAlignment.spaceAround,
       actions: [
         Row(
           children: [
-            Expanded(child: GeneralButton(onPressed: yesButton, lable: 'Так')),
-            Expanded(child: GeneralButton(onPressed: noButton, lable: 'Ні')),
+            Expanded(child: GeneralButton(onPressed: yesButton, lable: yesLable, textStyle: buttonTextStyle,)),
+            Expanded(child: GeneralButton(onPressed: noButton, lable:  noLable, textStyle: buttonTextStyle,)),
           ],
         )
       ],
-      contentPadding: const EdgeInsets.all(10),
+      contentPadding: massage != null ? const EdgeInsets.all(10) : null,
       actionsPadding: EdgeInsets.zero,
     );
-    
   }
 }

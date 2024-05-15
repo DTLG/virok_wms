@@ -88,9 +88,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  context
-                      .read<SelectionOrderDataCubit>()
-                      .manualCountIncrement(controller.text,widget.nom.qty, widget.nom.count);
+                  context.read<SelectionOrderDataCubit>().manualCountIncrement(controller.text,widget.nom.qty, widget.nom.count);
                       Navigator.pop(context);
                 },
                 child: const Text(

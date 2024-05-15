@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/storage_operation/check_cell/cubit/check_cell_cubit.dart';
-import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_repo/models/barcodes_noms.dart';
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/models/check_cell.dart';
 import 'package:virok_wms/route/app_routes.dart';
 
@@ -190,13 +190,12 @@ class CellInfo extends StatelessWidget {
                                 'nom': BarcodesNom(
                                     name: nom.name,
                                     article: nom.article,
-                                    barodes: nom.barcodes
-                                        .map((e) => Barcodee(
+                                    barcodes: nom.barcodes
+                                        .map((e) => Barcode(
                                             barcode: e.barcode,
                                             count: 1,
                                             ratio: e.ratio))
                                         .toList(),
-                                        totalCount: 0,
                                     cells: cells),
                               });
                         }

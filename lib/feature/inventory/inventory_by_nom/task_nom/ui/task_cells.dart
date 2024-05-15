@@ -112,7 +112,7 @@ class _InventoryByCellsTaskNomsViewState
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => ClosingCheckDialog(
+                  builder: (context) => YesOrNoDialog(
                       massage: 'Ви дійсно бажаєте завершити завдання?',
                       yesButton: () {
                         tasksCubit.closeTask(task.docNumber);

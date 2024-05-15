@@ -137,10 +137,11 @@ class _NomInputDialogState extends State<NomInputDialog> {
                         suffixIcon: cameraScaner
                             ? CameraScanerButton(
                                 scan: (value) {
-                                  context
+                                  final res = context
                                       .read<SelectionOrderDataCubit>()
-                                      .checkCell(cellController.text,
-                                          widget.nom.cells);
+                                      .checkCell(value, widget.nom.cells);
+                                  if (!res) return;
+                                  cellController.text = value;
                                 },
                               )
                             : null),
@@ -168,9 +169,11 @@ class _NomInputDialogState extends State<NomInputDialog> {
                         suffixIcon: cameraScaner
                             ? CameraScanerButton(
                                 scan: (value) {
-                                  context
+                                  final res = context
                                       .read<SelectionOrderDataCubit>()
                                       .scan(value, state.nom);
+                                  if (!res) return;
+                                  nomController.text = value;
                                 },
                               )
                             : null),
@@ -308,11 +311,13 @@ class _NomInputDialogState extends State<NomInputDialog> {
                             if (cellController.text.isNotEmpty &&
                                 state.nomBarcode.isNotEmpty) {
                               context.read<SelectionOrderDataCubit>().send(
-                                  state.nomBarcode,
-                                  state.nom.docNumber,
-                                  state.cellBarcode,
-                                  basket,
-                                  state.nom.count);
+                                    state.nomBarcode,
+                                    state.nom.docNumber,
+                                    state.cellBarcode,
+                                    basket,
+                                    state.nom.count,
+                                    widget.nom.taskNumber,
+                                  );
                               Navigator.pop(context);
                             }
                           },

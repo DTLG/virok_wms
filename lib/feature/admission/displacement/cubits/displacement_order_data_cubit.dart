@@ -42,7 +42,7 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
     }
   }
 
-  DisplacementNom scan(String barcode) {
+ DisplacementNom scan(String barcode) {
     DisplacementNom nom = DisplacementNom.empty;
     for (var nome in state.noms.noms) {
       for (var bar in nome.barcodes) {
@@ -53,10 +53,10 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
       }
     }
     if (nom.name.isEmpty && nom.article.isEmpty) {
-      emit(state.copyWith(
-          errorMassage: "Товар не знайдено, або штрихкод не належить товару",
-          time: DateTime.now().millisecondsSinceEpoch,
-          status: DisplacementOrderDataStatus.notFound));
+      // emit(state.copyWith(
+      //     errorMassage: "Товар не знайдено, або штрихкод не належить товару",
+      //     time: DateTime.now().millisecondsSinceEpoch,
+      //     status: DisplacementOrderDataStatus.notFound));
     }
 
     return nom;

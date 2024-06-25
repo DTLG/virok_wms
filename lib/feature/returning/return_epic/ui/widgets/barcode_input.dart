@@ -3,24 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:virok_wms/feature/admission/displacement/ui/widgets/dialog/count_input.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/feature/returning/return_epic/cubit/return_epic_cubit.dart';
+import 'package:virok_wms/feature/returning/return_epic/model/return_epic_nom.dart';
 import 'package:virok_wms/ui/widgets/camera_scaner_button.dart';
 
-import '../../cubits/displacement_order_data_cubit.dart';
-import '../../models/models.dart';
+import 'count_input.dart';
 
-class DisplacementBarcodeInput extends StatefulWidget {
-  const DisplacementBarcodeInput({super.key, required this.order});
-
-  final DisplacementOrder order;
+class ReturnEpicBarcodeInput extends StatefulWidget {
+  const ReturnEpicBarcodeInput({
+    super.key,
+  });
 
   @override
-  State<DisplacementBarcodeInput> createState() =>
-      _DisplacementBarcodeInputState();
+  State<ReturnEpicBarcodeInput> createState() => _ReturnEpicBarcodeInputState();
 }
 
-class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
+class _ReturnEpicBarcodeInputState extends State<ReturnEpicBarcodeInput> {
   final controller = TextEditingController();
   final focusNode = FocusNode();
   @override
@@ -49,23 +48,18 @@ class _DisplacementBarcodeInputState extends State<DisplacementBarcodeInput> {
                       onSubmited(value);
                     });
                   })
-                : const SizedBox()),
+                : null),
       ),
     );
   }
 
-  void onSubmited(String value)  {
-    final String invoice =
-        context.read<DisplacementOrderDataCubit>().state.noms.invoice;
-    context.read<DisplacementOrderDataCubit>().getNoms(widget.order);
-    final DisplacementNom nom = 
-        context.read<DisplacementOrderDataCubit>().scan(value);
-    if (nom != DisplacementNom.empty) {
-      showManualCountIncrementAlert(
-          context, nom.barcodes.first.barcode, invoice, nom);
-    }
-    else{
-      context.read<DisplacementOrderDataCubit>().addNom(value, invoice, 1);
+  void onSubmited(String value) {
+    context.read<ReturnEpicCubit>().getNoms();
+    final ReturnEpicNom nom = context.read<ReturnEpicCubit>().search(value);
+    if (nom != ReturnEpicNom.empty) {
+      manualCountIncrementDialog(context, value, nom);
+    } else {
+      // context.read<ReturnEpicCubit>().addNom(value, invoice, 1);
     }
   }
 }

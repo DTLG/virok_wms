@@ -1,30 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 
+import '../../../../../../ui/ui.dart';
 import '../../../cubit/returning_out_order_data_cubit.dart';
 import 'count_input.dart';
 
-void showNomInput(BuildContext context, Nom nom, String docId) {
+showNomInput(BuildContext context, String docId, String nomBarcode,
+    String cellBarcode, Nom nom) {
   showDialog(
       barrierDismissible: false,
       context: context,
       builder: (_) => BlocProvider.value(
             value: context.read<ReturningOutOrderDataCubit>(),
             child: NomInputDialog(
-              nom: nom,
               docId: docId,
+              nomBarcode: nomBarcode,
+              cellBarcode: cellBarcode,
+              nom: nom,
             ),
           ));
 }
 
 class NomInputDialog extends StatefulWidget {
-  const NomInputDialog({super.key, required this.nom, required this.docId});
+  const NomInputDialog(
+      {super.key,
+      required this.docId,
+      required this.cellBarcode,
+      required this.nomBarcode,
+      required this.nom});
 
-  final Nom nom;
   final String docId;
+  final String nomBarcode;
+  final String cellBarcode;
+  final Nom nom;
 
   @override
   State<NomInputDialog> createState() => _NomInputDialogState();
@@ -37,8 +49,17 @@ class _NomInputDialogState extends State<NomInputDialog> {
   final cellFocusNode = FocusNode();
 
   @override
+  void initState() {
+    context.read<ReturningOutOrderDataCubit>().getNom(widget.docId,
+        widget.nomBarcode, widget.cellBarcode, widget.nom.taskNumber);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return WillPopScope(
       onWillPop: () async {
         await context.read<ReturningOutOrderDataCubit>().clear();
@@ -47,186 +68,267 @@ class _NomInputDialogState extends State<NomInputDialog> {
       child: AlertDialog(
         iconPadding: EdgeInsets.zero,
         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        icon: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-              onPressed: () {
-                context.read<ReturningOutOrderDataCubit>().clear();
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.close)),
+        icon: DialogHead(
+          title: widget.nom.article,
+          onPressed: () {
+            context.read<ReturningOutOrderDataCubit>().clear();
+            Navigator.pop(context);
+          },
         ),
-        content: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Text(
-              widget.nom.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.titleSmall,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextField(
-              autofocus: true,
-              textInputAction: TextInputAction.next,
-              controller: cellController,
-              focusNode: cellFocusNode,
-              onSubmitted: (value) {
-                final bool res = context
-                    .read<ReturningOutOrderDataCubit>()
-                    .checkCell(cellController.text, widget.nom.cells);
-                if (res == false) {
-                  cellController.clear();
-                  cellFocusNode.requestFocus();
-                }
-              },
-              decoration:
-                  const InputDecoration(hintText: 'Відскануйте комірку'),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            TextField(
-              controller: nomController,
-              focusNode: nomFocusNode,
-              onSubmitted: (value) {
-                context.read<ReturningOutOrderDataCubit>().scan(value, widget.nom);
-                nomController.clear();
-                nomFocusNode.requestFocus();
-                setState(() {});
-              },
-              decoration: const InputDecoration(hintText: 'Відскануйте товар'),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+        content: BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Text(
-                  'Кількість в замовленні:',
-                  style: theme.textTheme.titleSmall,
+                  state.nom == Nom.empty ? widget.nom.name : state.nom.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w500),
                 ),
-                Text(
-                  widget.nom.qty.toStringAsFixed(0),
-                  style: theme.textTheme.titleSmall,
+                const SizedBox(
+                  height: 8,
                 ),
-              ],
-            ),
-            BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
-              builder: (context, state) {
-                double dialogSize = MediaQuery.of(context).size.height;
-                final count = widget.nom.count;
-                return Text(
-                  state.count == 0
-                      ? count.toStringAsFixed(0)
-                      : state.count.toStringAsFixed(0),
-                  style: TextStyle(fontSize: dialogSize < 700 ? 65 : 120),
-                );
-              },
-            )
-          ]),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.dialogOrange),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Стан:',
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                      ),
+                      Text(
+                        widget.nom.statusNom,
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 45,
+                  child: TextField(
+                    textAlignVertical: TextAlignVertical.bottom,
+                    autofocus: cameraScaner ? false : true,
+                    textInputAction: TextInputAction.next,
+                    controller: cellController,
+                    focusNode: cellFocusNode,
+                    onSubmitted: (value) {
+                      final bool res = context
+                          .read<ReturningOutOrderDataCubit>()
+                          .checkCell(
+                              cellController.text,
+                              state.nom.cells.isEmpty
+                                  ? widget.nom.cells
+                                  : state.nom.cells);
+                      if (res == false) {
+                        cellController.clear();
+                        cellFocusNode.requestFocus();
+                      }
+                    },
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте комірку',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  final res = context
+                                      .read<ReturningOutOrderDataCubit>()
+                                      .checkCell(value, widget.nom.cells);
+                                  if (!res) return;
+                                  cellController.text = value;
+                                },
+                              )
+                            : null),
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                SizedBox(
+                  height: 45,
+                  child: TextField(
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: nomController,
+                    focusNode: nomFocusNode,
+                    onSubmitted: (value) {
+                      context
+                          .read<ReturningOutOrderDataCubit>()
+                          .scan(value, widget.nom);
+                      nomController.clear();
+                      nomFocusNode.requestFocus();
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                        hintText: 'Відскануйте товар',
+                        suffixIcon: cameraScaner
+                            ? CameraScanerButton(
+                                scan: (value) {
+                                  final res = context
+                                      .read<ReturningOutOrderDataCubit>()
+                                      .scan(value, state.nom);
+                                  if (!res) return;
+                                  nomController.text = value;
+                                },
+                              )
+                            : null),
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.dialogGreen),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Кількість в замовленні:',
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black),
+                      ),
+                      Text(
+                        state.nom == Nom.empty
+                            ? widget.nom.qty.toStringAsFixed(0)
+                            : state.nom.qty.toStringAsFixed(0),
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
+                  builder: (context, state) {
+                    double dialogSize = MediaQuery.of(context).size.height;
+                    final count = state.nom.count;
+                    return Text(
+                      state.count == 0
+                          ? count.toStringAsFixed(0)
+                          : state.count.toStringAsFixed(0),
+                      style: TextStyle(fontSize: dialogSize < 700 ? 65 : 120),
+                    );
+                  },
+                )
+              ]),
+            );
+          },
         ),
         actionsPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
         actions: [
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
+            builder: (context, state) {
+              return Column(
                 children: [
-                  ElevatedButton(
-                      style: const ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Color.fromARGB(255, 251, 206, 43))),
-                      onPressed: () {
-                        showDialog(
-                          barrierColor: const Color.fromARGB(150, 0, 0, 0),
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: context.read<ReturningOutOrderDataCubit>(),
-                            child: CellListdialog(
-                              cells: widget.nom.cells,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  Color.fromARGB(255, 251, 206, 43))),
+                          onPressed: () {
+                            showDialog(
+                              barrierColor: const Color.fromARGB(150, 0, 0, 0),
+                              context: context,
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<ReturningOutOrderDataCubit>(),
+                                child: CellListdialog(
+                                  cells: state.nom.cells,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('Комірки')),
+                      ElevatedButton(
+                          style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  Color.fromARGB(255, 140, 193, 219))),
+                          onPressed: () {
+                            showDialog(
+                              barrierColor: const Color.fromARGB(150, 0, 0, 0),
+                              context: context,
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<ReturningOutOrderDataCubit>(),
+                                child: ChangeQuantity(
+                                  qty: state.nom.qty,
+                                  nom: state.nom,
+                                  docId: widget.docId,
+                                  count: state.nom.count,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const SizedBox(
+                            width: 120,
+                            child: Text(
+                              'Коригувати замовлення',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
                             ),
-                          ),
-                        );
-                      },
-                      child: const Text('Комірки')),
-                  ElevatedButton(
-                      style: const ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Color.fromARGB(255, 140, 193, 219))),
-                      onPressed: () {
-                        showDialog(
-                          barrierColor: const Color.fromARGB(150, 0, 0, 0),
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: context.read<ReturningOutOrderDataCubit>(),
-                            child: ChangeQuantity(
-                              qty: widget.nom.qty,
-                              nom: widget.nom,
-                              docId: widget.docId,
-                              count: widget.nom.count,
-                            ),
-                          ),
-                        );
-                      },
-                      child: const SizedBox(
-                        width: 120,
-                        child: Text(
-                          'Коригувати замовлення',
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                        ),
-                      )),
+                          )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(context
+                                          .read<ReturningOutOrderDataCubit>()
+                                          .state
+                                          .count >
+                                      0
+                                  ? Colors.green
+                                  : Colors.grey)),
+                          onPressed: () {
+                            final state =
+                                context.read<ReturningOutOrderDataCubit>().state;
+                            if (state.nomBarcode.isNotEmpty) {
+                              showCountDialog(context, state.nom);
+                            }
+                          },
+                          child: const Text('Ввести в ручну')),
+                      ElevatedButton(
+                          onPressed: () {
+                            final basket = state.nom.baskets.isEmpty
+                                ? ''
+                                : state.nom.baskets.first.bascket;
+
+                            if (cellController.text.isNotEmpty &&
+                                state.nomBarcode.isNotEmpty) {
+                              context.read<ReturningOutOrderDataCubit>().send(
+                                    state.nomBarcode,
+                                    state.nom.docNumber,
+                                    state.cellBarcode,
+                                    basket,
+                                    state.nom.count,
+                                    widget.nom.taskNumber,
+                                  );
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: const Text('Додати'))
+                    ],
+                  )
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(context
-                                      .read<ReturningOutOrderDataCubit>()
-                                      .state
-                                      .count >
-                                  0
-                              ? Colors.green
-                              : Colors.grey)),
-                      onPressed: () {
-                        final state =
-                            context.read<ReturningOutOrderDataCubit>().state;
-                        if (state.nomBarcode.isNotEmpty) {
-                          showCountAlert(context, widget.nom);
-                        }
-                      },
-                      child: const Text('Ввести в ручну')),
-                  ElevatedButton(
-                      onPressed: () {
-                        final basket = widget.nom.baskets.isEmpty
-                            ? ''
-                            : widget.nom.baskets.first.bascket;
-                        final state =
-                            context.read<ReturningOutOrderDataCubit>().state;
-                        if (cellController.text.isNotEmpty &&
-                            state.nomBarcode.isNotEmpty) {
-                          context.read<ReturningOutOrderDataCubit>().send(
-                              state.nomBarcode,
-                              widget.nom.docNumber,
-                              state.cellBarcode,
-                              basket,
-                              widget.nom.count);
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: const Text('Додати'))
-                ],
-              )
-            ],
+              );
+            },
           ),
         ],
       ),
@@ -311,27 +413,28 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                               msg: 'Введена більша кількість ніж в замовленні',
                               context: context)
                           .showError();
-                    } else if (inputCount < widget.count) {
+                      return;
+                    }
+                    if (inputCount < widget.count) {
                       Alerts(
                               msg: 'Введена менаша кількість ніж  відскановано',
                               context: context)
                           .showError();
-                    } else if (inputCount == widget.qty) {
+                      return;
+                    }
+                    if (inputCount == widget.qty) {
                       Alerts(
                               msg:
                                   'Введена та сама кількість що й в замовленні',
                               context: context)
                           .showError();
-                    } else if (inputCount == 0) {
-                      Alerts(msg: 'Введене значення 0', context: context)
-                          .showError();
-                    } else {
-                      context
-                          .read<ReturningOutOrderDataCubit>()
-                          .changeQty(controller.text, widget.nom, widget.docId);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      return;
                     }
+                    context
+                        .read<ReturningOutOrderDataCubit>()
+                        .changeQty(controller.text, widget.nom, widget.docId);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text('Змінити'))

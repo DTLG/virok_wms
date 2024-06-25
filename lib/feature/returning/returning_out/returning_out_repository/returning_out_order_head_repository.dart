@@ -10,8 +10,8 @@ class ReturningOutOrderHeadRepository {
 
   final ReturningOutOrderDataClient _movingOrderDataClient;
 
-  Future<Orders> getReturningList(String query, String body) async {
-    final listNom = await _movingOrderDataClient.getReturningList(query, body);
+  Future<Orders> getOrders(String query, String body) async {
+    final listNom = await _movingOrderDataClient.getOrders(query, body);
 
     final List<Order> orders = listNom.orders
         .map(
@@ -22,9 +22,10 @@ class ReturningOutOrderHeadRepository {
                   e.baskets.map((e) => Bascet(bascet: e.basket ?? '')).toList(),
               fullOrder: e.fullOrdfer ?? 0,
               importanceMark: e.importanceMark ?? 0,
-              mMark: e.mMark ?? 0),
+              mMark: e.mMark ?? 0, newPostMark: e.newPostMark ?? 0),
         )
         .toList();
     return Orders(orders: orders, status: listNom.status ?? 1);
   }
+
 }

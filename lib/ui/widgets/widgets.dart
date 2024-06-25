@@ -10,3 +10,4 @@ export 'table_widgets/table_widgets.dart';
 export 'row_element.dart';
 export 'alerts.dart';
 export 'nom_status_widget.dart';
+export 'app_bar_button.dart';

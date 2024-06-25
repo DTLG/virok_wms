@@ -1,6 +1,12 @@
 part of 'returning_out_order_head_cubit.dart';
 
-enum ReturningOutOrdersHeadStatus { initial, loading, success, failure, notFound }
+enum ReturningOutOrdersHeadStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  notFound
+}
 
 extension ReturningOrdersHeadStatusX on ReturningOutOrdersHeadStatus {
   bool get isInitial => this == ReturningOutOrdersHeadStatus.initial;
@@ -16,6 +22,7 @@ final class ReturningOutOrdersHeadState extends Equatable {
     this.buskeStatus = false,
     this.itsMezonine = false,
     this.errorMassage = '',
+    this.time = 0,
     Orders? orders,
   }) : orders = orders ?? Orders.empty;
 
@@ -24,19 +31,25 @@ final class ReturningOutOrdersHeadState extends Equatable {
   final Orders orders;
   final String errorMassage;
   final bool buskeStatus;
+  final int time;
 
   ReturningOutOrdersHeadState copyWith(
-      {ReturningOutOrdersHeadStatus? status, Orders? orders, String? errorMassage,
+      {ReturningOutOrdersHeadStatus? status,
+      Orders? orders,
+      String? errorMassage,
       bool? itsMezonine,
+      int? time,
       bool? buskeStatus}) {
     return ReturningOutOrdersHeadState(
         status: status ?? this.status,
         orders: orders ?? this.orders,
+        time: time ?? this.time,
         errorMassage: errorMassage ?? this.errorMassage,
         buskeStatus: buskeStatus ?? this.buskeStatus,
         itsMezonine: itsMezonine ?? this.itsMezonine);
   }
 
   @override
-  List<Object?> get props => [status, orders, errorMassage, buskeStatus, itsMezonine];
+  List<Object?> get props =>
+      [status, orders, errorMassage, buskeStatus, itsMezonine, time];
 }

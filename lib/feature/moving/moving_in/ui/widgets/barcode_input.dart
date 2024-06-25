@@ -10,7 +10,6 @@ import '../../cubits/moving_in_data_cubit.dart';
 class MovingInBarcodeInput extends StatefulWidget {
   const MovingInBarcodeInput({super.key});
 
-
   @override
   State<MovingInBarcodeInput> createState() => _MovingInBarcodeInputState();
 }
@@ -31,10 +30,12 @@ class _MovingInBarcodeInputState extends State<MovingInBarcodeInput> {
         textAlignVertical: TextAlignVertical.bottom,
         onSubmitted: (value) {
           final nom = context.read<MovingInDataCubit>().search(value);
-          if (nom != MovingInNom.empty) {
- final String invoice =
+          final String invoice =
               context.read<MovingInDataCubit>().state.noms.invoice;
+          if (nom != MovingInNom.empty) {
             showManualCountIncrementAlert(context, nom, invoice);
+          } else {
+            context.read<MovingInDataCubit>().scan(value, invoice, 1);
           }
           controller.clear();
           focusNode.requestFocus();
@@ -42,7 +43,7 @@ class _MovingInBarcodeInputState extends State<MovingInBarcodeInput> {
           // final String invoice =
           //     context.read<MovingInDataCubit>().state.noms.invoice;
           // if (controller.text.isNotEmpty) {
-            // context.read<MovingInDataCubit>().scan(value, invoice, 0);
+          // context.read<MovingInDataCubit>().scan(value, invoice, 0);
           //   controller.clear();
           // }
           // focusNode.requestFocus();

@@ -44,8 +44,31 @@ class MovingOutOrderDataView extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_ios_new)),
         actions: [
           AppBarButton(
-            cubit: movingOrderHeadCubit,
-            docId: docId,
+            title: 'Завершити',
+           onPressed: () {
+                      final int checkFullScan =
+              context.read<MovingGateOrderDataCubit>().checkFullOrder();
+
+          if (checkFullScan == 0) {
+            showDialog(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                      value: context.read<MovingGateOrderDataCubit>(),
+                      child: CheckFullScanDialog(
+                        cubit: movingOrderHeadCubit,
+                        docId: docId,
+                      ),
+                    ));
+          } else {
+            context
+                .read<MovingGateOrderDataCubit>()
+                .closeOrder(docId, movingOrderHeadCubit)
+                .whenComplete(() {
+              movingOrderHeadCubit.getOrders();
+              Navigator.pop(context);
+            });
+          }
+           },
           )
         ],
       ),

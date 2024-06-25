@@ -31,7 +31,8 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
   Future<void> scan(String barcode, String invoice, double count) async {
     if (count.toString().length > 6) {
       emit(state.copyWith(
-          errorMassage: 'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
+          errorMassage:
+              'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
           time: DateTime.now().millisecondsSinceEpoch,
           status: MovingInDataStatus.notFound));
       return;
@@ -90,22 +91,22 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
   }
 
   MovingInNom search(String barcode) {
-    for (var nom in state.noms.noms) {
-      for (var bar in nom.barcodes) {
+    MovingInNom nom = MovingInNom.empty;
+
+    for (var nome in state.noms.noms) {
+      for (var bar in nome.barcodes) {
         if (bar.barcode == barcode) {
-          return nom;
+          nom = nome;
+          break;
         }
       }
     }
 
-    emit(state.copyWith(
-        errorMassage: "Товар не знайдено, або штрихкод не належить товару",
-        time: DateTime.now().millisecondsSinceEpoch,
-        status: MovingInDataStatus.notFound));
+    // emit(state.copyWith(
+    //     errorMassage: "Товар не знайдено, або штрихкод не належить товару",
+    //     time: DateTime.now().millisecondsSinceEpoch,
+    //     status: MovingInDataStatus.notFound));
 
-    return MovingInNom.empty;
+    return nom;
   }
 }
-
-
-//4820146290433

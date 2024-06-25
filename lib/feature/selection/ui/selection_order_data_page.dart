@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
-import 'package:virok_wms/feature/storage_operation/placement_writing_off/writing_off/ui/ui.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/selection_order_head_cubit.dart';
@@ -47,8 +46,30 @@ class SelectionOrderDataView extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_ios_new)),
         actions: [
           AppBarButton(
-            cubit: selectionOrderHeadCubit,
-            docId: docId,
+            onPressed: () {
+              final int checkFullScan =
+                  context.read<SelectionOrderDataCubit>().checkFullOrder();
+
+              if (checkFullScan == 0) {
+                showDialog(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                          value: context.read<SelectionOrderDataCubit>(),
+                          child: CheckFullScanDialog(
+                            cubit: selectionOrderHeadCubit,
+                            docId: docId,
+                          ),
+                        ));
+              } else {
+                context
+                    .read<SelectionOrderDataCubit>()
+                    .closeOrder(docId, selectionOrderHeadCubit);
+                selectionOrderHeadCubit.getOrders();
+
+                Navigator.pop(context);
+              }
+            },
+            title: 'Завершити',
           )
         ],
       ),
@@ -152,7 +173,6 @@ class TableInfo extends StatelessWidget {
                     width: 8,
                   ),
                   Text(
-                    
                     state.noms.noms.isNotEmpty
                         ? state.noms.noms.first.table
                         : '',
@@ -380,19 +400,15 @@ showListDasket(BuildContext context, String docId) {
               child: ListView.builder(
                   itemCount: baskets.length,
                   itemBuilder: (context, index) {
-                    double size = index == 0? 25: 20;
-                    Color color =index == 0? Colors.black: Colors.grey;
+                    double size = index == 0 ? 25 : 20;
+                    Color color = index == 0 ? Colors.black : Colors.grey;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: [
                           baskets[index].name.startsWith('К')
-                              ? Image.asset(
-                                  'assets/icons/basket_icon.png',
-                                  width: size,
-                                  height: size,
-                                  color:color
-                                )
+                              ? Image.asset('assets/icons/basket_icon.png',
+                                  width: size, height: size, color: color)
                               : baskets[index].name.startsWith("В")
                                   ? Image.asset(
                                       'assets/icons/cart.png',
@@ -401,11 +417,14 @@ showListDasket(BuildContext context, String docId) {
                                       color: color,
                                     )
                                   : const SizedBox(),
-                                  const SizedBox(width: 5,),
+                          const SizedBox(
+                            width: 5,
+                          ),
                           Text(
                             baskets[index].name,
                             style: index == 0
-                                ? theme.textTheme.titleLarge!.copyWith(fontSize: 24)
+                                ? theme.textTheme.titleLarge!
+                                    .copyWith(fontSize: 24)
                                 : theme.textTheme.titleLarge!
                                     .copyWith(color: Colors.grey, fontSize: 18),
                           ),
@@ -419,7 +438,7 @@ showListDasket(BuildContext context, String docId) {
         actions: [
           FloatingActionButton(
             onPressed: () {
-                showDialog(
+              showDialog(
                 context: context,
                 builder: (_) => BlocProvider.value(
                   value: context.read<SelectionOrderDataCubit>(),

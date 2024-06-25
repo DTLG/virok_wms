@@ -28,6 +28,13 @@ class ReturningPage extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.returningOutHeadPage);
               },
+            ),
+                SquareButton(
+              lable: 'Повернення мережі',
+                      color: AppColors.darkRed,
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.returnEpicPage);
+              },
             )
           ],
         ));

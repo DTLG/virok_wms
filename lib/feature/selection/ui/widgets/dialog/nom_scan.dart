@@ -298,7 +298,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                             final state =
                                 context.read<SelectionOrderDataCubit>().state;
                             if (state.nomBarcode.isNotEmpty) {
-                              showCountAlert(context, state.nom);
+                              showCountDialog(context, state.nom);
                             }
                           },
                           child: const Text('Ввести в ручну')),

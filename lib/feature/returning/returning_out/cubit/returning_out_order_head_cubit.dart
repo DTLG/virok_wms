@@ -8,15 +8,15 @@ import '../returning_out_repository/returning_out_order_head_repository.dart';
 
 part 'returning_out_order_head_state.dart';
 
-class MovingOutOrdersHeadCubit extends Cubit<ReturningOutOrdersHeadState> {
-  MovingOutOrdersHeadCubit() : super(const ReturningOutOrdersHeadState());
+class ReturningOutOrdersHeadCubit extends Cubit<ReturningOutOrdersHeadState> {
+  ReturningOutOrdersHeadCubit() : super(const ReturningOutOrdersHeadState());
 
   Future<void> getOrders() async {
     try {
       await Future<void>.delayed(const Duration(seconds: 1));
 
       final orders = await ReturningOutOrderHeadRepository()
-          .getReturningList('get_return_out_list', '');
+          .getOrders('get_return_out_list', '');
       emit(state.copyWith(
           status: ReturningOutOrdersHeadStatus.success, orders: orders));
     } catch (e) {

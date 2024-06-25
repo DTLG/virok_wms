@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/models/order.dart';
 
-
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
@@ -16,14 +15,23 @@ class ReturningOutHeadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MovingOutOrdersHeadCubit(),
+      create: (context) => ReturningOutOrdersHeadCubit(),
       child: const ReturningOutOrdersHeadView(),
     );
   }
 }
 
-class ReturningOutOrdersHeadView extends StatelessWidget {
+class ReturningOutOrdersHeadView extends StatefulWidget {
   const ReturningOutOrdersHeadView({super.key});
+
+  @override
+  State<ReturningOutOrdersHeadView> createState() =>
+      _ReturningOutOrdersHeadViewState();
+}
+
+class _ReturningOutOrdersHeadViewState
+    extends State<ReturningOutOrdersHeadView> {
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +52,7 @@ class ReturningOutOrdersHeadView extends StatelessWidget {
         child: Column(
           children: [
             const _TableHead(),
-            BlocConsumer<MovingOutOrdersHeadCubit, ReturningOutOrdersHeadState>(
+            BlocConsumer<ReturningOutOrdersHeadCubit, ReturningOutOrdersHeadState>(
               listener: (context, state) {
                 if (state.status.isNotFound) {
                   Alerts(msg: state.errorMassage, context: context).showError();
@@ -52,7 +60,7 @@ class ReturningOutOrdersHeadView extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state.status.isInitial) {
-                  context.read<MovingOutOrdersHeadCubit>().getOrders();
+                  context.read<ReturningOutOrdersHeadCubit>().getOrders();
                   return const Expanded(
                       child: Center(child: CircularProgressIndicator()));
                 }
@@ -64,17 +72,15 @@ class ReturningOutOrdersHeadView extends StatelessWidget {
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>
-                          context.read<MovingOutOrdersHeadCubit>().getOrders(),
+                          context.read<ReturningOutOrdersHeadCubit>().getOrders(),
                       errorDescription: state.errorMassage,
                     ),
                   );
                 }
-                if (state.status.isSuccess) {
-                  return _CustomTable(
-                    orders: state.orders,
-                  );
-                }
-                return const Center();
+
+                return _CustomTable(
+                  orders: state.orders,
+                );
               },
             )
           ],
@@ -86,7 +92,9 @@ class ReturningOutOrdersHeadView extends StatelessWidget {
           GeneralButton(
               lable: 'Оновити',
               onPressed: () {
-                context.read<MovingOutOrdersHeadCubit>().getOrders();
+                if (isSelected) return;
+                isSelected = true;
+                context.read<ReturningOutOrdersHeadCubit>().getOrders();
               })
         ],
       ),
@@ -133,9 +141,10 @@ class _CustomTable extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (_) => BlocProvider.value(
-                      value: context.read<MovingOutOrdersHeadCubit>(),
+                      value: context.read<ReturningOutOrdersHeadCubit>(),
                       child: SetBuscetDialog(
                         docId: orders.orders[index].docId,
+                        itsMezonine: itsMezonine,
                       ),
                     ),
                   );
@@ -143,103 +152,30 @@ class _CustomTable extends StatelessWidget {
                   Navigator.pushNamed(context, AppRoutes.returningOutDataPage,
                       arguments: {
                         'docId': orders.orders[index].docId,
-                        'cubit': context.read<MovingOutOrdersHeadCubit>()
+                        'cubit': context.read<ReturningOutOrdersHeadCubit>(),
+                        'basket': orders.orders[index].baskets.first.bascet,
                       });
                 }
               } else {
                 Navigator.pushNamed(context, AppRoutes.returningOutDataPage,
                     arguments: {
                       'docId': orders.orders[index].docId,
-                      'cubit': context.read<MovingOutOrdersHeadCubit>()
+                      'cubit': context.read<ReturningOutOrdersHeadCubit>(),
+                      'basket': '',
                     });
               }
             },
-            color: index % 2 != 0
-                ? myColors.tableDarkColor
-                : myColors.tableLightColor,
+            color: orders.orders[index].fullOrder != 0
+                ? myColors.tableGreen
+                : index % 2 != 0
+                    ? myColors.tableDarkColor
+                    : myColors.tableLightColor,
           );
-
-          // InkWell(
-          //   onTap: () {
-          //     if (itsMezonine) {
-          //       if (orders.orders[index].baskets.isEmpty) {
-          //         showDialog(
-          //           context: context,
-          //           builder: (_) => BlocProvider.value(
-          //             value: context.read<MovingOutOrdersHeadCubit>(),
-          //             child: SetBuscetDialog(
-          //               docId: orders.orders[index].docId,
-          //             ),
-          //           ),
-          //         );
-          //       } else {
-          //         Navigator.pushNamed(context, AppRoutes.returningOutDataPage,
-          //             arguments: {
-          //               'docId': orders.orders[index].docId,
-          //               'cubit': context.read<MovingOutOrdersHeadCubit>()
-          //             });
-          //       }
-          //     } else {
-          //       Navigator.pushNamed(context, AppRoutes.returningOutDataPage,
-          //           arguments: {
-          //             'docId': orders.orders[index].docId,
-          //             'cubit': context.read<MovingOutOrdersHeadCubit>()
-          //           });
-          //     }
-          //   },
-          //   child: _CustomTableRow(
-          //     index: index,
-          //     lastIndex: orders.orders.length - 1,
-          //     order: orders.orders[index],
-          //   ),
-          // );
         },
       ),
     );
   }
 }
-
-// class _CustomTableRow extends StatelessWidget {
-//   const _CustomTableRow(
-//       {required this.index, required this.lastIndex, required this.order});
-//   final Order order;
-//   final int index;
-//   final int lastIndex;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     return Container(
-//       margin: EdgeInsets.only(bottom: lastIndex == index ? 8 : 0),
-//       height: 45,
-//       padding: const EdgeInsets.all(3),
-//       decoration: BoxDecoration(
-//           color: index % 2 == 0 ? Colors.grey[200] : Colors.white,
-//           border: const Border.symmetric(
-//               vertical: BorderSide(width: 1),
-//               horizontal: BorderSide(width: 0.5)),
-//           borderRadius: BorderRadius.only(
-//               bottomLeft: Radius.circular(lastIndex == index ? 15 : 0),
-//               bottomRight: Radius.circular(lastIndex == index ? 15 : 0))),
-//       child: Row(
-//         children: [
-//           RowElement(
-//               flex: 1,
-//               value: (index + 1).toString(),
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.docId,
-//               textStyle: theme.textTheme.titleSmall),
-//           RowElement(
-//               flex: 4,
-//               value: order.date,
-//               textStyle: theme.textTheme.titleSmall),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class _TableHead extends StatelessWidget {
   const _TableHead();
@@ -270,9 +206,11 @@ class _TableHead extends StatelessWidget {
 }
 
 class SetBuscetDialog extends StatefulWidget {
-  const SetBuscetDialog({super.key, required this.docId});
+  const SetBuscetDialog(
+      {super.key, required this.docId, required this.itsMezonine});
 
   final String docId;
+  final bool itsMezonine;
 
   @override
   State<SetBuscetDialog> createState() => _SetBuscetDialogState();
@@ -282,6 +220,8 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
   final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final bool cameraScaner = context.read<HomePageCubit>().state.cameraScaner;
+
     return AlertDialog(
       iconPadding: EdgeInsets.zero,
       icon: Row(
@@ -303,7 +243,13 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
       content: TextField(
         controller: controller,
         autofocus: true,
-        decoration: const InputDecoration(hintText: "Відскануйте кошик"),
+        decoration: InputDecoration(
+            hintText: "Відскануйте кошик",
+            suffixIcon: cameraScaner
+                ? CameraScanerButton(scan: (value) {
+                    controller.text = value;
+                  })
+                : const SizedBox()),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actionsPadding: EdgeInsets.zero,
@@ -313,7 +259,7 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
             onPressed: () async {
               if (controller.text.isNotEmpty) {
                 bool status = await context
-                    .read<MovingOutOrdersHeadCubit>()
+                    .read<ReturningOutOrdersHeadCubit>()
                     .setBasketToOrder(controller.text, widget.docId);
 
                 if (status == true) {
@@ -323,7 +269,8 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                   Navigator.pushNamed(context, AppRoutes.returningOutDataPage,
                       arguments: {
                         'docId': widget.docId,
-                        'cubit': context.read<MovingOutOrdersHeadCubit>()
+                        'cubit': context.read<ReturningOutOrdersHeadCubit>(),
+                        'basket': controller.text,
                       });
                 }
               }

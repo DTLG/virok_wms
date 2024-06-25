@@ -22,6 +22,8 @@ class AppRoutes {
   static const returningOutDataPage = '/returning_out_data_page';
   static const returningInHeadPage = '/returning_in_head_page';
   static const returningInDataPage = '/returning_in_data_page';
+    static const returnEpicPage = '/returnEpicPage';
+
 
   static const rechargingMenuPage = '/recharging_menu_page';
   static const rechargePage = '/recharge_page';

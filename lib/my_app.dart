@@ -45,30 +45,30 @@
 //             (route) => false);
 //       }
 //     });
-//     return AdaptiveTheme(
-//       debugShowFloatingThemeButton: true,
-//       light: AppTheme.light,
-//       dark: AppTheme.dark,
-//       initial: savedThemeMode ?? AdaptiveThemeMode.light,
-//       builder: (light, dark) {
-//         return BlocProvider(
-//           create: (context) => HomePageCubit(),
-//           child: SessionTimeoutManager(
-//             userActivityDebounceDuration: const Duration(seconds: 1),
-//             sessionConfig: sessionConfig,
-//             sessionStateStream: sessionStateStream.stream,
-//             child: MaterialApp(
-//               navigatorKey: _navigatorKey,
-//               home: AuthPage(
-//                 sessionStateStream: sessionStateStream,
-//               ),
-//               onGenerateRoute: RouteGenerator.generateRoute,
-//               theme: light,
-//               darkTheme: dark,
-//               debugShowCheckedModeBanner: false,
-//             ),
-//           ),
-//         );
+    // return AdaptiveTheme(
+    //   debugShowFloatingThemeButton: true,
+    //   light: AppTheme.light,
+    //   dark: AppTheme.dark,
+    //   initial: savedThemeMode ?? AdaptiveThemeMode.light,
+    //   builder: (light, dark) {
+    //     return BlocProvider(
+    //       create: (context) => HomePageCubit(),
+    //       child: SessionTimeoutManager(
+    //         userActivityDebounceDuration: const Duration(seconds: 1),
+    //         sessionConfig: sessionConfig,
+    //         sessionStateStream: sessionStateStream.stream,
+    //         child: MaterialApp(
+    //           navigatorKey: _navigatorKey,
+    //           home: AuthPage(
+    //             sessionStateStream: sessionStateStream,
+    //           ),
+    //           onGenerateRoute: RouteGenerator.generateRoute,
+    //           theme: light,
+    //           darkTheme: dark,
+    //           debugShowCheckedModeBanner: false,
+    //         ),
+    //       ),
+    //     );
 //       },
 //     );
 //   }

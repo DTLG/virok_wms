@@ -121,7 +121,6 @@ class _CustomTable extends StatelessWidget {
     final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     final theme = Theme.of(context);
     final MyColors myColors = Theme.of(context).extension<MyColors>()!;
-
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -162,6 +161,14 @@ class _CustomTable extends StatelessWidget {
                             fontSize: 35,
                             fontWeight: FontWeight.w700,
                             color: Color.fromARGB(255, 6, 60, 255)),
+                      ),
+                    if (orders.orders[index].newPostMark == 1)
+                      const Text(
+                        'Н',
+                        style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w700,
+                            color: Color.fromARGB(255, 255, 6, 6)),
                       ),
                   ],
                 ),
@@ -297,7 +304,7 @@ class _SetBuscetDialogState extends State<SetBuscetDialog> {
                     .setBasketToOrder(controller.text, widget.docId);
 
                 if (status == true) {
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.pop(context);
 
                   Navigator.pushNamed(context, AppRoutes.selectionOrderDataPage,

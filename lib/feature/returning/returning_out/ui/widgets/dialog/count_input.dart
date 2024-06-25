@@ -6,7 +6,7 @@ import 'package:virok_wms/ui/widgets/alerts.dart';
 
 import '../../../cubit/returning_out_order_data_cubit.dart';
 
-void showCountAlert(
+void showCountDialog(
   BuildContext context,
   Nom nom,
 ) {
@@ -30,10 +30,9 @@ void showCountAlert(
       });
 }
 
-
-
 class InputCountAlert extends StatefulWidget {
-  const InputCountAlert({super.key, required this.onChanged, required this.nom});
+  const InputCountAlert(
+      {super.key, required this.onChanged, required this.nom});
 
   final ValueChanged<String>? onChanged;
   final Nom nom;
@@ -93,8 +92,9 @@ class _InputCountAlertState extends State<InputCountAlert> {
                 onPressed: () {
                   context
                       .read<ReturningOutOrderDataCubit>()
-                      .manualCountIncrement(controller.text,widget.nom.qty, widget.nom.count);
-                      Navigator.pop(context);
+                      .manualCountIncrement(
+                          controller.text, widget.nom.qty, widget.nom.count);
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Додати',

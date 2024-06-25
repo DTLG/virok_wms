@@ -5,7 +5,7 @@ import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/custom_keyboard/keyboard.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 
-void showCountAlert(
+void showCountDialog(
   BuildContext context,
   Nom nom,
 ) {

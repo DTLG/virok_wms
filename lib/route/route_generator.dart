@@ -34,6 +34,7 @@ import '../feature/admission/displacement/ui/displacement_order_head_page.dart';
 import '../feature/moving/moving_out/ui/moving_out_order_data_page.dart';
 import '../feature/moving/moving_out/ui/moving_out_order_head_page.dart';
 import '../feature/recharging/recharge/ui/recharge_page.dart';
+import '../feature/returning/return_epic/ui/return_epic_page.dart';
 import '../feature/returning/returning_out/ui/returning_out_order_data_page.dart';
 import '../feature/returning/returning_out/ui/returning_out_order_head_page.dart';
 import '../feature/returning/returning_page.dart';
@@ -95,6 +96,8 @@ class RouteGenerator {
         return buildRoute(const ReturnHeadPage(), settings: settings);
       case AppRoutes.returningInDataPage:
         return buildRoute(const ReturnDataPage(), settings: settings);
+      case AppRoutes.returnEpicPage:
+        return buildRoute(const ReturnEpicPage(), settings: settings);
 
       case AppRoutes.rechargePage:
         return buildRoute(const RechargePage(), settings: settings);
@@ -163,12 +166,11 @@ class RouteGenerator {
         return buildRoute(const InventoryNomInCellTasksPage(),
             settings: settings);
       //* Київ розміщення
-        case AppRoutes.placementFromAdmissionPage:
+      case AppRoutes.placementFromAdmissionPage:
         return buildRoute(const PlacementFromAdmissionHeadPage(),
             settings: settings);
-                    case AppRoutes.placementFromReturnPage:
-        return buildRoute(const PlacementFromReturnPage(),
-            settings: settings);
+      case AppRoutes.placementFromReturnPage:
+        return buildRoute(const PlacementFromReturnPage(), settings: settings);
       //* ---------------
       default:
         return buildRoute(const HomePage(), settings: settings);

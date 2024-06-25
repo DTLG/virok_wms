@@ -26,7 +26,9 @@ OrderDTO _$OrderDTOFromJson(Map<String, dynamic> json) => OrderDTO(
         .toList(),
     fullOrdfer: json['full_order'] as int?,
     importanceMark: json['importance_mark'] as int?,
-    mMark: json["m_mark"] as int?);
+    mMark: json["m_mark"] as int?,
+    newPostMark: json['NovaPoshta_mark'] as int?
+    );
 
 
 

@@ -23,7 +23,7 @@ import 'package:virok_wms/feature/return/ui/return_head_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/cell_generator.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/kyiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/product_lable/view/product_lable_view.dart';
-import 'package:virok_wms/feature/storage_operation/ttn_print/ui/ttn_print_page.dart';
+import 'package:virok_wms/feature/ttn_temp_recreated/ui/ttn_print_page.dart';
 import 'package:virok_wms/login/login_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/home_page/home_page.dart';
@@ -56,7 +56,7 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.ttnPage:
-        return buildRoute(DataFromApiScreen(), settings: settings);
+        return buildRoute(const TtnTempRecreated(), settings: settings);
       case AppRoutes.login:
         return buildRoute(const LoginPage(), settings: settings);
       case AppRoutes.storageOperations:

@@ -21,11 +21,11 @@ final class CheckNomListState extends Equatable {
   final Noms noms;
   final String errorMassage;
 
-  CheckNomListState copyWith(
-      {ChecknomStatus? status,
-      Noms? noms,
-      String? errorMassage,
-}) {
+  CheckNomListState copyWith({
+    ChecknomStatus? status,
+    Noms? noms,
+    String? errorMassage,
+  }) {
     return CheckNomListState(
         status: status ?? this.status,
         noms: noms ?? this.noms,

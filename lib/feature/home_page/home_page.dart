@@ -96,6 +96,7 @@ class HomePage extends StatelessWidget {
                           state.movingButton,
                           state.returningButton,
                           state.rechargeButton,
+                          state.ttnPrintButton,
                           context));
                 },
               )),
@@ -260,7 +261,7 @@ class CheckLogoutDialog extends StatelessWidget {
 }
 
 List<Widget> buildButtons(
-    selection, admission, moving, returning, recharge, context) {
+    selection, admission, moving, returning, recharge, ttnprint, context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
@@ -268,6 +269,7 @@ List<Widget> buildButtons(
   if (admission) a.add({'name': 'ПОСТУПЛЕННЯ', 'path': 'admission'});
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
+  if (ttnprint) a.add({'name': 'ДРУК НАКЛАДНОЇ', 'path': 'ttnprint'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
   a.add({'name': 'ІНВЕНТАРИЗАЦІЯ', 'path': 'inventory'});
 
@@ -316,6 +318,8 @@ extension on String {
         return AppRoutes.settings;
       case 'inventory':
         return AppRoutes.inventoryPage;
+      case 'ttnprint':
+        return AppRoutes.ttnPage;
     }
   }
 }

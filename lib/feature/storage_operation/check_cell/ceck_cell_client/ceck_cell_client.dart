@@ -14,7 +14,6 @@ class CheckCellClient {
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
 
-
     final url = '$baseUrl$query $body';
     final basicAuth = base64.encode(utf8.encode('$zone:$password'));
 
@@ -47,7 +46,6 @@ class CheckCellClient {
     String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
-
 
     final url = '$baseUrl$query $body';
     final basicAuth = base64.encode(utf8.encode('$zone:$password'));

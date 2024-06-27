@@ -15,18 +15,19 @@ extension HomePageStatusX on HomePageStatus {
 }
 
 final class HomePageState extends Equatable {
-  const HomePageState(
-      {this.zone = '',
-      this.status = HomePageStatus.initial,
-      this.selectionButton = false,
-      this.admissionButton = false,
-      this.movingButton = false,
-      this.returningButton = false,
-      this.rechargeButton = false,
-      this.itsMezonine = true,
-      this.cameraScaner = false,
-      this.refreshTime = 10,
-      });
+  const HomePageState({
+    this.zone = '',
+    this.status = HomePageStatus.initial,
+    this.selectionButton = false,
+    this.ttnPrintButton = false,
+    this.admissionButton = false,
+    this.movingButton = false,
+    this.returningButton = false,
+    this.rechargeButton = false,
+    this.itsMezonine = true,
+    this.cameraScaner = false,
+    this.refreshTime = 10,
+  });
 
   final String zone;
   final HomePageStatus status;
@@ -34,6 +35,7 @@ final class HomePageState extends Equatable {
   final bool admissionButton;
   final bool movingButton;
   final bool returningButton;
+  final bool ttnPrintButton;
   final bool rechargeButton;
   final bool cameraScaner;
   final bool itsMezonine;
@@ -46,6 +48,7 @@ final class HomePageState extends Equatable {
     bool? admissionButton,
     bool? movingButton,
     bool? returningButton,
+    bool? ttnPrintButton,
     bool? rechargeButton,
     bool? itsMezonine,
     bool? cameraScaner,
@@ -59,6 +62,7 @@ final class HomePageState extends Equatable {
         admissionButton: admissionButton ?? this.admissionButton,
         movingButton: movingButton ?? this.movingButton,
         returningButton: returningButton ?? this.returningButton,
+        ttnPrintButton: ttnPrintButton ?? this.ttnPrintButton,
         rechargeButton: rechargeButton ?? this.rechargeButton,
         itsMezonine: itsMezonine ?? this.itsMezonine,
         cameraScaner: cameraScaner ?? this.cameraScaner,
@@ -73,6 +77,7 @@ final class HomePageState extends Equatable {
         admissionButton,
         movingButton,
         returningButton,
+        ttnPrintButton,
         rechargeButton,
         itsMezonine,
         cameraScaner,

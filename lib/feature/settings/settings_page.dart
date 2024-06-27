@@ -190,6 +190,16 @@ class HomePageSettingsWidget extends StatelessWidget {
                           .writeToSP('recharge_button', value);
                     }),
               ),
+              ListTile(
+                title: const Text('Друк ттн'),
+                trailing: Switch(
+                    value: state.ttnPrintButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('ttn_print_button', value);
+                    }),
+              ),
             ],
           ),
         );

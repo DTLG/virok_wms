@@ -149,9 +149,9 @@ class _ArticleInputState extends State<ArticleInput> {
         textInputAction: TextInputAction.search,
         autofocus: true,
         onSubmitted: (value) {
-          context.read<CheckNomListCubit>().getNoms(
-              _switchValue == true ? byArcticle : byBarcode,
-              value);
+          context
+              .read<CheckNomListCubit>()
+              .getNoms(_switchValue == true ? byArcticle : byBarcode, value);
           _value = value;
         },
         decoration: InputDecoration(
@@ -220,7 +220,6 @@ class NomsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-
         Navigator.pushNamed(context, AppRoutes.checkNomPage, arguments: {
           'nom': nom,
           "nomsListCubit": context.read<CheckNomListCubit>(),

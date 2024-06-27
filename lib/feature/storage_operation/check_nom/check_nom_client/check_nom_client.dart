@@ -41,7 +41,6 @@ class CheckNomClient {
     }
   }
 
-
   Future<int> setBarcode(String query, String body) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 

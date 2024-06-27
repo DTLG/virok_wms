@@ -3,13 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:virok_wms/feature/storage_operation/check_nom/check_nom_client/check_nom_client.dart';
 import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 
-
-
 part 'check_nom_list_state.dart';
 
 class CheckNomListCubit extends Cubit<CheckNomListState> {
   CheckNomListCubit() : super(const CheckNomListState());
-
 
   Future<void> getNoms(String query, String value) async {
     try {

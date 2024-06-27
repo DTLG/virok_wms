@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/storage_operation/cubit/storage_operations_cubit.dart';
-import 'package:virok_wms/feature/storage_operation/ttn_print/ui/ttn_print_page.dart';
 
 import '../../route/route.dart';
 import '../../ui/widgets/widgets.dart';
@@ -57,27 +56,31 @@ List<Widget> buildButtons(
     placement, writingOff, cell, basket, lablePrint, context) {
   List<Map<String, String>> a = [];
 
-  if (placement)
+  if (placement) {
     a.add({
       'name': 'ВНЕСЕННЯ ЗАЛИШКУ',
       'path': 'placement',
       'icon_path': "placement"
     });
-  if (writingOff)
+  }
+  if (writingOff) {
     a.add({
       'name': 'СПИСАННЯ ТОВАРІВ',
       'path': 'writing_off',
       'icon_path': "writing_off"
     });
+  }
   if (cell) a.add({'name': 'КОМІРКА', 'path': 'cell', 'icon_path': "cell"});
-  if (basket)
+  if (basket) {
     a.add({'name': 'КОРЗИНА', 'path': 'basket', 'icon_path': "basket"});
-  if (lablePrint)
+  }
+  if (lablePrint) {
     a.add({
       'name': 'ДРУК ЕТИКЕТКИ КОМІРКИ',
       'path': 'lable_print',
       'icon_path': "lable_print"
     });
+  }
   a.add({
     'name': 'ПЕРЕВІРКА НОМЕНКЛАТУРИ',
     'path': 'check_nom',
@@ -87,11 +90,6 @@ List<Widget> buildButtons(
     'name': 'ДРУК ЕТИКЕТКИ ПРОДУКТУ',
     'path': 'product_lable_print',
     'icon_path': "lable_print"
-  });
-  a.add({
-    'name': 'ДРУК ТТН',
-    'path': 'ttn_page',
-    'icon_path': "lable_print",
   });
 
   List<Widget> buttons = [];
@@ -130,8 +128,6 @@ extension on String {
         return AppRoutes.productLablePrint;
       case 'check_nom':
         return AppRoutes.checkNomListPage;
-      case 'ttn_page':
-        return AppRoutes.ttnPage;
     }
   }
 }

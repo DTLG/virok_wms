@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class TtnData {
   final String ttnNumber;
   final String apiKey;
@@ -17,4 +19,10 @@ class TtnData {
     ttnRef: '',
     errorMessage: '',
   );
+  
+  bool isNotEmpty() {
+    return ttnNumber.isNotEmpty || apiKey.isNotEmpty || ttnRef.isNotEmpty || errorMessage.isNotEmpty;
+  }
+
+  
 }

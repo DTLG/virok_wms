@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 part 'home_page_state.dart';
 
 class HomePageCubit extends Cubit<HomePageState> {
@@ -29,6 +28,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     final bool admissionButton = prefs.getBool('admission_button') ?? false;
     final bool movingButton = prefs.getBool('moving_button') ?? false;
     final bool returningButton = prefs.getBool('returning_button') ?? false;
+    final bool ttnPrintButton = prefs.getBool('ttn_print_button') ?? false;
     final bool rechargeButton = prefs.getBool('recharge_button') ?? false;
     final bool cameraScaner = prefs.getBool('camera_scaner') ?? false;
 
@@ -37,6 +37,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         admissionButton: admissionButton,
         movingButton: movingButton,
         returningButton: returningButton,
+        ttnPrintButton: ttnPrintButton,
         rechargeButton: rechargeButton,
         cameraScaner: cameraScaner,
         status: HomePageStatus.success));

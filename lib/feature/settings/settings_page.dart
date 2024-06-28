@@ -413,6 +413,10 @@ class _StorageWidgetState extends State<_StorageWidget> {
                 value: Storages.kyiv,
                 child: Text('Київ'),
               ),
+              const PopupMenuItem(
+                value: Storages.harkiv,
+                child: Text('Харків'),
+              ),
             ];
           },
           child: ListTile(

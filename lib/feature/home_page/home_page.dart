@@ -28,13 +28,22 @@ class HomePage extends StatelessWidget {
             leading: Align(
                 alignment: const Alignment(-0.5, 0),
                 child: SizedBox(
-                  width: 50,
-                  child: Text(
-                    appVersion,
-                    style: theme.textTheme.titleMedium!.copyWith(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
+                  width: 80,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        appVersion,
+                        style: theme.textTheme.titleMedium!.copyWith(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.print),
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
                 )),
             titleSpacing: 0,
@@ -204,9 +213,9 @@ class _PinDialogState extends State<PinDialog> {
             ),
           ),
         ),
-        Keyboard(
-          controller: controller,
-        )
+        // Keyboard(
+        //   controller: controller,
+        // )
       ],
     );
   }

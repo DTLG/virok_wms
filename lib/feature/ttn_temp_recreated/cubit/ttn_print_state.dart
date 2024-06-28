@@ -24,10 +24,13 @@ final class TtnPrintState extends Equatable {
     this.status = TtnPrintStatus.initial,
     this.errorMassage = '',
     TtnData? ttnData,
-  }) : ttnData = ttnData ?? TtnData.empty;
+    List<TtnParams>? ttnParams,
+  })  : ttnData = ttnData ?? TtnData.empty,
+        ttnParams = ttnParams ?? const [];
 
   final TtnPrintStatus status;
   final TtnData ttnData;
+  final List<TtnParams> ttnParams;
   final String errorMassage;
   final MyAction action;
 
@@ -35,15 +38,17 @@ final class TtnPrintState extends Equatable {
     TtnPrintStatus? status,
     MyAction? action,
     String? errorMassage,
-    required ttnData,
+    TtnData? ttnData,
+    List<TtnParams>? ttnParams,
   }) {
     return TtnPrintState(
         status: status ?? this.status,
         action: action ?? this.action,
         ttnData: ttnData ?? this.ttnData,
+        ttnParams: ttnParams ?? this.ttnParams,
         errorMassage: errorMassage ?? this.errorMassage);
   }
 
   @override
-  List<Object?> get props => [status, action, ttnData, errorMassage];
+  List<Object?> get props => [status, action, ttnData, ttnParams, errorMassage];
 }

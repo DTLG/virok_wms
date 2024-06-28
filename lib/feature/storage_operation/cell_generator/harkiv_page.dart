@@ -744,7 +744,7 @@ class WellScrollLvivView extends StatelessWidget {
                                 .printServiceLable()
                             : context
                                 .read<CelLGeneratorCubit>()
-                                .printLvivPalletLable();
+                                .printHarkivPalletLable();
                   })
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -766,7 +766,7 @@ class WellScrollLvivView extends StatelessWidget {
                                       .printServiceLable()
                                   : context
                                       .read<CelLGeneratorCubit>()
-                                      .printLvivPalletLable();
+                                      .printHarkivPalletLable();
                         }),
                     BlocBuilder<CelLGeneratorCubit, CellGeneratorState>(
                       builder: (context, state) {

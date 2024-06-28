@@ -40,9 +40,12 @@ class HomePage extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                       IconButton(
-                        icon: Icon(Icons.print),
-                        onPressed: () {},
-                      ),
+  icon: Icon(Icons.print),
+  onPressed: () {
+    showInputDialog(context);
+  },
+),
+
                     ],
                   ),
                 )),
@@ -225,6 +228,44 @@ checkLogoutDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => const CheckLogoutDialog(),
+  );
+}
+
+void showInputDialog(BuildContext context) {
+  TextEditingController textController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Скануйте qr-код принтера'),
+      content: TextField(
+        controller: textController,
+        autofocus: true,
+        decoration: InputDecoration(
+          hintText: 'Зіскануйте код',
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text('Закрити'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text('Зберегти'),
+          onPressed: () async {
+            String inputText = textController.text;
+
+            // Зберігаємо введений текст у SharedPreferences
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('printer_host', inputText);
+
+            Navigator.of(context).pop(); // Закрити діалогове вікно
+          },
+        ),
+      ],
+    ),
   );
 }
 

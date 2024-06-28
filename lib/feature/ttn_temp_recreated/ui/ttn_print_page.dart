@@ -29,6 +29,7 @@ class TtnTempRecreatedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String barcode = '';
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -47,7 +48,11 @@ class TtnTempRecreatedView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const ArticleInput(),
+              ArticleInput(
+                onSubmitted: (value) {
+                  barcode = value;
+                },
+              ),
               BlocBuilder<TtnPrintCubit, TtnPrintState>(
                 builder: (context, state) {
                   if (state.status.isFailure) {
@@ -67,31 +72,233 @@ class TtnTempRecreatedView extends StatelessWidget {
                   }
                   if (state.status.isSuccess) {
                     if (state.action.isFetchingInfo) {
-                      return context
-                              .read<TtnPrintCubit>()
-                              .state
-                              .ttnData
-                              .isNotEmpty()
-                          ? StatusLabel.showInfo(
-                              context.read<TtnPrintCubit>().state.ttnData)
+                      var ttnData = context.read<TtnPrintCubit>().state.ttnData;
+                      var ttnParams =
+                          context.read<TtnPrintCubit>().state.ttnParams;
+                      return ttnData.isNotEmpty()
+                          ? Column(
+                              children: [
+                                StatusLabel.showInfo(ttnData),
+                                const SizedBox(height: 10),
+                                SizedBox(
+                                  width: 250,
+                                  height: 250,
+                                  child: ListView.builder(
+                                    itemCount: ttnParams.length,
+                                    itemBuilder: (context, index) {
+                                      final param = ttnParams[index];
+                                      return Dismissible(
+                                        key: UniqueKey(),
+                                        onDismissed: (direction) {
+                                            context.read<TtnPrintCubit>().removeTtnParam(param);
+                                            ttnParams.remove(param);
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 5),
+                                          padding: const EdgeInsets.all(8),
+                                          color: Colors.grey[200],
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Номер місця:',
+                                                      textAlign: TextAlign.left,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: TextField(
+                                                      decoration: InputDecoration(
+                                                        hintText: param
+                                                            .placeNumber
+                                                            .toString(),
+                                                      ),
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        param.placeNumber =
+                                                            int.tryParse(value) ??
+                                                                param.placeNumber;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Висота:',
+                                                      textAlign: TextAlign.left,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: TextField(
+                                                      decoration: InputDecoration(
+                                                        hintText: param.height
+                                                            .toString(),
+                                                      ),
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        // Оновлення значення height
+                                                        param.height =
+                                                            double.tryParse(
+                                                                    value) ??
+                                                                param.height;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Ширина:',
+                                                      textAlign: TextAlign.left,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: TextField(
+                                                      decoration: InputDecoration(
+                                                        hintText: param.width
+                                                            .toString(),
+                                                      ),
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        // Оновлення значення width
+                                                        param.width =
+                                                            double.tryParse(
+                                                                    value) ??
+                                                                param.width;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Довжина:',
+                                                      textAlign: TextAlign.left,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: TextField(
+                                                      decoration: InputDecoration(
+                                                        hintText: param.length
+                                                            .toString(),
+                                                      ),
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        // Оновлення значення length
+                                                        param.length =
+                                                            double.tryParse(
+                                                                    value) ??
+                                                                param.length;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Вага:',
+                                                      textAlign: TextAlign.left,
+                                                      style:
+                                                          TextStyle(fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Flexible(
+                                                    child: TextField(
+                                                      decoration: InputDecoration(
+                                                        hintText: param.weight
+                                                            .toString(),
+                                                      ),
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      onChanged: (value) {
+                                                        // Оновлення значення weight
+                                                        param.weight =
+                                                            double.tryParse(
+                                                                    value) ??
+                                                                param.weight;
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        
+                                        context.read<TtnPrintCubit>().saveTtnParams(barcode, ttnParams);
+                                      },
+                                      child: const Text('Зберегти зміни'),
+                                    ),
+                                    SizedBox(width: 30,),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green[600],
+                                        borderRadius: BorderRadius.circular(40),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(Icons.add),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
                           : const Row(
                               children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
+                                SizedBox(width: 10),
                                 Icon(Icons.error_outline_outlined),
-                                SizedBox(
-                                  width: 5,
-                                ),
+                                SizedBox(width: 5),
                                 Text(
                                   'Нічого не знайдено',
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400),
-                                )
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ],
                             );
                     }
+
                     if (state.action.isPrinting) {
                       return Text(state.errorMassage);
                     }
@@ -135,7 +342,9 @@ class PrintButton extends StatelessWidget {
 }
 
 class ArticleInput extends StatefulWidget {
-  const ArticleInput({super.key});
+  const ArticleInput({Key? key, required this.onSubmitted}) : super(key: key);
+
+  final Function(String) onSubmitted;
 
   @override
   State<ArticleInput> createState() => _ArticleInputState();
@@ -157,7 +366,7 @@ class _ArticleInputState extends State<ArticleInput> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: controller,
         focusNode: focusNode,
@@ -165,27 +374,27 @@ class _ArticleInputState extends State<ArticleInput> {
         autofocus: true,
         onSubmitted: (value) {
           context.read<TtnPrintCubit>().getTtnData(byBarcode, value);
+          widget.onSubmitted(value); 
           _value = value;
         },
         decoration: InputDecoration(
-            hintText: 'Відскануйте штрихкод',
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                cameraScaner
-                    ? _switchValue
-                        ? const SizedBox()
-                        : CameraScanerButton(
-                            scan: (value) {
-                              context
-                                  .read<TtnPrintCubit>()
-                                  .getTtnData(byBarcode, value);
-                              _value = value;
-                            },
-                          )
-                    : const SizedBox(),
-              ],
-            )),
+          hintText: 'Відскануйте штрихкод',
+          suffixIcon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              cameraScaner
+                  ? _switchValue
+                      ? const SizedBox()
+                      : CameraScanerButton(
+                          scan: (value) {
+                            widget.onSubmitted(value);
+                            _value = value;
+                          },
+                        )
+                  : const SizedBox(),
+            ],
+          ),
+        ),
       ),
     );
   }

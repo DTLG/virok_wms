@@ -5,12 +5,12 @@ extension InputTypeX on InputType {
   bool get isTextField => this == InputType.textField;
 }
 
-
-enum Storages { lviv, kyiv }
+enum Storages { lviv, kyiv, harkiv }
 
 extension StoragesX on Storages {
   bool get isLviv => this == Storages.lviv;
   bool get isKyiv => this == Storages.kyiv;
+  bool get isHarkiv => this == Storages.harkiv;
 }
 
 extension ToStorage on String {
@@ -20,6 +20,8 @@ extension ToStorage on String {
         return Storages.lviv;
       case 'kyiv':
         return Storages.kyiv;
+      case 'harkiv':
+        return Storages.harkiv;
       default:
         return Storages.lviv;
     }
@@ -33,6 +35,8 @@ extension ToString on Storages {
         return "Львів";
       case Storages.kyiv:
         return "Київ";
+      case Storages.harkiv:
+        return "Харків";
     }
   }
 }

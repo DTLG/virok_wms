@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+// import 'package:flutter_beep/flutter_beep.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
 
@@ -58,7 +58,7 @@ class Alerts {
       },
     );
 
-    FlutterBeep.beep(false);
+    // FlutterBeep.beep(false);
   }
 }
 

@@ -44,6 +44,7 @@ class AppRoutes {
 
   static const checkBasket = '/check_basket';
   static const cellGeneratorPage = '/cell_generator_page';
+  static const harkivCellsPage = 'harkivCellsPage';
   static const lvivCellsPage = 'lvivCellsPage';
   static const kyivCellsPage = 'kyivCellsPage';
 

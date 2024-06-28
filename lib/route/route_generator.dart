@@ -21,6 +21,7 @@ import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
 import 'package:virok_wms/feature/return/ui/return_data_page.dart';
 import 'package:virok_wms/feature/return/ui/return_head_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/cell_generator.dart';
+import 'package:virok_wms/feature/storage_operation/cell_generator/harkiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/kyiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/product_lable/view/product_lable_view.dart';
 import 'package:virok_wms/feature/ttn_temp_recreated/ui/ttn_print_page.dart';
@@ -133,6 +134,8 @@ class RouteGenerator {
         return buildRoute(const LvivCellGeneratorPage(), settings: settings);
       case AppRoutes.kyivCellsPage:
         return buildRoute(const KyivCellGeneratorPage(), settings: settings);
+      case AppRoutes.harkivCellsPage:
+        return buildRoute(const HarkivCellGeneratorPage(), settings: settings);
       case AppRoutes.checkCell:
         return buildRoute(const CheckCellPage(), settings: settings);
       case AppRoutes.settings:

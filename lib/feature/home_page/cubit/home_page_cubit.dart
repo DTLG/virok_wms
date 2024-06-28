@@ -53,4 +53,6 @@ class HomePageCubit extends Cubit<HomePageState> {
       emit(state.copyWith(status: HomePageStatus.failure));
     }
   }
+
+  
 }

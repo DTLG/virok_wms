@@ -23,6 +23,4 @@ class TtnData {
   bool isNotEmpty() {
     return ttnNumber.isNotEmpty || apiKey.isNotEmpty || ttnRef.isNotEmpty || errorMessage.isNotEmpty;
   }
-
-  
 }

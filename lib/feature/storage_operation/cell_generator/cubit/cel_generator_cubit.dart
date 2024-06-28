@@ -71,6 +71,15 @@ class CelLGeneratorCubit extends Cubit<CellGeneratorState> {
     PrinterConnect().connectToPrinter(
         PrinterLables.palletCellLableLviv(barcode, title));
   }
+    Future<void> printHarkivPalletLable() async {
+  final barcode =
+        '${state.range}${state.rack}${state.floorRack}${state.cell}';
+    final title =
+        '${state.range} ${state.rack} ${state.floorRack} ${state.cell}';
+
+    PrinterConnect().connectToPrinter(
+        PrinterLables.palletCellLableLviv(barcode, title));
+  }
 
   Future<void> printKyivEpicentreLable() async {
     final barcode = 'E${state.range}${state.rack}${state.floorRack}';

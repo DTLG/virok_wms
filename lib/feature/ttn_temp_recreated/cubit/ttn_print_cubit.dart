@@ -7,30 +7,35 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_data.dart';
+import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_params.dart';
 
 part 'ttn_print_state.dart';
 
 class TtnPrintCubit extends Cubit<TtnPrintState> {
-  TtnPrintCubit() : super(const TtnPrintState());
+  TtnPrintCubit() : super(TtnPrintState());
 
   Future<void> getTtnData(String query, String value) async {
     try {
       if (value.isNotEmpty) {
         emit(state.copyWith(
           ttnData: TtnData.empty,
+          ttnParams: [],
           status: TtnPrintStatus.loading,
           action: MyAction.fetchingInfo,
         ));
-        final ttnData = await fetchData(value);
+        final ttnData = await fetchTtnData(value);
+        final ttnParams = await fetchTtnParams(value);
 
         emit(state.copyWith(
             status: TtnPrintStatus.success,
             ttnData: ttnData,
+            ttnParams: ttnParams,
             errorMassage: 'Дані отримано!'));
       }
     } catch (e) {
       emit(state.copyWith(
         ttnData: TtnData.empty,
+        ttnParams: [],
         status: TtnPrintStatus.failure,
         errorMassage: e.toString(),
         action: MyAction.fetchingInfo,
@@ -38,7 +43,41 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
   }
 
-  Future<TtnData> fetchData(String value) async {
+  Future<List<TtnParams>> fetchTtnParams(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    value = '111170202405';
+
+    String apiUrl =
+        'http://192.168.2.50:81/virok_wms/hs/New/get_ttn_params?DocBarcode=$value';
+    String username = prefs.getString('zone') ?? '';
+    String password = prefs.getString('password') ?? '';
+
+    String basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: {
+        'Authorization': basicAuth,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData =
+          jsonDecode(utf8.decode(response.bodyBytes))["ttn_data"];
+
+      List<TtnParams> ttnParamsList = [];
+      for (var item in jsonData) {
+        TtnParams ttnParams = TtnParams.fromJson(item);
+        ttnParamsList.add(ttnParams);
+      }
+      return ttnParamsList;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<TtnData> fetchTtnData(String value) async {
     final prefs = await SharedPreferences.getInstance();
     String api = prefs.getString('api')!;
     final String apiUrl = '${api}get_np_data?DocBarcode=$value';
@@ -76,9 +115,53 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
   }
 
+void removeTtnParam(TtnParams paramToRemove) {
+      final updatedParams = state.ttnParams ;
+      updatedParams.remove(paramToRemove);
+      emit(state.copyWith(ttnParams: updatedParams));
+    }
+
+  Future<void> saveTtnParams(
+      String docBarcode, List<TtnParams> ttnParams) async {
+    // Формування URL для запиту
+    final prefs = await SharedPreferences.getInstance();
+    docBarcode = '111170202405';
+
+    String apiUrl =
+        'http://192.168.2.50:81/virok_wms/hs/New/save_ttn_params?DocBarcode=$docBarcode';
+
+    String username = prefs.getString('zone')!;
+    String password = prefs.getString('password')!;
+
+    String basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+    try {
+      String requestBody = jsonEncode({'ttn_data': ttnParams});
+
+      var response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Authorization': basicAuth,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        print('Дані успішно збережено!');
+      } else {
+        print('Помилка при збереженні даних: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Помилка під час виконання запиту: $e');
+    }
+  }
+
   Future<void> printBarcodeLabel(TtnData ttnData) async {
     if (ttnData.ttnRef.isEmpty || ttnData.apiKey.isEmpty) {
       emit(state.copyWith(
+        ttnParams: [],
         ttnData: TtnData.empty,
         status: TtnPrintStatus.failure,
         errorMassage: 'Дані не отримано',
@@ -105,12 +188,14 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
           if (isPrinterAvailable) {
             await sendToPrinter(printerHost, 9100, pdfData);
             emit(state.copyWith(
+              ttnParams: [],
               ttnData: TtnData.empty,
               status: TtnPrintStatus.success,
               action: MyAction.printing,
             ));
           } else {
             emit(state.copyWith(
+              ttnParams: [],
               ttnData: TtnData.empty,
               status: TtnPrintStatus.failure,
               action: MyAction.waiting,
@@ -120,6 +205,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         } else {
           emit(state.copyWith(
             ttnData: TtnData.empty,
+            ttnParams: [],
             status: TtnPrintStatus.failure,
             action: MyAction.waiting,
             errorMassage: 'Адресу принтера не вказано',
@@ -128,6 +214,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         }
       } else {
         emit(state.copyWith(
+          ttnParams: [],
           ttnData: TtnData.empty,
           action: MyAction.waiting,
           status: TtnPrintStatus.failure,
@@ -137,6 +224,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       }
     } else {
       emit(state.copyWith(
+        ttnParams: [],
         ttnData: TtnData.empty,
         action: MyAction.waiting,
         status: TtnPrintStatus.failure,
@@ -154,12 +242,14 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       await socket.close();
       emit(state.copyWith(
         ttnData: TtnData.empty,
+        ttnParams: [],
         status: TtnPrintStatus.success,
         action: MyAction.printing,
         errorMassage: 'Завдання на друк успішно надіслано',
       ));
     } catch (e) {
       emit(state.copyWith(
+        ttnParams: [],
         ttnData: TtnData.empty,
         status: TtnPrintStatus.failure,
         errorMassage: 'Не вдалося надіслати завдання на друк',
@@ -172,6 +262,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
   void clear() {
     emit(state.copyWith(
       ttnData: TtnData.empty,
+      ttnParams: [],
       status: TtnPrintStatus.initial,
       action: MyAction.waiting,
       errorMassage: '',

@@ -1,8 +1,8 @@
 part of 'ttn_print_cubit.dart';
 
-enum TtnPrintStatus { initial, loading, success, failure, error }
+enum TtnPrintStatus { initial, loading, success, failure, error, emptyParamError}
 
-enum MyAction { waiting, fetchingInfo, printing }
+enum MyAction { waiting, fetchingInfo, printing}
 
 extension CheckttnStatusX on TtnPrintStatus {
   bool get isInitial => this == TtnPrintStatus.initial;

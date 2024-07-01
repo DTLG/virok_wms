@@ -12,10 +12,12 @@ import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_params.dart';
 part 'ttn_print_state.dart';
 
 class TtnPrintCubit extends Cubit<TtnPrintState> {
-  TtnPrintCubit() : super(TtnPrintState());
+  TtnPrintCubit() : super(const TtnPrintState());
 
-  Future<void> getTtnData(String query, String value) async {
+  Future<void> getTtnData(String value) async {
     try {
+      value = '111170202405';
+
       if (value.isNotEmpty) {
         emit(state.copyWith(
           ttnData: TtnData.empty,
@@ -24,13 +26,21 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
           action: MyAction.fetchingInfo,
         ));
         final ttnData = await fetchTtnData(value);
-        final ttnParams = await fetchTtnParams(value);
+        try {
+          final ttnParams = await fetchTtnParams(value);
 
-        emit(state.copyWith(
-            status: TtnPrintStatus.success,
-            ttnData: ttnData,
-            ttnParams: ttnParams,
-            errorMassage: 'Дані отримано!'));
+          emit(state.copyWith(
+              status: TtnPrintStatus.success,
+              ttnData: ttnData,
+              ttnParams: ttnParams,
+              errorMassage: 'Дані отримано!'));
+        } on Exception catch (e) {
+          emit(state.copyWith(
+              status: TtnPrintStatus.success,
+              ttnData: ttnData,
+              ttnParams: [],
+              errorMassage: 'Дані отримано!'));
+        }
       }
     } catch (e) {
       emit(state.copyWith(
@@ -45,8 +55,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
   Future<List<TtnParams>> fetchTtnParams(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    value = '111170202405';
-
+    //
     String apiUrl =
         'http://192.168.2.50:81/virok_wms/hs/New/get_ttn_params?DocBarcode=$value';
     String username = prefs.getString('zone') ?? '';
@@ -62,24 +71,52 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       },
     );
 
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData =
-          jsonDecode(utf8.decode(response.bodyBytes))["ttn_data"];
+    try {
+      if (response.statusCode == 200) {
+        var responseBody = response.body;
+        if (responseBody.isNotEmpty) {
+          var decodedJson = jsonDecode(responseBody);
 
-      List<TtnParams> ttnParamsList = [];
-      for (var item in jsonData) {
-        TtnParams ttnParams = TtnParams.fromJson(item);
-        ttnParamsList.add(ttnParams);
+          if (decodedJson is Map<String, dynamic>) {
+            var jsonData = decodedJson["ttn_data"];
+
+            if (jsonData is List<dynamic>) {
+              List<TtnParams> ttnParamsList = jsonData
+                  .where((item) {
+                    return item is Map<String, dynamic> &&
+                        item["PlaceNumber"] != null &&
+                        item["height"] != null &&
+                        item["width"] != null &&
+                        item["length"] != null &&
+                        item["weight"] != null;
+                  })
+                  .map((item) => TtnParams.fromJson(item))
+                  .toList();
+
+              return ttnParamsList;
+            } else {
+              print("Invalid ttn_data format in response");
+            }
+          } else {
+            print("Invalid JSON format in response");
+          }
+        } else {
+          print("Empty or null response body");
+        }
+      } else {
+        print('Failed to load data');
       }
-      return ttnParamsList;
-    } else {
-      throw Exception('Failed to load data');
+    } catch (e) {
+      print("Error fetching and parsing data: $e");
     }
+    return []; // Return empty list if any condition fails
   }
 
   Future<TtnData> fetchTtnData(String value) async {
     final prefs = await SharedPreferences.getInstance();
     String api = prefs.getString('api')!;
+    value = '111170202405';
+
     final String apiUrl = '${api}get_np_data?DocBarcode=$value';
 
     String username = prefs.getString('zone')!;
@@ -115,15 +152,24 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
   }
 
-void removeTtnParam(TtnParams paramToRemove) {
-      final updatedParams = state.ttnParams ;
-      updatedParams.remove(paramToRemove);
-      emit(state.copyWith(ttnParams: updatedParams));
+  void removeTtnParam(TtnParams paramToRemove) {
+    final updatedParams = List<TtnParams>.from(state.ttnParams)
+      ..remove(paramToRemove);
+    for (int i = 0; i < updatedParams.length; i++) {
+      updatedParams[i].placeNumber = i + 1;
     }
+    emit(state.copyWith(ttnParams: updatedParams));
+  }
+
+  void addTtnParam(TtnParams newParam, int index) {
+    newParam.placeNumber = index + 1;
+
+    final updatedParams = List<TtnParams>.from(state.ttnParams)..add(newParam);
+    emit(state.copyWith(ttnParams: updatedParams));
+  }
 
   Future<void> saveTtnParams(
       String docBarcode, List<TtnParams> ttnParams) async {
-    // Формування URL для запиту
     final prefs = await SharedPreferences.getInstance();
     docBarcode = '111170202405';
 
@@ -137,21 +183,25 @@ void removeTtnParam(TtnParams paramToRemove) {
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     try {
-      String requestBody = jsonEncode({'ttn_data': ttnParams});
-
-      var response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Authorization': basicAuth,
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: requestBody,
-      );
-
-      if (response.statusCode == 200) {
-        print('Дані успішно збережено!');
+      if (checkIfEmptyExist(ttnParams)) {
+        //throw Exception('There is empty field!');
+        print('There is empty field!');
       } else {
-        print('Помилка при збереженні даних: ${response.statusCode}');
+        String requestBody = jsonEncode({'ttn_data': ttnParams});
+
+        var response = await http.post(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Authorization': basicAuth,
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: requestBody,
+        );
+        if (response.statusCode == 200) {
+          print('Дані успішно збережено!');
+        } else {
+          print('Помилка при збереженні даних: ${response.statusCode}');
+        }
       }
     } catch (e) {
       print('Помилка під час виконання запиту: $e');
@@ -170,7 +220,7 @@ void removeTtnParam(TtnParams paramToRemove) {
       return;
     }
 
-    final String apiUrl =
+    String apiUrl =
         'https://my.novaposhta.ua/orders/printMarking100x100/orders[]/${ttnData.ttnRef}/type/pdf/apiKey/${ttnData.apiKey}/zebra';
 
     final response = await http.get(Uri.parse(apiUrl));
@@ -268,12 +318,26 @@ void removeTtnParam(TtnParams paramToRemove) {
       errorMassage: '',
     ));
   }
+
+  bool checkIfEmptyExist(List<TtnParams> ttnParams) {
+    for (var item in ttnParams) {
+      if (item.notEmpty) {
+        continue;
+      } else {
+        emit(state.copyWith(
+          errorMassage: 'Пусте поле!!!',
+        ));
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 Future<bool> checkPrinterAvailability(String printerIp, int port) async {
   try {
-    final socket =
-        await Socket.connect(printerIp, port, timeout: Duration(seconds: 5));
+    final socket = await Socket.connect(printerIp, port,
+        timeout: const Duration(seconds: 5));
     socket.destroy();
     return true;
   } catch (e) {

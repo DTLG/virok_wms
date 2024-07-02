@@ -33,7 +33,8 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     final rechargeButton = prefs.getBool('recharge_button') ?? false;
     final cameraScaner = prefs.getBool('camera_scaner') ?? false;
-    final ttnPrintButton = prefs.getBool('ttn_print_button') ?? false;
+    final npTtnPrintButton = prefs.getBool('np_ttn_print_button') ?? false;
+    final meestTtnPrintButton = prefs.getBool('meest_ttn_print_button') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -57,7 +58,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         returningButton: returningButton,
         rechargeButton: rechargeButton,
         printerHost: printerHost,
-        ttnPrintButton: ttnPrintButton,
+        npTtnPrintButton: npTtnPrintButton,
+        meestTtnPrintButton: meestTtnPrintButton,
         printerPort: printerPort,
         cameraScaner: cameraScaner,
         autoRefreshTime: refreshTime,
@@ -96,8 +98,10 @@ class SettingsCubit extends Cubit<SettingsState> {
         return emit(state.copyWith(cameraScaner: value));
       case 'returning_button':
         return emit(state.copyWith(returningButton: value));
-      case 'ttn_print_button':
-        return emit(state.copyWith(ttnPrintButton: value));
+       case 'np_ttn_print_button':
+         return emit(state.copyWith(npTtnPrintButton: value));
+      case 'meest_ttn_print_button':
+        return emit(state.copyWith(meestTtnPrintButton: value));
     }
   }
 

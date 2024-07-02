@@ -1,6 +1,13 @@
 part of 'ttn_print_cubit.dart';
 
-enum TtnPrintStatus { initial, loading, success, failure, error }
+enum TtnPrintStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  error,
+  emptyParamError
+}
 
 enum MyAction { waiting, fetchingInfo, printing }
 
@@ -20,35 +27,34 @@ extension CheckActionStatusX on MyAction {
 
 final class TtnPrintState extends Equatable {
   const TtnPrintState({
+    this.printValue = '',
     this.action = MyAction.waiting,
     this.status = TtnPrintStatus.initial,
+    this.receiverInfo = const {},
     this.errorMassage = '',
-    TtnData? ttnData,
-    List<TtnParams>? ttnParams,
-  })  : ttnData = ttnData ?? TtnData.empty,
-        ttnParams = ttnParams ?? const [];
+  });
 
   final TtnPrintStatus status;
-  final TtnData ttnData;
-  final List<TtnParams> ttnParams;
   final String errorMassage;
   final MyAction action;
+  final String printValue;
+  final Map<String, String> receiverInfo;
 
   TtnPrintState copyWith({
     TtnPrintStatus? status,
     MyAction? action,
+    String? printValue,
+    Map<String, String>? receiverInfo,
     String? errorMassage,
-    TtnData? ttnData,
-    List<TtnParams>? ttnParams,
   }) {
     return TtnPrintState(
         status: status ?? this.status,
         action: action ?? this.action,
-        ttnData: ttnData ?? this.ttnData,
-        ttnParams: ttnParams ?? this.ttnParams,
+        receiverInfo: receiverInfo ?? this.receiverInfo,
+        printValue: printValue ?? this.printValue,
         errorMassage: errorMassage ?? this.errorMassage);
   }
 
   @override
-  List<Object?> get props => [status, action, ttnData, ttnParams, errorMassage];
+  List<Object?> get props => [status, action, errorMassage, receiverInfo, printValue];
 }

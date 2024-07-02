@@ -191,13 +191,23 @@ class HomePageSettingsWidget extends StatelessWidget {
                     }),
               ),
               ListTile(
-                title: const Text('Друк ттн'),
+                title: const Text('Друк ттн НП'),
                 trailing: Switch(
-                    value: state.ttnPrintButton,
+                    value: state.npTtnPrintButton,
                     onChanged: (value) async {
                       context
                           .read<SettingsCubit>()
-                          .writeToSP('ttn_print_button', value);
+                          .writeToSP('np_ttn_print_button', value);
+                    }),
+              ),
+              ListTile(
+                title: const Text('Друк ттн Meest'),
+                trailing: Switch(
+                    value: state.meestTtnPrintButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('meest_ttn_print_button', value);
                     }),
               ),
             ],

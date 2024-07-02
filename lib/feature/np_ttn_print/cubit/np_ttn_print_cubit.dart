@@ -1,21 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_data.dart';
-import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_params.dart';
+import 'package:virok_wms/feature/np_ttn_print/models/np_ttn_data.dart';
+import 'package:equatable/equatable.dart';
+import 'package:virok_wms/feature/np_ttn_print/models/ttn_params.dart';
 
-part 'ttn_print_state.dart';
+part 'np_ttn_print_state.dart';
+
 
 class TtnPrintCubit extends Cubit<TtnPrintState> {
   TtnPrintCubit() : super(TtnPrintState());
 
-  Future<void> getTtnData(String query, String value) async {
+  Future<void> getTtnData(String value) async {
     try {
+      value = '111170202405';
+
       if (value.isNotEmpty) {
         emit(state.copyWith(
           ttnData: TtnData.empty,
@@ -24,13 +26,21 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
           action: MyAction.fetchingInfo,
         ));
         final ttnData = await fetchTtnData(value);
-        final ttnParams = await fetchTtnParams(value);
+        try {
+          final ttnParams = await fetchTtnParams(value);
 
-        emit(state.copyWith(
-            status: TtnPrintStatus.success,
-            ttnData: ttnData,
-            ttnParams: ttnParams,
-            errorMassage: 'Дані отримано!'));
+          emit(state.copyWith(
+              status: TtnPrintStatus.success,
+              ttnData: ttnData,
+              ttnParams: ttnParams,
+              errorMassage: 'Дані отримано!'));
+        } on Exception catch (e) {
+          emit(state.copyWith(
+              status: TtnPrintStatus.success,
+              ttnData: ttnData,
+              ttnParams: [],
+              errorMassage: 'Дані отримано!'));
+        }
       }
     } catch (e) {
       emit(state.copyWith(
@@ -45,8 +55,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
   Future<List<TtnParams>> fetchTtnParams(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    value = '111170202405';
-
+    //
     String apiUrl =
         'http://192.168.2.50:81/virok_wms/hs/New/get_ttn_params?DocBarcode=$value';
     String username = prefs.getString('zone') ?? '';
@@ -62,24 +71,52 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       },
     );
 
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData =
-          jsonDecode(utf8.decode(response.bodyBytes))["ttn_data"];
+    try {
+      if (response.statusCode == 200) {
+        var responseBody = response.body;
+        if (responseBody.isNotEmpty) {
+          var decodedJson = jsonDecode(responseBody);
 
-      List<TtnParams> ttnParamsList = [];
-      for (var item in jsonData) {
-        TtnParams ttnParams = TtnParams.fromJson(item);
-        ttnParamsList.add(ttnParams);
+          if (decodedJson is Map<String, dynamic>) {
+            var jsonData = decodedJson["ttn_data"];
+
+            if (jsonData is List<dynamic>) {
+              List<TtnParams> ttnParamsList = jsonData
+                  .where((item) {
+                    return item is Map<String, dynamic> &&
+                        item["PlaceNumber"] != null &&
+                        item["height"] != null &&
+                        item["width"] != null &&
+                        item["length"] != null &&
+                        item["weight"] != null;
+                  })
+                  .map((item) => TtnParams.fromJson(item))
+                  .toList();
+
+              return ttnParamsList;
+            } else {
+              print("Invalid ttn_data format in response");
+            }
+          } else {
+            print("Invalid JSON format in response");
+          }
+        } else {
+          print("Empty or null response body");
+        }
+      } else {
+        print('Failed to load data');
       }
-      return ttnParamsList;
-    } else {
-      throw Exception('Failed to load data');
+    } catch (e) {
+      print("Error fetching and parsing data: $e");
     }
+    return []; // Return empty list if any condition fails
   }
 
   Future<TtnData> fetchTtnData(String value) async {
     final prefs = await SharedPreferences.getInstance();
     String api = prefs.getString('api')!;
+    value = '111170202405';
+
     final String apiUrl = '${api}get_np_data?DocBarcode=$value';
 
     String username = prefs.getString('zone')!;
@@ -115,29 +152,39 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
   }
 
-void removeTtnParam(TtnParams paramToRemove) {
-      final updatedParams = state.ttnParams ;
-      updatedParams.remove(paramToRemove);
-      emit(state.copyWith(ttnParams: updatedParams));
+  void removeTtnParam(TtnParams paramToRemove) {
+    final updatedParams = List<TtnParams>.from(state.ttnParams)
+      ..remove(paramToRemove);
+    for (int i = 0; i < updatedParams.length; i++) {
+      updatedParams[i].placeNumber = i + 1;
     }
+    emit(state.copyWith(ttnParams: updatedParams));
+  }
 
-  Future<void> saveTtnParams(
-      String docBarcode, List<TtnParams> ttnParams) async {
-    // Формування URL для запиту
-    final prefs = await SharedPreferences.getInstance();
-    docBarcode = '111170202405';
+  void addTtnParam(TtnParams newParam, int index) {
+    newParam.placeNumber = index + 1;
 
-    String apiUrl =
-        'http://192.168.2.50:81/virok_wms/hs/New/save_ttn_params?DocBarcode=$docBarcode';
+    final updatedParams = List<TtnParams>.from(state.ttnParams)..add(newParam);
+    emit(state.copyWith(ttnParams: updatedParams));
+  }
 
-    String username = prefs.getString('zone')!;
-    String password = prefs.getString('password')!;
-
-    String basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
+  Future<void> saveTtnParams(String docBarcode, List<TtnParams> ttnParams) async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      String username = prefs.getString('zone') ?? '';
+      String password = prefs.getString('password') ?? '';
+
+      String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+      if (checkIfEmptyExist(ttnParams)) {
+        print('There is empty field in ttnParams!');
+        return;
+      }
+
       String requestBody = jsonEncode({'ttn_data': ttnParams});
+
+      String apiUrl =
+          'http://192.168.2.50:81/virok_wms/hs/New/save_ttn_params?DocBarcode=$docBarcode';
 
       var response = await http.post(
         Uri.parse(apiUrl),
@@ -150,6 +197,22 @@ void removeTtnParam(TtnParams paramToRemove) {
 
       if (response.statusCode == 200) {
         print('Дані успішно збережено!');
+
+        String saveDocUrl =
+            'http://192.168.2.50:81/virok_wms/hs/New/save_doc?DocBarcode=$docBarcode';
+
+        var docResponse = await http.get(
+          Uri.parse(saveDocUrl),
+          headers: {
+            'Authorization': basicAuth,
+          },
+        );
+
+        if (docResponse.statusCode == 200) {
+          print('Документ успішно збережено!');
+        } else {
+          print('Помилка при збереженні документа: ${docResponse.statusCode}');
+        }
       } else {
         print('Помилка при збереженні даних: ${response.statusCode}');
       }
@@ -157,6 +220,7 @@ void removeTtnParam(TtnParams paramToRemove) {
       print('Помилка під час виконання запиту: $e');
     }
   }
+
 
   Future<void> printBarcodeLabel(TtnData ttnData) async {
     if (ttnData.ttnRef.isEmpty || ttnData.apiKey.isEmpty) {
@@ -170,7 +234,7 @@ void removeTtnParam(TtnParams paramToRemove) {
       return;
     }
 
-    final String apiUrl =
+    String apiUrl =
         'https://my.novaposhta.ua/orders/printMarking100x100/orders[]/${ttnData.ttnRef}/type/pdf/apiKey/${ttnData.apiKey}/zebra';
 
     final response = await http.get(Uri.parse(apiUrl));
@@ -268,12 +332,26 @@ void removeTtnParam(TtnParams paramToRemove) {
       errorMassage: '',
     ));
   }
+
+  bool checkIfEmptyExist(List<TtnParams> ttnParams) {
+    for (var item in ttnParams) {
+      if (item.notEmpty) {
+        continue;
+      } else {
+        emit(state.copyWith(
+          errorMassage: 'Пусте поле!!!',
+        ));
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 Future<bool> checkPrinterAvailability(String printerIp, int port) async {
   try {
-    final socket =
-        await Socket.connect(printerIp, port, timeout: Duration(seconds: 5));
+    final socket = await Socket.connect(printerIp, port,
+        timeout: const Duration(seconds: 5));
     socket.destroy();
     return true;
   } catch (e) {

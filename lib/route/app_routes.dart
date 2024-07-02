@@ -1,5 +1,6 @@
 class AppRoutes {
-  static const ttnPage = '/ttn_page';
+  static const npTtnPage = '/np_ttn_page';
+  static const meestTtnPage = '/meest_ttn_page';
 
   static const login = '/';
   static const homePage = '/home_page';

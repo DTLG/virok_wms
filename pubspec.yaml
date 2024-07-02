@@ -28,6 +28,7 @@ dependencies:
   package_info_plus: ^6.0.0
   animations: ^2.0.11
   barcode_widget: ^2.0.4
+  pdf: ^3.11.0
 
 dev_dependencies:
   flutter_test:

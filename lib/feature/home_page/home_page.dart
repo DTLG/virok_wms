@@ -108,7 +108,8 @@ class HomePage extends StatelessWidget {
                           state.movingButton,
                           state.returningButton,
                           state.rechargeButton,
-                          state.ttnPrintButton,
+                          state.npTtnPrintButton,
+                          state.meestTtnPrintButton,
                           context));
                 },
               )),
@@ -311,7 +312,7 @@ class CheckLogoutDialog extends StatelessWidget {
 }
 
 List<Widget> buildButtons(
-    selection, admission, moving, returning, recharge, ttnprint, context) {
+    selection, admission, moving, returning, recharge, npTtnPrint ,meestTtnPrint ,  context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
@@ -319,7 +320,8 @@ List<Widget> buildButtons(
   if (admission) a.add({'name': 'ПОСТУПЛЕННЯ', 'path': 'admission'});
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
-  if (ttnprint) a.add({'name': 'ДРУК НАКЛАДНОЇ', 'path': 'ttnprint'});
+  if (npTtnPrint) a.add({'name': 'ДРУК НАКЛАДНОЇ НП', 'path': 'npttnprint'});
+  if (meestTtnPrint) a.add({'name': 'ДРУК НАКЛАДНОЇ MEEST', 'path': 'meestttnprint'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
   a.add({'name': 'ІНВЕНТАРИЗАЦІЯ', 'path': 'inventory'});
 
@@ -335,7 +337,7 @@ List<Widget> buildButtons(
       onTap: () {
         Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
       },
-    ));
+    ),);
   }
   buttons.add(SquareButton(
     lable: 'НАЛАШТУВАННЯ',
@@ -368,8 +370,10 @@ extension on String {
         return AppRoutes.settings;
       case 'inventory':
         return AppRoutes.inventoryPage;
-      case 'ttnprint':
-        return AppRoutes.ttnPage;
+      case 'npttnprint':
+        return AppRoutes.npTtnPage;
+      case 'meestttnprint':
+        return AppRoutes.meestTtnPage;
     }
   }
 }

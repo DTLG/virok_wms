@@ -11,11 +11,13 @@ import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_data/u
 import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_head/ui/full_inventory_head_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_nom_in_cell/tasks/ui/tasks_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_page.dart';
+import 'package:virok_wms/feature/meest_ttn_print/ui/meest_ttn_print_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_page.dart';
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_head_page.dart';
 import 'package:virok_wms/feature/moving/moving_page.dart';
+import 'package:virok_wms/feature/np_ttn_print/ui/np_ttn_print_page.dart';
 import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_page.dart';
 import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
 import 'package:virok_wms/feature/return/ui/return_data_page.dart';
@@ -24,7 +26,6 @@ import 'package:virok_wms/feature/storage_operation/cell_generator/cell_generato
 import 'package:virok_wms/feature/storage_operation/cell_generator/harkiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/kyiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/product_lable/view/product_lable_view.dart';
-import 'package:virok_wms/feature/ttn_temp_recreated/ui/ttn_print_page.dart';
 import 'package:virok_wms/login/login_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/home_page/home_page.dart';
@@ -56,8 +57,10 @@ import '../feature/storage_operation/storage_operation_page.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case AppRoutes.ttnPage:
-        return buildRoute(const TtnTempRecreated(), settings: settings);
+      case AppRoutes.npTtnPage:
+        return buildRoute(const TtnNovaPostPrint(), settings: settings);
+      case AppRoutes.meestTtnPage:
+        return buildRoute(const MeestTtnPrint(), settings: settings);
       case AppRoutes.login:
         return buildRoute(const LoginPage(), settings: settings);
       case AppRoutes.storageOperations:

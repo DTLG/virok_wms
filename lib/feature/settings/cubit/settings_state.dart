@@ -24,7 +24,8 @@ class SettingsState extends Equatable {
   final bool rechargeButton;
   final bool cameraScaner;
   final bool basketOperation;
-  final bool ttnPrintButton;
+  final bool npTtnPrintButton;
+  final bool meestTtnPrintButton;
 
   final String printerHost;
   final String printerPort;
@@ -42,7 +43,8 @@ class SettingsState extends Equatable {
   const SettingsState(
       {this.status = SettingsStatus.initial,
       this.dbPath = '',
-      this.ttnPrintButton = false,
+      this.npTtnPrintButton = false,
+      this.meestTtnPrintButton = false,
       this.generationButton = false,
       this.printButton = false,
       this.cellInfoButton = false,
@@ -72,7 +74,8 @@ class SettingsState extends Equatable {
   SettingsState copyWith(
       {SettingsStatus? status,
       String? dbPath,
-      bool? ttnPrintButton,
+      bool? npTtnPrintButton,
+      bool? meestTtnPrintButton,
       bool? generationButton,
       bool? printButton,
       bool? cellInfoButton,
@@ -100,7 +103,8 @@ class SettingsState extends Equatable {
     return SettingsState(
         status: status ?? this.status,
         dbPath: dbPath ?? this.dbPath,
-        ttnPrintButton: ttnPrintButton ?? this.ttnPrintButton,
+        npTtnPrintButton: npTtnPrintButton ?? this.npTtnPrintButton,
+        meestTtnPrintButton: meestTtnPrintButton ?? this.meestTtnPrintButton,
         generationButton: generationButton ?? this.generationButton,
         printButton: printButton ?? this.printButton,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
@@ -131,7 +135,8 @@ class SettingsState extends Equatable {
   List<Object?> get props => [
         status,
         dbPath,
-        ttnPrintButton,
+        npTtnPrintButton,
+        meestTtnPrintButton,
         generationButton,
         printButton,
         printerHost,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:virok_wms/feature/ttn_temp_recreated/models/ttn_data.dart';
+import 'package:virok_wms/feature/np_ttn_print/models/np_ttn_data.dart';
 
 Widget showInfo(TtnData data) {
   const TextStyle boldTextStyle = TextStyle(

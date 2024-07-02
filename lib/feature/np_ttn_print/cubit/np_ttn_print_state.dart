@@ -1,10 +1,8 @@
-
 part of 'np_ttn_print_cubit.dart';
 
+enum TtnPrintStatus { initial, loading, success, failure, error, emptyParamError }
 
-enum TtnPrintStatus { initial, loading, success, failure, error, emptyParamError}
-
-enum MyAction { waiting, fetchingInfo, printing}
+enum MyAction { waiting, fetchingInfo, printing }
 
 extension CheckttnStatusX on TtnPrintStatus {
   bool get isInitial => this == TtnPrintStatus.initial;
@@ -20,7 +18,7 @@ extension CheckActionStatusX on MyAction {
   bool get isPrinting => this == MyAction.printing;
 }
 
-final class TtnPrintState extends Equatable {
+class TtnPrintState extends Equatable {
   const TtnPrintState({
     this.action = MyAction.waiting,
     this.status = TtnPrintStatus.initial,

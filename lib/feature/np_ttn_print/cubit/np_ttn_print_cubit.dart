@@ -12,7 +12,7 @@ part 'np_ttn_print_state.dart';
 
 
 class TtnPrintCubit extends Cubit<TtnPrintState> {
-  TtnPrintCubit() : super(TtnPrintState());
+  TtnPrintCubit() : super(const TtnPrintState());
 
   Future<void> getTtnData(String value) async {
     try {
@@ -160,6 +160,11 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
     emit(state.copyWith(ttnParams: updatedParams));
   }
+<<<<<<< HEAD:lib/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart
+
+  void addTtnParam(TtnParams newParam, int index) {
+    newParam.placeNumber = index + 1;
+=======
 
   void addTtnParam(TtnParams newParam, int index) {
     newParam.placeNumber = index + 1;
@@ -168,8 +173,19 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     emit(state.copyWith(ttnParams: updatedParams));
   }
 
+  Future<void> saveTtnParams(
+      String docBarcode, List<TtnParams> ttnParams) async {
+    final prefs = await SharedPreferences.getInstance();
+    docBarcode = '111170202405';
+>>>>>>> 9c836b5e2f92e87df8d70832726aa8db62c6f1d3:lib/feature/ttn_temp_recreated/cubit/ttn_print_cubit.dart
+
+    final updatedParams = List<TtnParams>.from(state.ttnParams)..add(newParam);
+    emit(state.copyWith(ttnParams: updatedParams));
+  }
+
   Future<void> saveTtnParams(String docBarcode, List<TtnParams> ttnParams) async {
     try {
+<<<<<<< HEAD:lib/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart
       final prefs = await SharedPreferences.getInstance();
       String username = prefs.getString('zone') ?? '';
       String password = prefs.getString('password') ?? '';
@@ -213,8 +229,27 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         } else {
           print('Помилка при збереженні документа: ${docResponse.statusCode}');
         }
+=======
+      if (checkIfEmptyExist(ttnParams)) {
+        //throw Exception('There is empty field!');
+        print('There is empty field!');
+>>>>>>> 9c836b5e2f92e87df8d70832726aa8db62c6f1d3:lib/feature/ttn_temp_recreated/cubit/ttn_print_cubit.dart
       } else {
-        print('Помилка при збереженні даних: ${response.statusCode}');
+        String requestBody = jsonEncode({'ttn_data': ttnParams});
+
+        var response = await http.post(
+          Uri.parse(apiUrl),
+          headers: <String, String>{
+            'Authorization': basicAuth,
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: requestBody,
+        );
+        if (response.statusCode == 200) {
+          print('Дані успішно збережено!');
+        } else {
+          print('Помилка при збереженні даних: ${response.statusCode}');
+        }
       }
     } catch (e) {
       print('Помилка під час виконання запиту: $e');

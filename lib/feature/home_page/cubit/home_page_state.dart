@@ -82,6 +82,7 @@ final class HomePageState extends Equatable {
         movingButton,
         returningButton,
         npTtnPrintButton,
+        meestTtnPrintButton,
         rechargeButton,
         itsMezonine,
         cameraScaner,

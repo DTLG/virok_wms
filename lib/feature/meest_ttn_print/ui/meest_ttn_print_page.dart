@@ -77,10 +77,9 @@ class MeestTtnPrintView extends StatelessWidget {
 Номер телефону: ${receiverInfo['phone']}
 Адреса: ${receiverInfo['address']}
 ''';
-
                             return Center(
                               child: Container(
-                                padding: EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(10.0),

@@ -10,13 +10,11 @@ import 'package:virok_wms/feature/np_ttn_print/models/ttn_params.dart';
 
 part 'np_ttn_print_state.dart';
 
-
 class TtnPrintCubit extends Cubit<TtnPrintState> {
   TtnPrintCubit() : super(const TtnPrintState());
 
   Future<void> getTtnData(String value) async {
     try {
-      value = '111170202405';
 
       if (value.isNotEmpty) {
         emit(state.copyWith(
@@ -55,9 +53,10 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
   Future<List<TtnParams>> fetchTtnParams(String value) async {
     final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('api');
     //
     String apiUrl =
-        'http://192.168.2.50:81/virok_wms/hs/New/get_ttn_params?DocBarcode=$value';
+        '${path}get_ttn_params?DocBarcode=$value';
     String username = prefs.getString('zone') ?? '';
     String password = prefs.getString('password') ?? '';
 
@@ -115,7 +114,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
   Future<TtnData> fetchTtnData(String value) async {
     final prefs = await SharedPreferences.getInstance();
     String api = prefs.getString('api')!;
-    value = '111170202405';
 
     final String apiUrl = '${api}get_np_data?DocBarcode=$value';
 
@@ -160,11 +158,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
     emit(state.copyWith(ttnParams: updatedParams));
   }
-<<<<<<< HEAD:lib/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart
-
-  void addTtnParam(TtnParams newParam, int index) {
-    newParam.placeNumber = index + 1;
-=======
 
   void addTtnParam(TtnParams newParam, int index) {
     newParam.placeNumber = index + 1;
@@ -175,22 +168,14 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
   Future<void> saveTtnParams(
       String docBarcode, List<TtnParams> ttnParams) async {
-    final prefs = await SharedPreferences.getInstance();
-    docBarcode = '111170202405';
->>>>>>> 9c836b5e2f92e87df8d70832726aa8db62c6f1d3:lib/feature/ttn_temp_recreated/cubit/ttn_print_cubit.dart
-
-    final updatedParams = List<TtnParams>.from(state.ttnParams)..add(newParam);
-    emit(state.copyWith(ttnParams: updatedParams));
-  }
-
-  Future<void> saveTtnParams(String docBarcode, List<TtnParams> ttnParams) async {
     try {
-<<<<<<< HEAD:lib/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart
       final prefs = await SharedPreferences.getInstance();
+      final path = prefs.getString('api');
       String username = prefs.getString('zone') ?? '';
       String password = prefs.getString('password') ?? '';
 
-      String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+      String basicAuth =
+          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
       if (checkIfEmptyExist(ttnParams)) {
         print('There is empty field in ttnParams!');
@@ -199,8 +184,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
       String requestBody = jsonEncode({'ttn_data': ttnParams});
 
-      String apiUrl =
-          'http://192.168.2.50:81/virok_wms/hs/New/save_ttn_params?DocBarcode=$docBarcode';
+      String apiUrl = '${path}save_ttn_params?DocBarcode=$docBarcode';
 
       var response = await http.post(
         Uri.parse(apiUrl),
@@ -214,8 +198,8 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       if (response.statusCode == 200) {
         print('Дані успішно збережено!');
 
-        String saveDocUrl =
-            'http://192.168.2.50:81/virok_wms/hs/New/save_doc?DocBarcode=$docBarcode';
+        String saveDocUrl = '${path}save_doc?DocBarcode=$docBarcode';
+
 
         var docResponse = await http.get(
           Uri.parse(saveDocUrl),
@@ -229,11 +213,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         } else {
           print('Помилка при збереженні документа: ${docResponse.statusCode}');
         }
-=======
-      if (checkIfEmptyExist(ttnParams)) {
-        //throw Exception('There is empty field!');
-        print('There is empty field!');
->>>>>>> 9c836b5e2f92e87df8d70832726aa8db62c6f1d3:lib/feature/ttn_temp_recreated/cubit/ttn_print_cubit.dart
       } else {
         String requestBody = jsonEncode({'ttn_data': ttnParams});
 
@@ -256,7 +235,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
     }
   }
 
-
   Future<void> printBarcodeLabel(TtnData ttnData) async {
     if (ttnData.ttnRef.isEmpty || ttnData.apiKey.isEmpty) {
       emit(state.copyWith(
@@ -268,12 +246,11 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       ));
       return;
     }
-
     String apiUrl =
         'https://my.novaposhta.ua/orders/printMarking100x100/orders[]/${ttnData.ttnRef}/type/pdf/apiKey/${ttnData.apiKey}/zebra';
 
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final response = await http.get(Uri.parse(apiUrl));
-    final prefs = await SharedPreferences.getInstance();
 
     if (response.statusCode == 200) {
       final contentType = response.headers['content-type'];

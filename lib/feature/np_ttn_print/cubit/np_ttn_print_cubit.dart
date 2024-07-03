@@ -52,6 +52,7 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
   }
 
   Future<List<TtnParams>> fetchTtnParams(String value) async {
+
     final prefs = await SharedPreferences.getInstance();
     final path = prefs.getString('api');
     //

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -6,56 +7,71 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 part 'ttn_print_state.dart';
-
 class TtnPrintCubit extends Cubit<TtnPrintState> {
   TtnPrintCubit() : super(const TtnPrintState());
 
-  
-  Future<void> getParcelID(String parcelId) async {
-    String apiUrl = 'https://api.meest.com/v3.0/openAPI/getParcel/$parcelId/parcelID';
 
-    Map<String, String> headers = {
-      'Key': '5c3749e3598ef423b092b7daf8405206',
-      'token': '5d614ef5c71b6172c87460e915b12c31',
-    };
+Future<String?> getParcelID(String parcelId) async {
+  // API endpoint
+  String apiUrl = 'https://api.meest.com/v3.0/openAPI/getParcel/$parcelId/parcelID';
 
-    try {
-      var response = await http.get(Uri.parse(apiUrl), headers: headers);
+  // Headers with API Key
+  Map<String, String> headers = {
+    'token': '5d614ef5c71b6172c87460e915b12c31',
+  };
 
-      if (response.statusCode == 200) {
-        // Decode the response body as UTF-8
-        String responseBody = utf8.decode(response.bodyBytes);
+  try {
+    final result = await InternetAddress.lookup('api.meest.com');
+    if (result.isEmpty || result[0].rawAddress.isEmpty) {
+      print('No address associated with hostname');
+      return null;
+    }
 
-        Map<String, dynamic> responseData = jsonDecode(responseBody);
+    // Set the timeout duration
+    var response = await http.get(Uri.parse(apiUrl), headers: headers).timeout(Duration(seconds: 10));
 
-        // Extract phone, name, and full address from responseData
-        String phone = responseData['result']['receiver']['phone'];
-        String name = responseData['result']['receiver']['name'];
-        String address = '${responseData['result']['receiver']['branchDescr']}'
-            '${responseData['result']['receiver']['flat'] != '' ? ', кв. ${responseData['result']['receiver']['flat']}' : ''}';
+    if (response.statusCode == 200) {
+      // Decode the response body as UTF-8
+      String responseBody = utf8.decode(response.bodyBytes);
 
-        emit(state.copyWith(
-          action: MyAction.fetchingInfo,
-          printValue: responseData['result']['parcelID'],
-          receiverInfo: {
-            'phone': phone,
-            'name': name,
-            'address': address,
-          },
-          status: TtnPrintStatus.success,
-        ));
-      } else {
-        emit(state.copyWith(
-            status: TtnPrintStatus.failure,
-            errorMassage: 'Failed to get parcel details. Status code: ${response.statusCode}'));
-      }
-    } catch (e) {
+      Map<String, dynamic> responseData = jsonDecode(responseBody);
+
+      // Extract phone, name, and full address from responseData
+      String phone = responseData['result']['receiver']['phone'];
+      String name = responseData['result']['receiver']['name'];
+      String address = '${responseData['result']['receiver']['branchDescr']}'
+          '${responseData['result']['receiver']['flat'] != '' ? ', кв. ${responseData['result']['receiver']['flat']}' : ''}';
+
+      emit(state.copyWith(
+        action: MyAction.fetchingInfo,
+        printValue: responseData['result']['parcelID'],
+        receiverInfo: {
+          'phone': phone,
+          'name': name,
+          'address': address,
+        },
+        status: TtnPrintStatus.success,
+      ));
+
+      return responseData['result']['parcelID'];
+    } else {
       emit(state.copyWith(
           status: TtnPrintStatus.failure,
-          errorMassage: 'Error getting parcel details: $e'));
+          errorMassage: 'Failed to get parcel details. Status code: ${response.statusCode}'));
     }
+  } on SocketException catch (e) {
+    print('SocketException: $e');
+  } on TimeoutException catch (e) {
+    print('TimeoutException: $e');
+  } catch (e) {
+    emit(state.copyWith(
+        status: TtnPrintStatus.failure,
+        errorMassage: 'Error getting parcel details: $e'));
   }
 
+  print('Failed to get parcel details.');
+  return null;
+}
 
   Future<void> printSticker(String printValue) async {
     final prefs = await SharedPreferences.getInstance();
@@ -96,7 +112,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       ));
     }
   }
-
 
   Future<void> sendToPrinter(String printerIp, int port, Uint8List data) async {
     try {

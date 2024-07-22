@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/login/api/login_api.dart';
 import 'package:virok_wms/login/login_repo.dart';
@@ -37,17 +38,25 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(status: LoginStatus.loading));
 
       final res = await LoginApi().logIn(zone, password);
-      if (res == 200) {
-        bool itsMezonine = await LoginApi().checkTsdType(zone, password);
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('zone', zone);
-        await prefs.setString('password', password);
-        await prefs.setBool('its_mezonine', itsMezonine);
 
-        emit(state.copyWith(status: LoginStatus.login));
-      } else if (res >= 400 && res < 500) {
+      String responseData = res.reasonPhrase.toString();
+      if (res.statusCode == 200) {
+        if (responseData == 'OK') {
+          bool itsMezonine = await LoginApi().checkTsdType(zone, password);
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('zone', zone);
+          await prefs.setString('password', password);
+          await prefs.setBool('its_mezonine', itsMezonine);
+
+          emit(state.copyWith(status: LoginStatus.login));
+        } else {
+          emit(state.copyWith(
+              status: LoginStatus.unknown,
+              time: DateTime.now().millisecondsSinceEpoch));
+        }
+        // } else if (res.statusCode >= 400 && res.statusCode < 500) {
+      } else if (responseData == 'Unauthorized') {
         emit(state.copyWith(status: LoginStatus.loading));
-
         emit(state.copyWith(
             status: LoginStatus.unknown,
             time: DateTime.now().millisecondsSinceEpoch));

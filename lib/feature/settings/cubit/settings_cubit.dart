@@ -34,7 +34,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     final rechargeButton = prefs.getBool('recharge_button') ?? false;
     final cameraScaner = prefs.getBool('camera_scaner') ?? false;
     final npTtnPrintButton = prefs.getBool('np_ttn_print_button') ?? false;
-    final meestTtnPrintButton = prefs.getBool('meest_ttn_print_button') ?? false;
+    final meestTtnPrintButton =
+        prefs.getBool('meest_ttn_print_button') ?? false;
+    final labelPrintButton = prefs.getBool('label_print_button') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -60,6 +62,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         printerHost: printerHost,
         npTtnPrintButton: npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton,
+        labelPrintButton: labelPrintButton,
         printerPort: printerPort,
         cameraScaner: cameraScaner,
         autoRefreshTime: refreshTime,
@@ -98,10 +101,12 @@ class SettingsCubit extends Cubit<SettingsState> {
         return emit(state.copyWith(cameraScaner: value));
       case 'returning_button':
         return emit(state.copyWith(returningButton: value));
-       case 'np_ttn_print_button':
-         return emit(state.copyWith(npTtnPrintButton: value));
+      case 'np_ttn_print_button':
+        return emit(state.copyWith(npTtnPrintButton: value));
       case 'meest_ttn_print_button':
         return emit(state.copyWith(meestTtnPrintButton: value));
+      case 'label_print_button':
+        return emit(state.copyWith(labelPrintButton: value));
     }
   }
 

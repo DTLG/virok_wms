@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virok_wms/feature/label_print/lable_print_page.dart';
 import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/const.dart';
 import 'package:virok_wms/ui/ui.dart';
@@ -40,12 +41,11 @@ class HomePage extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                       IconButton(
-  icon: Icon(Icons.print),
-  onPressed: () {
-    showInputDialog(context);
-  },
-),
-
+                        icon: Icon(Icons.print),
+                        onPressed: () {
+                          showInputDialog(context);
+                        },
+                      ),
                     ],
                   ),
                 )),
@@ -110,6 +110,7 @@ class HomePage extends StatelessWidget {
                           state.rechargeButton,
                           state.npTtnPrintButton,
                           state.meestTtnPrintButton,
+                          state.labelPrintButton,
                           context));
                 },
               )),
@@ -311,8 +312,8 @@ class CheckLogoutDialog extends StatelessWidget {
   }
 }
 
-List<Widget> buildButtons(
-    selection, admission, moving, returning, recharge, npTtnPrint ,meestTtnPrint ,  context) {
+List<Widget> buildButtons(selection, admission, moving, returning, recharge,
+    npTtnPrint, meestTtnPrint, labelPrint, context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
@@ -321,23 +322,28 @@ List<Widget> buildButtons(
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
   if (npTtnPrint) a.add({'name': 'ДРУК НАКЛАДНОЇ НП', 'path': 'npttnprint'});
-  if (meestTtnPrint) a.add({'name': 'ДРУК НАКЛАДНОЇ MEEST', 'path': 'meestttnprint'});
+  if (meestTtnPrint)
+    // ignore: curly_braces_in_flow_control_structures
+    a.add({'name': 'ДРУК НАКЛАДНОЇ MEEST', 'path': 'meestttnprint'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
+  if (labelPrint) a.add({'name': 'Друк етикеток', 'path': 'label_print_page'});
   a.add({'name': 'ІНВЕНТАРИЗАЦІЯ', 'path': 'inventory'});
 
   List<Widget> buttons = [];
 
   for (var i = 0; i < a.length; i++) {
-    buttons.add(SquareButton(
-      lable: a[i]['name'].toString(),
-      color: i.buttonColor == 'r'
-          ? const Color.fromRGBO(148, 39, 32, 1)
-          : const Color.fromRGBO(217, 219, 218, 1),
-      imagePath: 'assets/image/${a[i]['path']}_${i.buttonColor}.png',
-      onTap: () {
-        Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
-      },
-    ),);
+    buttons.add(
+      SquareButton(
+        lable: a[i]['name'].toString(),
+        color: i.buttonColor == 'r'
+            ? const Color.fromRGBO(148, 39, 32, 1)
+            : const Color.fromRGBO(217, 219, 218, 1),
+        imagePath: 'assets/image/${a[i]['path']}_${i.buttonColor}.png',
+        onTap: () {
+          Navigator.pushNamed(context, a[i]['path'].toString().toAppRoutes);
+        },
+      ),
+    );
   }
   buttons.add(SquareButton(
     lable: 'НАЛАШТУВАННЯ',
@@ -374,6 +380,8 @@ extension on String {
         return AppRoutes.npTtnPage;
       case 'meestttnprint':
         return AppRoutes.meestTtnPage;
+      case 'label_print_page':
+        return AppRoutes.labelPrint;
     }
   }
 }

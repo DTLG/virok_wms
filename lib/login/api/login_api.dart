@@ -1,18 +1,20 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/login/api/user_model.dart';
 
 class LoginApi {
   final client = http.Client();
 
-  Future<int> logIn(String zone, String password) async {
+  Future<Response> logIn(String zone, String password) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String baseUrl = prefs.getString('api') ?? '';
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
+
+    baseUrl = '${baseUrl}authentication';
+    final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
     http.Client client = http.Client();
     try {
       final response = await client.post(
@@ -22,7 +24,7 @@ class LoginApi {
         },
       );
 
-      return response.statusCode;
+      return response;
     } catch (e) {
       rethrow;
     } finally {
@@ -52,10 +54,7 @@ class LoginApi {
     }
   }
 
-    Future<bool> checkTsdType(
-    String zone,
-    String pass
-  ) async {
+  Future<bool> checkTsdType(String zone, String pass) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String baseUrl = prefs.getString('api') ?? '';

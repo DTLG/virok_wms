@@ -29,7 +29,9 @@ class HomePageCubit extends Cubit<HomePageState> {
     final bool movingButton = prefs.getBool('moving_button') ?? false;
     final bool returningButton = prefs.getBool('returning_button') ?? false;
     final bool npTtnPrintButton = prefs.getBool('np_ttn_print_button') ?? false;
-    final bool meestTtnPrintButton = prefs.getBool('meest_ttn_print_button') ?? false;
+    final bool meestTtnPrintButton =
+        prefs.getBool('meest_ttn_print_button') ?? false;
+    final bool labelPrintButton = prefs.getBool('label_print_button') ?? false;
     final bool rechargeButton = prefs.getBool('recharge_button') ?? false;
     final bool cameraScaner = prefs.getBool('camera_scaner') ?? false;
 
@@ -40,6 +42,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         returningButton: returningButton,
         npTtnPrintButton: npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton,
+        labelPrintButton: labelPrintButton,
         rechargeButton: rechargeButton,
         cameraScaner: cameraScaner,
         status: HomePageStatus.success));
@@ -55,6 +58,4 @@ class HomePageCubit extends Cubit<HomePageState> {
       emit(state.copyWith(status: HomePageStatus.failure));
     }
   }
-
-  
 }

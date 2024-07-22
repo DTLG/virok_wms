@@ -21,6 +21,7 @@ final class HomePageState extends Equatable {
     this.selectionButton = false,
     this.npTtnPrintButton = false,
     this.meestTtnPrintButton = false,
+    this.labelPrintButton = false,
     this.admissionButton = false,
     this.movingButton = false,
     this.returningButton = false,
@@ -38,6 +39,7 @@ final class HomePageState extends Equatable {
   final bool returningButton;
   final bool npTtnPrintButton;
   final bool meestTtnPrintButton;
+  final bool labelPrintButton;
   final bool rechargeButton;
   final bool cameraScaner;
   final bool itsMezonine;
@@ -52,6 +54,7 @@ final class HomePageState extends Equatable {
     bool? returningButton,
     bool? npTtnPrintButton,
     bool? meestTtnPrintButton,
+    bool? labelPrintButton,
     bool? rechargeButton,
     bool? itsMezonine,
     bool? cameraScaner,
@@ -67,6 +70,7 @@ final class HomePageState extends Equatable {
         returningButton: returningButton ?? this.returningButton,
         npTtnPrintButton: npTtnPrintButton ?? this.npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton ?? this.meestTtnPrintButton,
+        labelPrintButton: labelPrintButton ?? this.labelPrintButton,
         rechargeButton: rechargeButton ?? this.rechargeButton,
         itsMezonine: itsMezonine ?? this.itsMezonine,
         cameraScaner: cameraScaner ?? this.cameraScaner,
@@ -83,6 +87,7 @@ final class HomePageState extends Equatable {
         returningButton,
         npTtnPrintButton,
         meestTtnPrintButton,
+        labelPrintButton,
         rechargeButton,
         itsMezonine,
         cameraScaner,

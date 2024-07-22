@@ -210,6 +210,16 @@ class HomePageSettingsWidget extends StatelessWidget {
                           .writeToSP('meest_ttn_print_button', value);
                     }),
               ),
+              ListTile(
+                title: const Text('Друк етикеток'),
+                trailing: Switch(
+                    value: state.labelPrintButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('label_print_button', value);
+                    }),
+              ),
             ],
           ),
         );

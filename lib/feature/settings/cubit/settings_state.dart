@@ -26,6 +26,7 @@ class SettingsState extends Equatable {
   final bool basketOperation;
   final bool npTtnPrintButton;
   final bool meestTtnPrintButton;
+  final bool labelPrintButton;
 
   final String printerHost;
   final String printerPort;
@@ -45,6 +46,7 @@ class SettingsState extends Equatable {
       this.dbPath = '',
       this.npTtnPrintButton = false,
       this.meestTtnPrintButton = false,
+      this.labelPrintButton = false,
       this.generationButton = false,
       this.printButton = false,
       this.cellInfoButton = false,
@@ -76,6 +78,7 @@ class SettingsState extends Equatable {
       String? dbPath,
       bool? npTtnPrintButton,
       bool? meestTtnPrintButton,
+      bool? labelPrintButton,
       bool? generationButton,
       bool? printButton,
       bool? cellInfoButton,
@@ -105,6 +108,7 @@ class SettingsState extends Equatable {
         dbPath: dbPath ?? this.dbPath,
         npTtnPrintButton: npTtnPrintButton ?? this.npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton ?? this.meestTtnPrintButton,
+        labelPrintButton: labelPrintButton ?? this.labelPrintButton,
         generationButton: generationButton ?? this.generationButton,
         printButton: printButton ?? this.printButton,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
@@ -137,6 +141,7 @@ class SettingsState extends Equatable {
         dbPath,
         npTtnPrintButton,
         meestTtnPrintButton,
+        labelPrintButton,
         generationButton,
         printButton,
         printerHost,

@@ -11,6 +11,7 @@ import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_data/u
 import 'package:virok_wms/feature/inventory/inventory_full/full_inventory_head/ui/full_inventory_head_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_nom_in_cell/tasks/ui/tasks_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_page.dart';
+import 'package:virok_wms/feature/label_print/lable_print_page.dart';
 import 'package:virok_wms/feature/meest_ttn_print/ui/meest_ttn_print_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_page.dart';
@@ -57,6 +58,9 @@ import '../feature/storage_operation/storage_operation_page.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      //! Stickers print
+      case AppRoutes.labelPrint:
+        return buildRoute(const LablePrintPage(), settings: settings);
       case AppRoutes.npTtnPage:
         return buildRoute(const TtnNovaPostPrint(), settings: settings);
       case AppRoutes.meestTtnPage:

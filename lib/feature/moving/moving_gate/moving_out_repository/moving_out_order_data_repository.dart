@@ -17,8 +17,8 @@ class MovingGateOrderDataRepository {
             name: nom.name ?? '',
             article: nom.article ?? '',
             barcode: nom.barcodes
-                .map((e) =>
-                    Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+                .map((e) => Barcode(
+                    barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
                 .toList(),
             baskets: (nom.baskets ?? [])
                 .map((b) =>
@@ -36,7 +36,7 @@ class MovingGateOrderDataRepository {
             count: nom.count ?? 0,
             isMyne: nom.itsMyne ?? 0,
             taskNumber: nom.taskNumber ?? '',
-        statusNom: nom.statusNom ?? ''))
+            statusNom: nom.statusNom ?? ''))
         .toList();
     return Noms(noms: noms, status: listNom.status ?? 1);
   }
@@ -48,7 +48,8 @@ class MovingGateOrderDataRepository {
         name: nom.name ?? '',
         article: nom.article ?? '',
         barcode: nom.barcodes
-            .map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+            .map((e) => Barcode(
+                barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
             .toList(),
         baskets: (nom.baskets ?? [])
             .map((b) =>

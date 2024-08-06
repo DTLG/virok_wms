@@ -19,8 +19,8 @@ class RechargeRepository {
             qty: e.qty ?? 0,
             article: e.article ?? '',
             barcodes: e.barcodes
-                .map((e) =>
-                    Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+                .map((e) => Barcode(
+                    barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
                 .toList(),
             countTake: e.countTake ?? 0,
             countPut: e.countPut ?? 0,

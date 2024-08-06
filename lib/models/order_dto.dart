@@ -21,13 +21,13 @@ class OrderDTO {
   final String? date;
   final List<BasketDTO> baskets;
   @JsonKey(name: 'full_order')
-  final int? fullOrdfer;
+  final double? fullOrdfer;
   @JsonKey(name: 'importance_mark')
   final int? importanceMark;
   @JsonKey(name: 'm_mark')
-  final int? mMark;
+  final double? mMark;
   @JsonKey(name: 'NovaPoshta_mark')
-  final int? newPostMark;
+  final double? newPostMark;
 
   OrderDTO(
       {required this.docId,
@@ -36,7 +36,6 @@ class OrderDTO {
       required this.fullOrdfer,
       required this.importanceMark,
       required this.mMark,
-      
       required this.newPostMark});
 
   factory OrderDTO.fromJson(Map<String, dynamic> json) =>

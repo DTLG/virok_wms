@@ -6,8 +6,6 @@ import 'package:virok_wms/ui/ui.dart';
 
 import '../../../../placement/placement_repository/model/admission_nom.dart';
 
-
-
 void showPlacementNomScanDialog(BuildContext context, AdmissionNom nom) {
   showDialog(
       barrierDismissible: false,
@@ -196,7 +194,8 @@ class _CellInputState extends State<CellInput> {
         textAlignVertical: TextAlignVertical.bottom,
         controller: controller,
         onSubmitted: (value) async {
-          final res = await context.read<PlacementFromReturnCubit>().checkCell(value);
+          final res =
+              await context.read<PlacementFromReturnCubit>().checkCell(value);
           if (res == 0) {
             controller.clear();
             focusNode.requestFocus();
@@ -207,8 +206,9 @@ class _CellInputState extends State<CellInput> {
             suffixIcon: cameraScaner
                 ? CameraScanerButton(
                     scan: (value) async {
-                      final res =
-                          await context.read<PlacementFromReturnCubit>().checkCell(value);
+                      final res = await context
+                          .read<PlacementFromReturnCubit>()
+                          .checkCell(value);
                       if (res == 0) return;
                       controller.text = value;
                     },
@@ -412,8 +412,8 @@ class SendButton extends StatelessWidget {
         onPressed: () {
           final state = context.read<PlacementFromReturnCubit>().state;
           if (state.cell.isNotEmpty && state.nomBarcode.isNotEmpty) {
-            context.read<PlacementFromReturnCubit>().send(state.nomBarcode, state.cell,
-                nom.incomingInvoice, nom.count, nom.taskNumber);
+            context.read<PlacementFromReturnCubit>().send(state.nomBarcode,
+                state.cell, nom.incomingInvoice, nom.count, nom.taskNumber);
             Navigator.pop(context);
           } else if (state.cell.isEmpty) {
             Alerts(msg: 'Відскануйте комірку', context: context).showError();
@@ -460,7 +460,8 @@ correctTaslDialog(BuildContext context, AdmissionNom nom) {
                     Navigator.pop(context);
                     Navigator.pop(context);
 
-                    final state = context.read<PlacementFromReturnCubit>().state;
+                    final state =
+                        context.read<PlacementFromReturnCubit>().state;
                     showDialog(
                       barrierColor: const Color.fromARGB(150, 0, 0, 0),
                       context: context,
@@ -516,7 +517,7 @@ class ChangeQuantity extends StatefulWidget {
   const ChangeQuantity(
       {super.key, required this.qty, required this.nom, required this.count});
 
-  final int qty;
+  final double qty;
   final double count;
   final AdmissionNom nom;
 

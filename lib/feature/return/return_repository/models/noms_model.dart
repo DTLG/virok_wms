@@ -6,8 +6,7 @@ class ReturnNoms {
   ReturnNoms(
       {required this.noms, required this.errorMassage, required this.invoice});
 
-  static final empty =
-      ReturnNoms(noms: [], invoice: '', errorMassage: 'Ok');
+  static final empty = ReturnNoms(noms: [], invoice: '', errorMassage: 'Ok');
 }
 
 class ReturnNom {
@@ -20,33 +19,30 @@ class ReturnNom {
   final double count;
   final String nomStatus;
 
-  ReturnNom({
-    required this.number,
-    required this.name,
-    required this.article,
-    required this.barcode,
-    required this.qty,
-    required this.count,
-    required this.nomStatus
-  });
+  ReturnNom(
+      {required this.number,
+      required this.name,
+      required this.article,
+      required this.barcode,
+      required this.qty,
+      required this.count,
+      required this.nomStatus});
 
   static final empty = ReturnNom(
-    number: '',
-    name: '',
-    article: '',
-    barcode: [],
-    qty: 0,
-    count: 0,
-    nomStatus: ''
-  );
+      number: '',
+      name: '',
+      article: '',
+      barcode: [],
+      qty: 0,
+      count: 0,
+      nomStatus: '');
 }
 
 class Barcode {
   final String barcode;
-  final int ratio;
+  final double ratio;
 
   Barcode({required this.barcode, required this.ratio});
 
   static final empty = Barcode(barcode: '', ratio: 0);
 }
-

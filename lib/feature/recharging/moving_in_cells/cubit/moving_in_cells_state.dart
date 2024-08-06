@@ -38,7 +38,7 @@ final class MovingInCellsState extends Equatable {
   final CheckCell cell;
   final int time;
   final String errorMassage;
-  final int count;
+  final double count;
   final String cellTake;
   final String cellTakeName;
   final String cellPut;
@@ -51,7 +51,7 @@ final class MovingInCellsState extends Equatable {
       CheckCell? cell,
       String? errorMassage,
       int? time,
-      int? count,
+      double? count,
       String? cellTake,
       String? cellTakeName,
       String? cellPut,

@@ -7,9 +7,9 @@ class BarcodeModel {
   @JsonKey(name: "barcode")
   final String? barcode;
   @JsonKey(name: "count")
-  final int? count;
+  final double? count;
   @JsonKey(name: "ratio")
-  final int? ratio;
+  final double? ratio;
 
   BarcodeModel({
     required this.barcode,

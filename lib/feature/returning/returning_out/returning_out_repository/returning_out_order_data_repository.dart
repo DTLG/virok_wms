@@ -4,8 +4,10 @@ import '../../../../models/barcode_model.dart';
 import '../returning_out_client/returning_out_api_client.dart';
 
 class ReturningOutOrderDataRepository {
-  ReturningOutOrderDataRepository({ReturningOutOrderDataClient? selectionApiClient})
-      : _selectionApiClient = selectionApiClient ?? ReturningOutOrderDataClient();
+  ReturningOutOrderDataRepository(
+      {ReturningOutOrderDataClient? selectionApiClient})
+      : _selectionApiClient =
+            selectionApiClient ?? ReturningOutOrderDataClient();
 
   final ReturningOutOrderDataClient _selectionApiClient;
 
@@ -18,8 +20,9 @@ class ReturningOutOrderDataRepository {
               name: nom.name ?? '',
               article: nom.article ?? '',
               barcode: nom.barcodes
-                  .map((e) =>
-                      Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+                  .map((e) => Barcode(
+                      barcode: e.barcode ?? '',
+                      ratio: e.ratio?.toDouble() ?? 1))
                   .toList(),
               baskets: (nom.baskets ?? [])
                   .map((b) => Bascket(
@@ -37,7 +40,7 @@ class ReturningOutOrderDataRepository {
               count: nom.count ?? 0,
               isMyne: nom.itsMyne ?? 0,
               taskNumber: nom.taskNumber ?? '',
-        statusNom: nom.statusNom ?? ''),
+              statusNom: nom.statusNom ?? ''),
         )
         .toList();
     return Noms(noms: noms, status: listNom.status ?? 1);
@@ -50,7 +53,8 @@ class ReturningOutOrderDataRepository {
         name: nom.name ?? '',
         article: nom.article ?? '',
         barcode: nom.barcodes
-            .map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+            .map((e) => Barcode(
+                barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
             .toList(),
         baskets: (nom.baskets ?? [])
             .map((b) =>
@@ -68,7 +72,6 @@ class ReturningOutOrderDataRepository {
         count: nom.count ?? 0,
         isMyne: nom.itsMyne ?? 0,
         taskNumber: nom.taskNumber ?? '',
-        statusNom: nom.statusNom ?? ''
-        );
+        statusNom: nom.statusNom ?? '');
   }
 }

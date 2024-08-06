@@ -27,13 +27,13 @@ CellInventoryTaskNomModel _$CellInventoryTaskNomModelFromJson(
       taskNumber: json['task_number'] as String?,
       codCell: json['cod_cell'] as String?,
       nameCell: json['name_cell'] as String?,
-      count: json['count'] as int?,
-      scannedCount: json['scanned_count'] as int?,
+      count: json['count'] as double?,
+      scannedCount: json['scanned_count'] as double?,
       nomStatus: json['nom_status'] as String?,
     );
 
 Barcode _$BarcodeFromJson(Map<String, dynamic> json) => Barcode(
       barcode: json['barcode'] as String?,
-      count: json['count'] as int?,
-      ratio: json['ratio'] as int?,
+      count: json['count'] as double?,
+      ratio: json['ratio'] as double?,
     );

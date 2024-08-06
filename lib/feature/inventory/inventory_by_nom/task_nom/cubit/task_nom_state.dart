@@ -23,27 +23,26 @@ final class InventoryByNomCellsTaskState extends Equatable {
   final CellsByNom cells;
   final String errorMassage;
   final int time;
-  final int count;
+  final double count;
   final String nomBarcode;
 
-  InventoryByNomCellsTaskState copyWith({
-    InventoryStatus? status,
-    CellsByNom? cells,
-    String? errorMassage,
-    int? time,
-    int? count,
-    String? nomBarcode 
-  }) {
+  InventoryByNomCellsTaskState copyWith(
+      {InventoryStatus? status,
+      CellsByNom? cells,
+      String? errorMassage,
+      int? time,
+      double? count,
+      String? nomBarcode}) {
     return InventoryByNomCellsTaskState(
-      status: status ?? this.status,
-      noms: cells ?? this.cells,
-      time: time ?? this.time,
-      errorMassage: errorMassage ?? this.errorMassage,
-      count: count ?? this.count,
-      nomBarcode:nomBarcode ?? this.nomBarcode
-    );
+        status: status ?? this.status,
+        noms: cells ?? this.cells,
+        time: time ?? this.time,
+        errorMassage: errorMassage ?? this.errorMassage,
+        count: count ?? this.count,
+        nomBarcode: nomBarcode ?? this.nomBarcode);
   }
 
   @override
-  List<Object?> get props => [status, errorMassage, cells, time, count, nomBarcode];
+  List<Object?> get props =>
+      [status, errorMassage, cells, time, count, nomBarcode];
 }

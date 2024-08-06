@@ -52,13 +52,23 @@ class BarcodesNom extends Equatable {
 class Barcode {
   final String barcode;
   final int count;
-  final int ratio;
+  final double ratio;
 
   factory Barcode.fromJson(Map<String, dynamic> json) => Barcode(
         barcode: json['barcode'] ?? '',
-        count: json['count'] ?? '',
-        ratio: json['ratio'] ?? '',
+        count: json['count'].toInt() ?? 0,
+        ratio: json['ratio'] ?? 0.0,
       );
+  // factory Barcode.fromJson(Map<String, dynamic> json) {
+  //   double ratioValue = json['ratio'].toDouble();
+  //   print('Type of json["ratio"]: ${ratioValue.runtimeType}');
+
+  //   return Barcode(
+  //     barcode: json['barcode'] ?? '',
+  //     count: json['count'] ?? 0,
+  //     ratio: ratioValue,
+  //   );
+  // }
 
   Barcode({required this.barcode, required this.count, required this.ratio});
 }

@@ -6,11 +6,11 @@ part 'moving_in_nom_model_dto.g.dart';
 class MovingInNomsDTO {
   @JsonKey(name: 'noms')
   final List<MovingInNomDTO> noms;
-final String? invoice;
+  final String? invoice;
   @JsonKey(name: 'ErrorMassage')
-
-final String? errorMassage;
-  MovingInNomsDTO({required this.noms, required this.errorMassage, required this.invoice});
+  final String? errorMassage;
+  MovingInNomsDTO(
+      {required this.noms, required this.errorMassage, required this.invoice});
 
   factory MovingInNomsDTO.fromJson(Map<String, dynamic> json) =>
       _$MovingInNomsDTOFromJson(json);
@@ -26,23 +26,23 @@ class MovingInNomDTO {
   final double? qty;
   final double? count;
 
-  MovingInNomDTO(
-      {required this.name,
-      required this.article,
-      required this.barcodes,
-      required this.number,
+  MovingInNomDTO({
+    required this.name,
+    required this.article,
+    required this.barcodes,
+    required this.number,
+    required this.qty,
+    required this.count,
+  });
 
-      required this.qty,
-      required this.count,
-});
-
-  factory MovingInNomDTO.fromJson(Map<String, dynamic> json) => _$MovingInNomDTOFromJson(json);
+  factory MovingInNomDTO.fromJson(Map<String, dynamic> json) =>
+      _$MovingInNomDTOFromJson(json);
 }
 
 @JsonSerializable()
 class BarcodeDTO {
   final String? barcode;
-  final int? ratio;
+  final double? ratio;
 
   BarcodeDTO({required this.barcode, required this.ratio});
 
@@ -61,11 +61,9 @@ class BascketDTO {
       _$BascketDTOFromJson(json);
 }
 
-
 @JsonSerializable()
 class CellDTO {
-    @JsonKey(name: "code_cell")
-
+  @JsonKey(name: "code_cell")
   final String? codeCell;
   @JsonKey(name: "name_cell")
   final String? nameCell;
@@ -75,4 +73,3 @@ class CellDTO {
   factory CellDTO.fromJson(Map<String, dynamic> json) =>
       _$CellDTOFromJson(json);
 }
-

@@ -25,8 +25,6 @@ class CellsByNomModel {
       _$CellsByNomModelFromJson(json);
 }
 
-
-
 @JsonSerializable(createToJson: false)
 class Cell {
   @JsonKey(name: 'сell_code')
@@ -34,7 +32,7 @@ class Cell {
   @JsonKey(name: 'сell_name')
   final String? name;
   @JsonKey(name: 'plan_count')
-  final int? planCount;
+  final double? planCount;
   @JsonKey(name: 'fact_count')
   final int? factCount;
   @JsonKey(name: 'nom_status')

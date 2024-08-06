@@ -194,7 +194,7 @@ class CellInfo extends StatelessWidget {
                                         .map((e) => Barcode(
                                             barcode: e.barcode,
                                             count: 1,
-                                            ratio: e.ratio))
+                                            ratio: e.ratio.toDouble()))
                                         .toList(),
                                     cells: cells),
                               });

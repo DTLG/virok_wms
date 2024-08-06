@@ -92,7 +92,8 @@ class WriteOffOrPlacementDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const textStyle = TextStyle(fontWeight: FontWeight.w500, color: Colors.black);
+    const textStyle =
+        TextStyle(fontWeight: FontWeight.w500, color: Colors.black);
     return AlertDialog(
       iconPadding: EdgeInsets.zero,
       icon: Align(
@@ -118,15 +119,15 @@ class WriteOffOrPlacementDialog extends StatelessWidget {
                       'Списати з:',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall!
-                          .copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                      style: theme.textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
                     ),
                     Text(
                       nom.nameCellFrom,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium!
-                          .copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                      style: theme.textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
                     ),
                   ],
                 ),
@@ -164,15 +165,15 @@ class WriteOffOrPlacementDialog extends StatelessWidget {
                       'Розмістити в:',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium!
-                          .copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                      style: theme.textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
                     ),
                     Text(
                       nom.nameCellTo,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall!
-                          .copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+                      style: theme.textTheme.titleSmall!.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
                     ),
                   ],
                 ),
@@ -289,19 +290,15 @@ class WriteOffOrPlacementDialog extends StatelessWidget {
   }
 }
 
-
-
-
 class ChangeQuantity extends StatefulWidget {
-  const ChangeQuantity(
-      {super.key,
-      required this.qty,
-      required this.nom,
-    });
+  const ChangeQuantity({
+    super.key,
+    required this.qty,
+    required this.nom,
+  });
 
-  final int qty;
+  final double qty;
   final RechargeNom nom;
-
 
   @override
   State<ChangeQuantity> createState() => _ChangeQuantityState();
@@ -351,8 +348,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
               controller: controller,
               keyboardType: TextInputType.number,
               inputFormatters: [
-      FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*')),
-
+                FilteringTextInputFormatter.allow(RegExp(r'^-?[0-9]*')),
               ],
               decoration: const InputDecoration(hintText: 'Введіть кількість'),
             ),
@@ -367,13 +363,11 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                 onPressed: () {
                   double inputCount = double.parse(controller.text);
                   if (controller.text.isNotEmpty) {
-                
-                      context
-                          .read<RechargeCubit>()
-                          .changeQty(inputCount, widget.nom);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    
+                    context
+                        .read<RechargeCubit>()
+                        .changeQty(inputCount, widget.nom);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text('Змінити'))

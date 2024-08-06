@@ -48,7 +48,7 @@ Map<String, dynamic> _$MovingInNomDTOToJson(MovingInNomDTO instance) =>
 
 BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
       barcode: json['barcode'] as String?,
-      ratio: json['ratio'] as int?,
+      ratio: (json['ratio'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>

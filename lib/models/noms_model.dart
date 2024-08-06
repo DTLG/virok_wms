@@ -10,7 +10,7 @@ class Noms {
   static final empty = Noms(noms: [], status: 1);
 }
 
-class  Nom {
+class Nom {
   final String name;
   final String article;
   final List<Barcode> barcode;
@@ -21,7 +21,7 @@ class  Nom {
   final double qty;
   final double count;
   final String table;
-  final int isMyne;
+  final double isMyne;
   final List<Bascket> baskets;
   final String taskNumber;
   final String statusNom;
@@ -40,8 +40,7 @@ class  Nom {
       required this.isMyne,
       required this.baskets,
       required this.taskNumber,
-      required this.statusNom
-      });
+      required this.statusNom});
 
   static final empty = Nom(
       name: '',
@@ -57,11 +56,8 @@ class  Nom {
       isMyne: 0,
       taskNumber: '',
       baskets: [Bascket.empty],
-      statusNom: ''
-      );
+      statusNom: '');
 }
-
-
 
 class Bascket {
   final String bascket;
@@ -81,4 +77,3 @@ class Cell {
 
   static final empty = Cell(codeCell: '', nameCell: '');
 }
-

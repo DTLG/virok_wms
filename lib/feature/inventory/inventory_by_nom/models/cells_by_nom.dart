@@ -28,7 +28,7 @@ class CellsByNom {
 class Cell {
   final String code;
   final String name;
-  final int planCount;
+  final double planCount;
   final int factCount;
   final String nomStatus;
 

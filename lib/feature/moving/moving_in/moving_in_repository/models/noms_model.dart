@@ -6,8 +6,7 @@ class MovingInNoms {
   MovingInNoms(
       {required this.noms, required this.errorMassage, required this.invoice});
 
-  static final empty =
-      MovingInNoms(noms: [], invoice: '', errorMassage: 'Ok');
+  static final empty = MovingInNoms(noms: [], invoice: '', errorMassage: 'Ok');
 }
 
 class MovingInNom {
@@ -40,7 +39,7 @@ class MovingInNom {
 
 class Barcode {
   final String barcode;
-  final int ratio;
+  final double ratio;
 
   Barcode({required this.barcode, required this.ratio});
 

@@ -32,7 +32,7 @@ class NomDTO {
   final double? qty;
   final String? table;
   @JsonKey(name: 'its_myne')
-  final int? itsMyne;
+  final double? itsMyne;
   final List<BascketDTO>? baskets;
   @JsonKey(name: 'task_number')
   final String? taskNumber;
@@ -54,8 +54,7 @@ class NomDTO {
       required this.itsMyne,
       required this.baskets,
       required this.taskNumber,
-      required this.statusNom
-      });
+      required this.statusNom});
 
   factory NomDTO.fromJson(Map<String, dynamic> json) => _$NomDTOFromJson(json);
 }

@@ -19,27 +19,26 @@ Map<String, dynamic> _$NomsDTOToJson(NomsDTO instance) => <String, dynamic>{
     };
 
 NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
-      name: json['tovar'] as String?,
-      table: json['table'] as String?,
-      article: json['article'] as String?,
-      barcodes: (json['barcodes'] as List<dynamic>)
-          .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      nameCell: json['name_cell'] as String?,
-      codeCell: json['cod_cell'] as String?,
-      cells: (json['available_cells'] as List<dynamic>?)
-          ?.map((e) => CellDTO.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      docNumber: json['DocNumber'] as String?,
-      qty: (json['qty'] as num?)?.toDouble(),
-      count: (json['count'] as num?)?.toDouble(),
-      itsMyne: json['its_myne'] as int?,
-      baskets: (json['baskets'] as List<dynamic>?)
-          ?.map((e) => BascketDTO.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      taskNumber: json['task_number'] as String?,
-      statusNom: json['status_nom'] as String?
-    );
+    name: json['tovar'] as String?,
+    table: json['table'] as String?,
+    article: json['article'] as String?,
+    barcodes: (json['barcodes'] as List<dynamic>)
+        .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    nameCell: json['name_cell'] as String?,
+    codeCell: json['cod_cell'] as String?,
+    cells: (json['available_cells'] as List<dynamic>?)
+        ?.map((e) => CellDTO.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    docNumber: json['DocNumber'] as String?,
+    qty: (json['qty'] as num?)?.toDouble(),
+    count: (json['count'] as num?)?.toDouble(),
+    itsMyne: json['its_myne'] as double?,
+    baskets: (json['baskets'] as List<dynamic>?)
+        ?.map((e) => BascketDTO.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    taskNumber: json['task_number'] as String?,
+    statusNom: json['status_nom'] as String?);
 
 Map<String, dynamic> _$NomDTOToJson(NomDTO instance) => <String, dynamic>{
       'tovar': instance.name,

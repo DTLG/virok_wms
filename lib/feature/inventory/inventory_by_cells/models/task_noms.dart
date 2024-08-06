@@ -5,7 +5,8 @@ class CellInventoryTaskNoms {
   CellInventoryTaskNoms(
       {required this.cellInventoryTaskData, required this.errorMassage});
 
-      static final empty = CellInventoryTaskNoms(cellInventoryTaskData: [], errorMassage: '');
+  static final empty =
+      CellInventoryTaskNoms(cellInventoryTaskData: [], errorMassage: '');
 }
 
 class CellInventoryTaskNom {
@@ -15,11 +16,20 @@ class CellInventoryTaskNom {
   final String taskNumber;
   final String codCell;
   final String nameCell;
-  final int count;
-  final int scannedCount;
+  final double count;
+  final double scannedCount;
   final String nomStatus;
 
-static final empty = CellInventoryTaskNom(nom: '', article: '', barcodes: [], taskNumber: '', codCell: '', nameCell: '', count: 0, scannedCount: 0, nomStatus: '');
+  static final empty = CellInventoryTaskNom(
+      nom: '',
+      article: '',
+      barcodes: [],
+      taskNumber: '',
+      codCell: '',
+      nameCell: '',
+      count: 0,
+      scannedCount: 0,
+      nomStatus: '');
 
   CellInventoryTaskNom({
     required this.nom,
@@ -36,8 +46,8 @@ static final empty = CellInventoryTaskNom(nom: '', article: '', barcodes: [], ta
 
 class Barcode {
   final String barcode;
-  final int count;
-  final int ratio;
+  final double count;
+  final double ratio;
 
   Barcode({
     required this.barcode,

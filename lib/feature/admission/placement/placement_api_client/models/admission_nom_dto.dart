@@ -21,14 +21,14 @@ class AdmissionNomsDTO {
 class AdmissionNomDTO {
   @JsonKey(name: "incoming_invoice")
   final String? incomingInvoice;
-    @JsonKey(name: "task_number")
+  @JsonKey(name: "task_number")
   final String? taskNumber;
   final String? date;
   @JsonKey(name: "Сustomer")
   final String? customer;
   @JsonKey(name: "tovar")
   final String? name;
-  final int? qty;
+  final double? qty;
   final String? article;
   final List<BarcodeDTO> barcodes;
   final double? count;

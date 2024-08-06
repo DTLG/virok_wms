@@ -25,7 +25,7 @@ RechargeNomDTO _$RechargeNomDTOFromJson(Map<String, dynamic> json) =>
       taskNumber: json['task_number'] as String?,
       date: json['date'] as String?,
       tovar: json['tovar'] as String?,
-      qty: json['qty'] as int?,
+      qty: json['qty'] as double?,
       article: json['article'] as String?,
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
@@ -36,7 +36,7 @@ RechargeNomDTO _$RechargeNomDTOFromJson(Map<String, dynamic> json) =>
       nameCellFrom: json['name_cell_from'] as String?,
       codCellTo: json['cod_cell_to'] as String?,
       nameCellTo: json['name_cell_to'] as String?,
-      isStarted: json['is_started'] as int?,
+      isStarted: (json['is_started'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$RechargeNomDTOToJson(RechargeNomDTO instance) =>

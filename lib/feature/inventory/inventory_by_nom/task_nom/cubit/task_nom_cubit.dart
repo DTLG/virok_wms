@@ -31,7 +31,8 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
             time: DateTime.now().millisecondsSinceEpoch));
       }
     } catch (e) {
-      emit(state.copyWith(status: InventoryStatus.failure,errorMassage: e.toString()));
+      emit(state.copyWith(
+          status: InventoryStatus.failure, errorMassage: e.toString()));
     }
   }
 
@@ -74,7 +75,7 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
 
   void manualCountIncrement(String count) {
     emit(state.copyWith(
-      count: int.parse(count),
+      count: double.parse(count),
       status: InventoryStatus.success,
     ));
   }
@@ -87,7 +88,7 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
         status: InventoryStatus.success));
   }
 
-  Future<void> sendNom(String nomBarcode, int count, String docNumber,
+  Future<void> sendNom(String nomBarcode, double count, String docNumber,
       String nomStatus, String cellBarcode) async {
     try {
       final cells = await IventoryByNomRepository().getCells(
@@ -106,7 +107,8 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
     }
   }
 
-  Future<void> addNewCell(String nomBarcode, String docNumber, String nomStatus, String cellBarcode)async{
+  Future<void> addNewCell(String nomBarcode, String docNumber, String nomStatus,
+      String cellBarcode) async {
     try {
       final cells = await IventoryByNomRepository().getCells(
           'Add_row_to_Sku_Full_Inventory',
@@ -123,6 +125,4 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
       emit(state.copyWith(status: InventoryStatus.failure));
     }
   }
-
-
 }

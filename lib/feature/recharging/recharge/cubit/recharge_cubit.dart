@@ -47,7 +47,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   void scanNomWritingOff(String scanBarcode, RechargeNom nom) {
-    int count = state.count == 0 ? nom.countTake : state.count;
+    double count = (state.count == 0 ? nom.countTake : state.count).toDouble();
     String checkNomBar = '';
     for (var barcode in nom.barcodes) {
       if (barcode.barcode == scanBarcode) {
@@ -69,7 +69,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   }
 
   void scanNomPlacement(String scanBarcode, RechargeNom nom) {
-    int count = state.count == 0 ? nom.countPut : state.count;
+    double count = (state.count == 0 ? nom.countPut : state.count).toDouble();
     String checkNomBar = '';
     for (var barcode in nom.barcodes) {
       if (count + barcode.ratio > nom.countTake) {
@@ -101,7 +101,7 @@ class RechargeCubit extends Cubit<RechargeState> {
   void manualCountIncrement(String count, int type, RechargeNom nom) {
     if (type == 1) {
       emit(state.copyWith(
-          count: int.tryParse(count.isEmpty ? '0' : count),
+          count: double.tryParse(count.isEmpty ? '0' : count),
           status: RechargeStatus.success));
     } else {
       if (int.parse(count.isEmpty ? '0' : count) > nom.countTake) {
@@ -111,7 +111,7 @@ class RechargeCubit extends Cubit<RechargeState> {
             errorMassage: 'Введена більша кількість'));
       } else {
         emit(state.copyWith(
-            count: int.tryParse(count.isEmpty ? '0' : count),
+            count: double.tryParse(count.isEmpty ? '0' : count),
             status: RechargeStatus.success));
       }
     }
@@ -119,7 +119,7 @@ class RechargeCubit extends Cubit<RechargeState> {
 
   Future<void> send(int type, String nomBarcode, String cell, String taskNumber,
       RechargeNom nom) async {
-    int count = state.count - (type == 1 ? nom.countTake : nom.countPut);
+    double count = state.count - (type == 1 ? nom.countTake : nom.countPut);
     try {
       final noms = await RechargeRepository().rechargeRepo(
           'recharge_scan', '$type $nomBarcode $count $taskNumber $cell');
@@ -148,8 +148,7 @@ class RechargeCubit extends Cubit<RechargeState> {
           : emit(state.copyWith(
               status: RechargeStatus.notFound,
               errorMassage: noms.errorMassage,
-                            noms: noms,
-
+              noms: noms,
               time: DateTime.now().millisecondsSinceEpoch));
 
       clear();

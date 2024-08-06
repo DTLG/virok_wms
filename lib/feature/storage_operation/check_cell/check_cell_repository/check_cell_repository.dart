@@ -24,8 +24,9 @@ class CheckCellRepository {
                 qty: e.qty ?? 0,
                 minRest: e.minRest ?? 0,
                 barcodes: e.barcodes
-                    .map((e) =>
-                        Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
+                    .map((e) => Barcode(
+                        barcode: e.barcode ?? '',
+                        ratio: e.ratio?.toDouble() ?? 1))
                     .toList()))
             .toList(),
         errorMasssage: ceel.errorMasssage ?? '');

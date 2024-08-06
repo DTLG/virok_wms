@@ -34,15 +34,12 @@ class InventoryByCellsTaskNomsCubit
         }
       }
     }
-     emit(state.copyWith(
-            errorMassage: 'Товар не знайдено, або штрихкод не належить товару',
-            status: InventoryStatus.notFound,
-            time: DateTime.now().millisecondsSinceEpoch));
+    emit(state.copyWith(
+        errorMassage: 'Товар не знайдено, або штрихкод не належить товару',
+        status: InventoryStatus.notFound,
+        time: DateTime.now().millisecondsSinceEpoch));
     return CellInventoryTaskNom.empty;
   }
-
-
-
 
   bool scanCell(String cellBarcode, String cell) {
     try {
@@ -83,7 +80,7 @@ class InventoryByCellsTaskNomsCubit
 
   void manualCountIncrement(String count) {
     emit(state.copyWith(
-      count: int.parse(count),
+      count: double.parse(count),
       status: InventoryStatus.success,
     ));
   }
@@ -114,6 +111,4 @@ class InventoryByCellsTaskNomsCubit
       emit(state.copyWith(status: InventoryStatus.failure));
     }
   }
-
-  
 }

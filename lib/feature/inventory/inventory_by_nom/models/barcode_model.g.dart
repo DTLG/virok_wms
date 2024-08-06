@@ -8,6 +8,6 @@ part of 'barcode_model.dart';
 
 BarcodeModel _$BarcodeModelFromJson(Map<String, dynamic> json) => BarcodeModel(
       barcode: json['barcode'] as String?,
-      count: json['count'] as int?,
-      ratio: json['ratio'] as int?,
+      count: json['count'] as double?,
+      ratio: json['ratio'] as double?,
     );

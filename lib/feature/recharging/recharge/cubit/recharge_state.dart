@@ -17,28 +17,26 @@ class RechargeState extends Equatable {
     this.errorMassage = '',
     this.cell = '',
     this.count = 0,
-    this.nomBarcode = '', 
+    this.nomBarcode = '',
     RechargeNoms? noms,
   }) : noms = noms ?? RechargeNoms.empty;
 
   final RechargeStatus status;
   final RechargeNoms noms;
-    final String errorMassage;
+  final String errorMassage;
   final String nomBarcode;
   final String cell;
   final int time;
-  final int count;
+  final double count;
 
-
-  RechargeState copyWith({
-    RechargeStatus? status,
-    RechargeNoms? noms,
-    int? time,
-    String? errorMassage,
-    String? cell,
-    int? count,
-    String? nomBarcode
-  }) {
+  RechargeState copyWith(
+      {RechargeStatus? status,
+      RechargeNoms? noms,
+      int? time,
+      String? errorMassage,
+      String? cell,
+      double? count,
+      String? nomBarcode}) {
     return RechargeState(
       status: status ?? this.status,
       noms: noms ?? this.noms,
@@ -51,5 +49,6 @@ class RechargeState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, noms, errorMassage, time, count, nomBarcode, cell];
+  List<Object?> get props =>
+      [status, noms, errorMassage, time, count, nomBarcode, cell];
 }

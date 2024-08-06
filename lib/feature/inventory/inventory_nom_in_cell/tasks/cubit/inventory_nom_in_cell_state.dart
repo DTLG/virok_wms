@@ -23,7 +23,7 @@ final class InventoryNomInCellState extends Equatable {
   final InventoryNomInCellTasks tasks;
   final String errorMassage;
   final int time;
-  final int count;
+  final double count;
   final String nomBarcode;
 
   InventoryNomInCellState copyWith(
@@ -31,7 +31,7 @@ final class InventoryNomInCellState extends Equatable {
       InventoryNomInCellTasks? tasks,
       String? errorMassage,
       int? time,
-      int? count,
+      double? count,
       String? nomBarcode}) {
     return InventoryNomInCellState(
         status: status ?? this.status,
@@ -43,5 +43,6 @@ final class InventoryNomInCellState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, errorMassage, tasks, time, nomBarcode, count];
+  List<Object?> get props =>
+      [status, errorMassage, tasks, time, nomBarcode, count];
 }

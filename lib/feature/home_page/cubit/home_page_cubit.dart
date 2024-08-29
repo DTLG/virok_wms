@@ -33,6 +33,8 @@ class HomePageCubit extends Cubit<HomePageState> {
         prefs.getBool('meest_ttn_print_button') ?? false;
     final bool labelPrintButton = prefs.getBool('label_print_button') ?? false;
     final bool rechargeButton = prefs.getBool('recharge_button') ?? false;
+    final bool movingDefectiveButton =
+        prefs.getBool('moving_defective_button') ?? false;
     final bool cameraScaner = prefs.getBool('camera_scaner') ?? false;
 
     emit(state.copyWith(
@@ -45,6 +47,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         labelPrintButton: labelPrintButton,
         rechargeButton: rechargeButton,
         cameraScaner: cameraScaner,
+        movingDefectiveButton: movingDefectiveButton,
         status: HomePageStatus.success));
   }
 

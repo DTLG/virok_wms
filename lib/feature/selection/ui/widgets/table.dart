@@ -15,52 +15,56 @@ class CustomTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     noms.sort((a, b) => a.nameCell.compareTo(b.nameCell));
-        final theme = Theme.of(context);
-        final MyColors myColors = Theme.of(context).extension<MyColors>()!;
+    final theme = Theme.of(context);
+    final MyColors myColors = Theme.of(context).extension<MyColors>()!;
     return Expanded(
       child: ListView.builder(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: noms.length,
         itemBuilder: (context, index) {
-          return 
-          
-          TableElement(dataLenght: noms.length, rowElement: [      RowElement(
-            flex: 6,
-            value: noms[index].name,
-            textStyle: theme.textTheme.labelSmall?.copyWith(
-                letterSpacing: 0.5,
-                overflow: TextOverflow.ellipsis,
-                fontSize: 9),
-          ),
-          RowElement(
-            flex: 4,
-            value: noms[index].article,
-            textStyle: theme.textTheme.labelMedium
-                ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
-          ),
-          RowElement(
-            flex: 6,
-            value: noms[index].nameCell,textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
-          ),
-          RowElement(
-            flex: 2,
-            value: noms[index].qty.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),
-          RowElement(
-            flex: 2,
-            value: noms[index].count.toString(),
-            textStyle: theme.textTheme.labelMedium,
-          ),], index: index,
+          return TableElement(
+            dataLenght: noms.length,
+            rowElement: [
+              RowElement(
+                flex: 6,
+                value: noms[index].name,
+                textStyle: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 0.5,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 9),
+              ),
+              RowElement(
+                flex: 4,
+                value: noms[index].article,
+                textStyle: theme.textTheme.labelMedium
+                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
+              ),
+              RowElement(
+                flex: 6,
+                value: noms[index].nameCell,
+                textStyle: theme.textTheme.titleSmall!.copyWith(fontSize: 12),
+              ),
+              RowElement(
+                flex: 2,
+                value: noms[index].qty.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+              RowElement(
+                flex: 2,
+                value: noms[index].count.toString(),
+                textStyle: theme.textTheme.labelMedium,
+              ),
+            ],
+            index: index,
             color: noms[index].count == noms[index].qty
-              ? myColors.tableGreen
-              : noms[index].isMyne == 1
-                  ? myColors.tableYellow
-                  : index % 2 != 0
-                      ? myColors.tableLightColor
-                      : myColors.tableDarkColor,
-                      onTap: (){
-                           if (noms[index].isMyne == 1) {
+                ? myColors.tableGreen
+                : noms[index].isMyne == 1
+                    ? myColors.tableYellow
+                    : index % 2 != 0
+                        ? myColors.tableLightColor
+                        : myColors.tableDarkColor,
+            onTap: () {
+              if (noms[index].isMyne == 1) {
                 if (noms[index].count < noms[index].qty) {
                   final barcode = noms[index].barcode.isEmpty
                       ? ''
@@ -81,18 +85,14 @@ class CustomTable extends StatelessWidget {
                           : noms[index].barcode.first.barcode,
                       noms[index].codeCell,
                       noms[index]);
-                      context.read<SelectionOrderDataCubit>().getNoms(docId);
+                  context.read<SelectionOrderDataCubit>().getNoms(docId);
                 }
               } else {
                 Alerts(msg: "Товар в зоні іншого користувача", context: context)
                     .showError();
               }
-                      },);
-
-          
-          
-          
-
+            },
+          );
         },
       ),
     );

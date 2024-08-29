@@ -37,6 +37,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     final meestTtnPrintButton =
         prefs.getBool('meest_ttn_print_button') ?? false;
     final labelPrintButton = prefs.getBool('label_print_button') ?? false;
+    final movingDefectiveButton =
+        prefs.getBool('moving_defective_button') ?? false;
 
     final printerHost = prefs.getString('printer_host') ?? '';
     final printerPort = prefs.getString('printer_port') ?? '9100';
@@ -63,6 +65,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         npTtnPrintButton: npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton,
         labelPrintButton: labelPrintButton,
+        movingDefectiveButton: movingDefectiveButton,
         printerPort: printerPort,
         cameraScaner: cameraScaner,
         autoRefreshTime: refreshTime,
@@ -107,6 +110,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         return emit(state.copyWith(meestTtnPrintButton: value));
       case 'label_print_button':
         return emit(state.copyWith(labelPrintButton: value));
+      case 'moving_defective_button':
+        return emit(state.copyWith(movingDefectiveButton: value));
     }
   }
 

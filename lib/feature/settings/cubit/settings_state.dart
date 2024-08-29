@@ -27,6 +27,7 @@ class SettingsState extends Equatable {
   final bool npTtnPrintButton;
   final bool meestTtnPrintButton;
   final bool labelPrintButton;
+  final bool movingDefectiveButton;
 
   final String printerHost;
   final String printerPort;
@@ -47,6 +48,7 @@ class SettingsState extends Equatable {
       this.npTtnPrintButton = false,
       this.meestTtnPrintButton = false,
       this.labelPrintButton = false,
+      this.movingDefectiveButton = false,
       this.generationButton = false,
       this.printButton = false,
       this.cellInfoButton = false,
@@ -79,6 +81,7 @@ class SettingsState extends Equatable {
       bool? npTtnPrintButton,
       bool? meestTtnPrintButton,
       bool? labelPrintButton,
+      bool? movingDefectiveButton,
       bool? generationButton,
       bool? printButton,
       bool? cellInfoButton,
@@ -109,6 +112,8 @@ class SettingsState extends Equatable {
         npTtnPrintButton: npTtnPrintButton ?? this.npTtnPrintButton,
         meestTtnPrintButton: meestTtnPrintButton ?? this.meestTtnPrintButton,
         labelPrintButton: labelPrintButton ?? this.labelPrintButton,
+        movingDefectiveButton:
+            movingDefectiveButton ?? this.movingDefectiveButton,
         generationButton: generationButton ?? this.generationButton,
         printButton: printButton ?? this.printButton,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
@@ -142,6 +147,7 @@ class SettingsState extends Equatable {
         npTtnPrintButton,
         meestTtnPrintButton,
         labelPrintButton,
+        movingDefectiveButton,
         generationButton,
         printButton,
         printerHost,

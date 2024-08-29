@@ -111,6 +111,7 @@ class HomePage extends StatelessWidget {
                           state.npTtnPrintButton,
                           state.meestTtnPrintButton,
                           state.labelPrintButton,
+                          state.movingDefectiveButton,
                           context));
                 },
               )),
@@ -313,7 +314,7 @@ class CheckLogoutDialog extends StatelessWidget {
 }
 
 List<Widget> buildButtons(selection, admission, moving, returning, recharge,
-    npTtnPrint, meestTtnPrint, labelPrint, context) {
+    npTtnPrint, meestTtnPrint, labelPrint, movingDefective, context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
@@ -327,6 +328,8 @@ List<Widget> buildButtons(selection, admission, moving, returning, recharge,
     a.add({'name': 'ДРУК НАКЛАДНОЇ MEEST', 'path': 'meestttnprint'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
   if (labelPrint) a.add({'name': 'Друк етикеток', 'path': 'label_print_page'});
+  if (movingDefective)
+    a.add({'name': 'Переміщення браку', 'path': 'moving_defective_page'});
   a.add({'name': 'ІНВЕНТАРИЗАЦІЯ', 'path': 'inventory'});
 
   List<Widget> buttons = [];
@@ -382,6 +385,8 @@ extension on String {
         return AppRoutes.meestTtnPage;
       case 'label_print_page':
         return AppRoutes.labelPrint;
+      case 'moving_defective_page':
+        return AppRoutes.movingdefectivePage;
     }
   }
 }

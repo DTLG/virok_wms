@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class TableElement extends StatelessWidget {
-  const TableElement(
-      {super.key,
-      required this.dataLenght,
-      required this.rowElement,
-      required this.index,
-      this.onTap,
-      this.color,
-      this.bottomMargin = 0});
+  const TableElement({
+    super.key,
+    required this.dataLenght,
+    required this.rowElement,
+    required this.index,
+    this.onTap,
+    this.color,
+    this.bottomMargin = 0,
+    this.height = 45,
+  });
 
   final int dataLenght;
   final int index;
@@ -16,7 +18,7 @@ class TableElement extends StatelessWidget {
   final GestureTapCallback? onTap;
   final Color? color;
   final double bottomMargin;
-
+  final double height;
   @override
   Widget build(BuildContext context) {
     final lastIndex = dataLenght - 1;
@@ -28,7 +30,7 @@ class TableElement extends StatelessWidget {
                   ? bottomMargin
                   : 5
               : 0),
-      height: 45,
+      height: height,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
           color: color,

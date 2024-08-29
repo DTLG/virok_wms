@@ -18,6 +18,9 @@ import 'package:virok_wms/feature/moving/moving_gate/ui/moving_out_order_head_pa
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_data_page.dart';
 import 'package:virok_wms/feature/moving/moving_in/ui/moving_in_head_page.dart';
 import 'package:virok_wms/feature/moving/moving_page.dart';
+import 'package:virok_wms/feature/moving_defective_page/ui/create_order.dart';
+import 'package:virok_wms/feature/moving_defective_page/ui/moving_defective_page.dart';
+import 'package:virok_wms/feature/moving_defective_page/ui/read_orders.dart';
 import 'package:virok_wms/feature/np_ttn_print/ui/np_ttn_print_page.dart';
 import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_page.dart';
 import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
@@ -85,6 +88,13 @@ class RouteGenerator {
         return buildRoute(const MovingOutHeadPage(), settings: settings);
       case AppRoutes.movingOutDataPage:
         return buildRoute(const MovingOutDataPage(), settings: settings);
+      case AppRoutes.movingdefectivePage:
+        return buildRoute(const MovingDefectivePage(), settings: settings);
+      case AppRoutes.movingdefectiveRead:
+        return buildRoute(const ReadDefectiveOrdersPage(), settings: settings);
+      case AppRoutes.movingdefectiveCreate:
+        return buildRoute(const CreateDefectiveOrdersPage(),
+            settings: settings);
 
       case AppRoutes.movingGateHeadPage:
         return buildRoute(const MovingGateHeadPage(), settings: settings);

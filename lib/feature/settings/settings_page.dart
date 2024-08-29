@@ -220,6 +220,16 @@ class HomePageSettingsWidget extends StatelessWidget {
                           .writeToSP('label_print_button', value);
                     }),
               ),
+              ListTile(
+                title: const Text('Переміщення браку'),
+                trailing: Switch(
+                    value: state.movingDefectiveButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('moving_defective_button', value);
+                    }),
+              ),
             ],
           ),
         );

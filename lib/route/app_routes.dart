@@ -19,6 +19,10 @@ class AppRoutes {
   static const movingGateHeadPage = '/moving_gate_head_page';
   static const movingGateDataPage = '/moving_gate_data_page';
 
+  static const movingdefectivePage = '/moving_defective_page';
+  static const movingdefectiveRead = '/moving_defective_read';
+  static const movingdefectiveCreate = '/moving_defective_create';
+
   static const movingInHeadPage = '/moving_in_head_page';
   static const movingInDataPage = '/moving_in_data_page';
 

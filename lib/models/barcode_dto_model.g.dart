@@ -8,7 +8,7 @@ part of 'barcode_dto_model.dart';
 
 BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
       barcode: json['barcode'] as String?,
-      ratio: json['ratio'] as double?,
+      ratio: double.tryParse((json['ratio'] as int?)?.toString() ?? ''),
     );
 
 Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>

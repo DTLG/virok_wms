@@ -15,7 +15,7 @@ void showCountAlert(
       context: context,
       builder: (_) {
         return BlocProvider.value(
-          value: context.read<MovingGateOrderDataCubit>(),
+          value: context.read<NomsPageCubit>(),
           child: InputCountAlert(
             nom: nom,
             onChanged: (value) {
@@ -30,10 +30,9 @@ void showCountAlert(
       });
 }
 
-
-
 class InputCountAlert extends StatefulWidget {
-  const InputCountAlert({super.key, required this.onChanged, required this.nom});
+  const InputCountAlert(
+      {super.key, required this.onChanged, required this.nom});
 
   final ValueChanged<String>? onChanged;
   final Nom nom;
@@ -91,10 +90,9 @@ class _InputCountAlertState extends State<InputCountAlert> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  context
-                      .read<MovingGateOrderDataCubit>()
-                      .manualCountIncrement(controller.text,widget.nom.qty, widget.nom.count);
-                      Navigator.pop(context);
+                  context.read<NomsPageCubit>().manualCountIncrement(
+                      controller.text, widget.nom.qty, widget.nom.count);
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Додати',

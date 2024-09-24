@@ -19,6 +19,7 @@ class TableElement extends StatelessWidget {
   final Color? color;
   final double bottomMargin;
   final double height;
+
   @override
   Widget build(BuildContext context) {
     final lastIndex = dataLenght - 1;
@@ -33,13 +34,13 @@ class TableElement extends StatelessWidget {
       height: height,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-          color: color,
-          border: const Border.symmetric(
-              vertical: BorderSide(width: 1),
-              horizontal: BorderSide(width: 0.5)),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(lastIndex == index ? 10 : 0),
-              bottomRight: Radius.circular(lastIndex == index ? 10 : 0))),
+        color: color,
+        border: Border.all(width: 0.5), // Коректне використання бордерів
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(lastIndex == index ? 10 : 0),
+          bottomRight: Radius.circular(lastIndex == index ? 10 : 0),
+        ),
+      ),
       child: InkWell(
         onTap: onTap,
         child: Row(

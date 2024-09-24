@@ -30,8 +30,8 @@ RechargeNomDTO _$RechargeNomDTOFromJson(Map<String, dynamic> json) =>
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      countTake: json['count_take'] as int?,
-      countPut: json['count_put'] as int?,
+      countTake: json['count_take'] as double?,
+      countPut: json['count_put'] as double?,
       codCellFrom: json['cod_cell_from'] as String?,
       nameCellFrom: json['name_cell_from'] as String?,
       codCellTo: json['cod_cell_to'] as String?,

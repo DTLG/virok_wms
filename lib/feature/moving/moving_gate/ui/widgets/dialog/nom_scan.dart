@@ -16,7 +16,7 @@ void showNomInput(BuildContext context, String cellBarcode, String docId,
       barrierDismissible: false,
       context: context,
       builder: (_) => BlocProvider.value(
-            value: context.read<MovingGateOrderDataCubit>(),
+            value: context.read<NomsPageCubit>(),
             child: NomInputDialog(
                 docId: docId,
                 nomBarcode: nomBarcode,
@@ -48,9 +48,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
 
   @override
   void initState() {
-    context
-        .read<MovingGateOrderDataCubit>()
-        .getNom(widget.docId, widget.nomBarcode);
+    context.read<NomsPageCubit>().getNom(widget.docId, widget.nomBarcode);
     super.initState();
   }
 
@@ -61,7 +59,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
 
     return WillPopScope(
       onWillPop: () async {
-        await context.read<MovingGateOrderDataCubit>().clear();
+        await context.read<NomsPageCubit>().clear();
         return true;
       },
       child: AlertDialog(
@@ -70,12 +68,11 @@ class _NomInputDialogState extends State<NomInputDialog> {
         icon: DialogHead(
           title: widget.nom.article,
           onPressed: () {
-            context.read<MovingGateOrderDataCubit>().clear();
+            context.read<NomsPageCubit>().clear();
             Navigator.pop(context);
           },
         ),
-        content:
-            BlocBuilder<MovingGateOrderDataCubit, MovingGateOrderDataState>(
+        content: BlocBuilder<NomsPageCubit, MovingGateOrderDataState>(
           builder: (context, state) {
             return SingleChildScrollView(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -93,9 +90,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                   focusNode: nomFocusNode,
                   autofocus: cameraScaner ? false : true,
                   onSubmitted: (value) {
-                    context
-                        .read<MovingGateOrderDataCubit>()
-                        .scan(value, state.nom);
+                    context.read<NomsPageCubit>().scan(value, state.nom);
                     nomController.clear();
                     nomFocusNode.requestFocus();
                     setState(() {});
@@ -106,7 +101,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                           ? CameraScanerButton(
                               scan: (value) {
                                 context
-                                    .read<MovingGateOrderDataCubit>()
+                                    .read<NomsPageCubit>()
                                     .scan(value, state.nom);
 
                                 setState(() {});
@@ -145,7 +140,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     ],
                   ),
                 ),
-                BlocBuilder<MovingGateOrderDataCubit, MovingGateOrderDataState>(
+                BlocBuilder<NomsPageCubit, MovingGateOrderDataState>(
                   builder: (context, state) {
                     double dialogSize = MediaQuery.of(context).size.height;
                     final count = state.nom.count;
@@ -163,7 +158,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
         ),
         actionsPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
         actions: [
-          BlocBuilder<MovingGateOrderDataCubit, MovingGateOrderDataState>(
+          BlocBuilder<NomsPageCubit, MovingGateOrderDataState>(
             builder: (context, state) {
               return Column(
                 children: [
@@ -179,7 +174,7 @@ class _NomInputDialogState extends State<NomInputDialog> {
                               barrierColor: const Color.fromARGB(150, 0, 0, 0),
                               context: context,
                               builder: (_) => BlocProvider.value(
-                                value: context.read<MovingGateOrderDataCubit>(),
+                                value: context.read<NomsPageCubit>(),
                                 child: ChangeQuantity(
                                   qty: state.nom.qty,
                                   nom: state.nom,
@@ -205,16 +200,12 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     children: [
                       ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(context
-                                          .read<MovingGateOrderDataCubit>()
-                                          .state
-                                          .count >
-                                      0
-                                  ? Colors.green
-                                  : Colors.grey)),
+                              backgroundColor: MaterialStatePropertyAll(
+                                  context.read<NomsPageCubit>().state.count > 0
+                                      ? Colors.green
+                                      : Colors.grey)),
                           onPressed: () {
-                            final state =
-                                context.read<MovingGateOrderDataCubit>().state;
+                            final state = context.read<NomsPageCubit>().state;
                             if (state.nomBarcode.isNotEmpty) {
                               showCountAlert(context, state.nom);
                             }
@@ -222,10 +213,9 @@ class _NomInputDialogState extends State<NomInputDialog> {
                           child: const Text('Ввести в ручну')),
                       ElevatedButton(
                           onPressed: () {
-                            final state =
-                                context.read<MovingGateOrderDataCubit>().state;
+                            final state = context.read<NomsPageCubit>().state;
                             if (state.nomBarcode.isNotEmpty) {
-                              context.read<MovingGateOrderDataCubit>().send(
+                              context.read<NomsPageCubit>().send(
                                   state.nomBarcode,
                                   state.nom.docNumber,
                                   state.nom.count);
@@ -337,7 +327,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                       Alerts(msg: 'Введене значення 0', context: context)
                           .showError();
                     } else {
-                      context.read<MovingGateOrderDataCubit>().changeQty(
+                      context.read<NomsPageCubit>().changeQty(
                           double.parse(controller.text),
                           widget.nom,
                           widget.docId);

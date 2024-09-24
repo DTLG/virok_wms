@@ -26,14 +26,14 @@ final class PlacementGoodsState extends Equatable {
       Cell? cell,
       this.nomBarcode = ''})
       : cell = cell ?? Cell.empty,
-      nom = nom ?? BarcodesNom.empty;
+        nom = nom ?? BarcodesNom.empty;
 
   final PlacementGoodsStatus status;
   final Cell cell;
   final String cellBarcode;
   final String nomBarcode;
   final double count;
-  final int cellStatus;
+  final double cellStatus;
   final String error;
   final int zoneStatus;
   final String name;
@@ -54,7 +54,7 @@ final class PlacementGoodsState extends Equatable {
       String? article,
       BarcodesNom? nom,
       bool? cellIsEmpty,
-      int? cellStatus,
+      double? cellStatus,
       int? zoneStatus}) {
     return PlacementGoodsState(
         status: status ?? this.status,
@@ -69,8 +69,7 @@ final class PlacementGoodsState extends Equatable {
         article: article ?? this.article,
         zoneStatus: zoneStatus ?? this.zoneStatus,
         nom: nom ?? this.nom,
-        cellIsEmpty: cellIsEmpty ?? this.cellIsEmpty
-     );
+        cellIsEmpty: cellIsEmpty ?? this.cellIsEmpty);
   }
 
   @override

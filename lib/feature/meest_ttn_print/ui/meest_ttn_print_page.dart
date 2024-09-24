@@ -155,6 +155,7 @@ class _ArticleInputState extends State<ArticleInput> {
         focusNode: focusNode,
         textInputAction: TextInputAction.search,
         autofocus: true,
+        keyboardType: TextInputType.none,
         onSubmitted: (value) {
           context.read<TtnPrintCubit>().getParcelID(value);
         },

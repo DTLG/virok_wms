@@ -27,8 +27,8 @@ class BarcodesNom extends Equatable {
 
 class Barcode extends Equatable {
   final String barcode;
-  final int count;
-  final int ratio;
+  final double count;
+  final double ratio;
 
   const Barcode(
       {required this.barcode, required this.count, required this.ratio});

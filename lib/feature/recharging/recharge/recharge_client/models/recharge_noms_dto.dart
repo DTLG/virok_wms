@@ -28,9 +28,9 @@ class RechargeNomDTO {
   final String? article;
   final List<BarcodeDTO> barcodes;
   @JsonKey(name: "count_take")
-  final int? countTake;
+  final double? countTake;
   @JsonKey(name: "count_put")
-  final int? countPut;
+  final double? countPut;
   @JsonKey(name: "cod_cell_from")
   final String? codCellFrom;
   @JsonKey(name: "name_cell_from")

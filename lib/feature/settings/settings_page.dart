@@ -211,6 +211,16 @@ class HomePageSettingsWidget extends StatelessWidget {
                     }),
               ),
               ListTile(
+                title: const Text('Накладні епіцентр'),
+                trailing: Switch(
+                    value: state.epicenterButton,
+                    onChanged: (value) async {
+                      context
+                          .read<SettingsCubit>()
+                          .writeToSP('epicenter_button', value);
+                    }),
+              ),
+              ListTile(
                 title: const Text('Друк етикеток'),
                 trailing: Switch(
                     value: state.labelPrintButton,

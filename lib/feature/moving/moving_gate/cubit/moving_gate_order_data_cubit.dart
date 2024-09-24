@@ -13,8 +13,8 @@ import 'moving_gate_order_head_cubit.dart';
 
 part 'moving_gate_order_data_state.dart';
 
-class MovingGateOrderDataCubit extends Cubit<MovingGateOrderDataState> {
-  MovingGateOrderDataCubit() : super(MovingGateOrderDataState());
+class NomsPageCubit extends Cubit<MovingGateOrderDataState> {
+  NomsPageCubit() : super(MovingGateOrderDataState());
 
   Future<void> getNoms(String docId) async {
     try {
@@ -49,8 +49,6 @@ class MovingGateOrderDataCubit extends Cubit<MovingGateOrderDataState> {
           errorMassage: e.toString()));
     }
   }
-
-
 
   void scan(String nomBar, Nom nom) {
     double count = state.count == 0 ? nom.count : state.count;
@@ -163,7 +161,7 @@ class MovingGateOrderDataCubit extends Cubit<MovingGateOrderDataState> {
     final seconds = Random().nextInt(5) + 2;
     try {
       emit(state.copyWith(status: MovingGateOrderDataStatus.loading));
-   await Future.delayed(Duration(seconds: seconds));
+      await Future.delayed(Duration(seconds: seconds));
       await MovingOutOrderDataClient()
           .closeOrder('close_moving_out_from_incoming', '$docId ');
       // emit(state.copyWith(

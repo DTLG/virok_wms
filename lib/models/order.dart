@@ -17,7 +17,7 @@ class Order extends Equatable {
   final String date;
   final List<Bascet> baskets;
   final double fullOrder;
-  final int importanceMark;
+  final double importanceMark;
   final double mMark;
   final double newPostMark;
 

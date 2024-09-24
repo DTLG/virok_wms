@@ -112,6 +112,7 @@ class HomePage extends StatelessWidget {
                           state.meestTtnPrintButton,
                           state.labelPrintButton,
                           state.movingDefectiveButton,
+                          state.epicenter,
                           context));
                 },
               )),
@@ -242,6 +243,7 @@ void showInputDialog(BuildContext context) {
     builder: (context) => AlertDialog(
       title: Text('Скануйте qr-код принтера'),
       content: TextField(
+        keyboardType: TextInputType.none,
         controller: textController,
         autofocus: true,
         decoration: InputDecoration(
@@ -313,8 +315,18 @@ class CheckLogoutDialog extends StatelessWidget {
   }
 }
 
-List<Widget> buildButtons(selection, admission, moving, returning, recharge,
-    npTtnPrint, meestTtnPrint, labelPrint, movingDefective, context) {
+List<Widget> buildButtons(
+    selection,
+    admission,
+    moving,
+    returning,
+    recharge,
+    npTtnPrint,
+    meestTtnPrint,
+    labelPrint,
+    movingDefective,
+    epicenter,
+    context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
@@ -323,9 +335,10 @@ List<Widget> buildButtons(selection, admission, moving, returning, recharge,
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
   if (npTtnPrint) a.add({'name': 'ДРУК НАКЛАДНОЇ НП', 'path': 'npttnprint'});
-  if (meestTtnPrint)
-    // ignore: curly_braces_in_flow_control_structures
+  if (meestTtnPrint) {
     a.add({'name': 'ДРУК НАКЛАДНОЇ MEEST', 'path': 'meestttnprint'});
+  }
+  if (epicenter) a.add({'name': 'НАКЛАДНІ ЕПІЦЕНТ', 'path': 'epicenter'});
   if (recharge) a.add({'name': 'ПІДЖИВЛЕННЯ', 'path': 'rechargin'});
   if (labelPrint) a.add({'name': 'Друк етикеток', 'path': 'label_print_page'});
   if (movingDefective)
@@ -367,6 +380,8 @@ extension on String {
         return AppRoutes.storageOperations;
       case 'selection':
         return AppRoutes.selectionOrderHeadPage;
+      case 'epicenter':
+        return AppRoutes.epicenter;
       case 'admission':
         return AppRoutes.admissionPage;
       case 'moving':

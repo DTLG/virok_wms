@@ -28,6 +28,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     final selectionButton = prefs.getBool('selection_button') ?? false;
     final admissionButton = prefs.getBool('admission_button') ?? false;
+    final epicenterButton = prefs.getBool('epicenter_button') ?? false;
     final movingButton = prefs.getBool('moving_button') ?? false;
     final returningButton = prefs.getBool('returning_button') ?? false;
 
@@ -66,6 +67,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         meestTtnPrintButton: meestTtnPrintButton,
         labelPrintButton: labelPrintButton,
         movingDefectiveButton: movingDefectiveButton,
+        epicenterButton: epicenterButton,
         printerPort: printerPort,
         cameraScaner: cameraScaner,
         autoRefreshTime: refreshTime,
@@ -78,6 +80,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     switch (key) {
       case 'barcode_print_lable_button':
         return emit(state.copyWith(printButton: value));
+      case 'epicenter_button':
+        return emit(state.copyWith(epicenterButton: value));
       case 'basketOperation':
         return emit(state.copyWith(basketOperation: value));
       case 'cell_info_button':

@@ -104,7 +104,8 @@ class _ArticleInputState extends State<ArticleInput> {
             autofocus: true,
             onChanged: (value) {
               context.read<BarcodeLablePrintCubit>().getNoms(
-                  _switchValue ? 'get_from_article' : 'get_from_barcode', value);
+                  _switchValue ? 'get_from_article' : 'get_from_barcode',
+                  value);
             },
             decoration: InputDecoration(
                 hintText:
@@ -175,8 +176,11 @@ class NomsItem extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: InkWell(
                     onTap: () {
-                      showPrintAlertAlert(context, noms,
-                          noms.barodes[index].barcode, noms.barodes[index].ratio);
+                      showPrintAlertAlert(
+                          context,
+                          noms,
+                          noms.barodes[index].barcode,
+                          noms.barodes[index].ratio);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,7 +218,7 @@ class NomsItem extends StatelessWidget {
 }
 
 showPrintAlertAlert(
-    BuildContext context, BarcodesNom nom, String barcode, int ratio) {
+    BuildContext context, BarcodesNom nom, String barcode, double ratio) {
   showDialog(
     context: context,
     builder: (_) {
@@ -232,11 +236,14 @@ showPrintAlertAlert(
 
 class PrintAlert extends StatelessWidget {
   const PrintAlert(
-      {super.key, required this.nom, required this.barcode, required this.ratio});
+      {super.key,
+      required this.nom,
+      required this.barcode,
+      required this.ratio});
 
   final BarcodesNom nom;
   final String barcode;
-  final int ratio;
+  final double ratio;
 
   @override
   Widget build(BuildContext context) {

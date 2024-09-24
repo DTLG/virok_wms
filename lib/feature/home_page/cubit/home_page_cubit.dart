@@ -33,6 +33,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         prefs.getBool('meest_ttn_print_button') ?? false;
     final bool labelPrintButton = prefs.getBool('label_print_button') ?? false;
     final bool rechargeButton = prefs.getBool('recharge_button') ?? false;
+    final bool epicenter_button = prefs.getBool('epicenter_button') ?? false;
     final bool movingDefectiveButton =
         prefs.getBool('moving_defective_button') ?? false;
     final bool cameraScaner = prefs.getBool('camera_scaner') ?? false;
@@ -48,6 +49,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         rechargeButton: rechargeButton,
         cameraScaner: cameraScaner,
         movingDefectiveButton: movingDefectiveButton,
+        epicenter: epicenter_button,
         status: HomePageStatus.success));
   }
 

@@ -69,6 +69,12 @@ class _LoginViewState extends State<LoginView> {
 
   final passFocus = FocusNode();
   bool _passVisible = true;
+  @override
+  void initState() {
+    context.read<LoginCubit>().fetchPathesCollection();
+
+    super.initState();
+  }
 
   bool isEnabled() {
     bool res;
@@ -87,7 +93,7 @@ class _LoginViewState extends State<LoginView> {
     final theme = Theme.of(context);
     final state = context.select((LoginCubit cubit) => cubit.state);
     state.status.a ? pathController.text = state.dbPath : pathController;
-            final themeMode = AdaptiveTheme.of(context).mode;
+    final themeMode = AdaptiveTheme.of(context).mode;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -99,10 +105,33 @@ class _LoginViewState extends State<LoginView> {
             const SizedBox(
               height: 40,
             ),
-            const Text(
-              'Вхід',
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Opacity(
+                  opacity: 0.0, // Make the IconButton fully transparent
+                  child: IconButton(
+                    onPressed: null, // Disabled button
+                    icon: Icon(Icons.refresh),
+                    color:
+                        Colors.transparent, // Set the icon color to transparent
+                  ),
+                ),
+// Optional: Add spacing between text and button
+                // Add a Spacer widget to push the button to the right
+                Text(
+                  'Вхід',
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+                ),
+                IconButton(
+                  onPressed: () {
+                    context.read<LoginCubit>().forceFetchPathesCollection();
+                  },
+                  icon: Icon(Icons.refresh),
+                ),
+              ],
             ),
+
             const SizedBox(
               height: 30,
             ),
@@ -119,9 +148,34 @@ class _LoginViewState extends State<LoginView> {
               },
               controller: pathController,
               style: const TextStyle(fontSize: 13),
-              decoration:  InputDecoration(hintText: 'Шлях до бази',hintStyle: TextStyle(color:  themeMode.isDark ? Colors.white : Colors.black)),
-              
+              decoration: InputDecoration(
+                hintText: 'Шлях до бази',
+                hintStyle: TextStyle(
+                  color: themeMode.isDark ? Colors.white : Colors.black,
+                ),
+                suffixIcon: PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    pathController.text = value;
+                    context.read<LoginCubit>().getUsers(value);
+                  },
+                  itemBuilder: (context) {
+                    return state.pathes.isNotEmpty
+                        ? state.pathes.expand<PopupMenuItem<String>>((path) {
+                            final keys = path.keys.toList();
+                            return keys.map<PopupMenuItem<String>>((key) {
+                              return PopupMenuItem<String>(
+                                value: path[key],
+                                child: Text(key),
+                              );
+                            }).toList();
+                          }).toList()
+                        : [];
+                  },
+                ),
+              ),
             ),
+
             const SizedBox(
               height: 10,
             ),
@@ -139,6 +193,7 @@ class _LoginViewState extends State<LoginView> {
               height: 10,
             ),
             TextField(
+              keyboardType: TextInputType.number,
               onChanged: (value) {
                 isEnabled();
               },
@@ -157,7 +212,8 @@ class _LoginViewState extends State<LoginView> {
               obscuringCharacter: '●',
               decoration: InputDecoration(
                   hintText: 'Пароль',
-                  hintStyle: TextStyle(color:  themeMode.isDark ? Colors.white : Colors.black),
+                  hintStyle: TextStyle(
+                      color: themeMode.isDark ? Colors.white : Colors.black),
                   suffixIcon: IconButton(
                       onPressed: () {
                         _passVisible = !_passVisible;

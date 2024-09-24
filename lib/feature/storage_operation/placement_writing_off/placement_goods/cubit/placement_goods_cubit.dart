@@ -10,7 +10,7 @@ part 'placement_goods_state.dart';
 class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
   PlacementGoodsCubit() : super(const PlacementGoodsState());
 
-  Future<int> getCeel(String barcode) async {
+  Future<double> getCeel(String barcode) async {
     try {
       final cell = await PlacementWritingOffRepo().getCeel(barcode);
       if (cell.cell.first.status == 0) {

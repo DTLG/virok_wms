@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:virok_wms/login/api/login_api.dart';
 import 'package:virok_wms/login/login_repo.dart';
 
@@ -64,6 +68,73 @@ class LoginCubit extends Cubit<LoginState> {
             status: LoginStatus.failure,
             time: DateTime.now().millisecondsSinceEpoch));
       }
+    } catch (e) {
+      emit(state.copyWith(
+          status: LoginStatus.failure,
+          time: DateTime.now().millisecondsSinceEpoch));
+    }
+  }
+
+  Future<void> fetchPathesCollection() async {
+    try {
+      emit(state.copyWith(status: LoginStatus.loading));
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? savedPathesJson = prefs.getString('pathes');
+
+      if (savedPathesJson != null) {
+        // Parse the saved JSON data
+        List<Map<String, dynamic>> savedPathes =
+            List<Map<String, dynamic>>.from(
+          (jsonDecode(savedPathesJson) as List)
+              .map((item) => item as Map<String, dynamic>),
+        );
+        emit(state.copyWith(
+          pathes: savedPathes,
+          status: LoginStatus.succsses,
+        ));
+      } else {
+        // Fetch data from Firestore
+        final CollectionReference pathesCollection =
+            FirebaseFirestore.instance.collection('pathes');
+
+        QuerySnapshot snapshot = await pathesCollection.get();
+
+        List<Map<String, dynamic>> pathes = snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
+
+        // Save the fetched data to SharedPreferences
+        await prefs.setString('pathes', jsonEncode(pathes));
+
+        emit(state.copyWith(
+          pathes: pathes,
+          status: LoginStatus.succsses,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+          status: LoginStatus.failure,
+          time: DateTime.now().millisecondsSinceEpoch));
+    }
+  }
+
+  Future<void> forceFetchPathesCollection() async {
+    try {
+      emit(state.copyWith(status: LoginStatus.loading));
+      final CollectionReference pathesCollection =
+          FirebaseFirestore.instance.collection('pathes');
+
+      QuerySnapshot snapshot = await pathesCollection.get();
+
+      List<Map<String, dynamic>> pathes = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      emit(state.copyWith(
+        pathes: pathes,
+        status: LoginStatus.succsses,
+      ));
     } catch (e) {
       emit(state.copyWith(
           status: LoginStatus.failure,

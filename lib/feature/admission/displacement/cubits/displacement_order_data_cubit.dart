@@ -4,8 +4,6 @@ import 'package:virok_wms/feature/admission/displacement/displacement_client/dis
 
 import '../models/models.dart';
 
-
-
 part 'displacement_order_data_state.dart';
 
 class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
@@ -42,7 +40,7 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
     }
   }
 
- DisplacementNom scan(String barcode) {
+  DisplacementNom scan(String barcode) {
     DisplacementNom nom = DisplacementNom.empty;
     for (var nome in state.noms.noms) {
       for (var bar in nome.barcodes) {
@@ -63,11 +61,11 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
   }
 
   Future<void> addNom(String barcode, String invoice, double count) async {
-
-        if(count.toString().length > 6){
-            emit(state.copyWith(
+    if (count.toString().length > 6) {
+      emit(state.copyWith(
           status: DisplacementOrderDataStatus.notFound,
-          errorMassage: 'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
+          errorMassage:
+              'Введена завелика кількість - "${count.toStringAsFixed(0)}", максимальна довжина до 6 символів',
           time: DateTime.now().millisecondsSinceEpoch));
       return;
     }
@@ -111,12 +109,14 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
       emit(state.copyWith(status: DisplacementOrderDataStatus.loading));
       await Future.delayed(const Duration(seconds: 1), () {});
 
-      final orders = await DisplacementOrderDataClient()
-          .getNoms('Close_invoice', invoice);
+      final orders =
+          await DisplacementOrderDataClient().getNoms('Close_invoice', invoice);
       emit(state.copyWith(
           status: DisplacementOrderDataStatus.success, noms: orders));
     } catch (e) {
-      emit(state.copyWith(status: DisplacementOrderDataStatus.success));
+      if (!isClosed) {
+        emit(state.copyWith(status: DisplacementOrderDataStatus.success));
+      }
 
       emit(state.copyWith(
           status: DisplacementOrderDataStatus.failure,

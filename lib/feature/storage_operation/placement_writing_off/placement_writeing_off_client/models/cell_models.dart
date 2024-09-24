@@ -7,10 +7,7 @@ class CellDTO {
   final List<CellData> cell;
   final int? zone;
 
-  CellDTO({
-    required this.cell,
-    required this.zone
-  });
+  CellDTO({required this.cell, required this.zone});
 
   factory CellDTO.fromJson(Map<String, dynamic> json) =>
       _$CellDTOFromJson(json);
@@ -29,15 +26,14 @@ class CellData {
   final List<BarcodeDTO> barcodes;
   final String? article;
 
-  final int? status;
-  
+  final double? status;
 
   CellData(
       {required this.nom,
       required this.quantity,
       required this.nameCell,
-            required this.codeCell,
-required this.article,
+      required this.codeCell,
+      required this.article,
       required this.barcodes,
       required this.status});
 
@@ -45,18 +41,13 @@ required this.article,
       _$CellDataFromJson(json);
 }
 
-
 @JsonSerializable()
-class BarcodeDTO{
+class BarcodeDTO {
   final String? barcode;
-  final int? ratio;
+  final double? ratio;
 
   BarcodeDTO({required this.barcode, required this.ratio});
 
-    factory BarcodeDTO.fromJson(Map<String, dynamic> json) => _$BarcodeDTOFromJson(json);
-
-
-
-   
-
+  factory BarcodeDTO.fromJson(Map<String, dynamic> json) =>
+      _$BarcodeDTOFromJson(json);
 }

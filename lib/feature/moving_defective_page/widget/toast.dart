@@ -7,12 +7,15 @@ void showToast(
   Color backgroundColor = Colors.black,
   Color textColor = Colors.white,
 }) {
+  Fluttertoast.cancel();
+
   Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: gravity,
-      timeInSecForIosWeb: 1,
-      backgroundColor: backgroundColor,
-      textColor: textColor,
-      fontSize: 16.0);
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: gravity,
+    timeInSecForIosWeb: 1,
+    backgroundColor: backgroundColor,
+    textColor: textColor,
+    fontSize: 16.0,
+  );
 }

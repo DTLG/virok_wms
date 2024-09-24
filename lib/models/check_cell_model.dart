@@ -28,9 +28,9 @@ class CheckCellDTO {
 class NomDTO {
   final String? name;
   final String? article;
-  final int? qty;
+  final double? qty;
   @JsonKey(name: "min_rest")
-  final int? minRest;
+  final double? minRest;
   final List<BarcodeDTO> barcodes;
 
   NomDTO({

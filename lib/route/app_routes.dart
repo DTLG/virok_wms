@@ -36,6 +36,7 @@ class AppRoutes {
   static const rechargingMenuPage = '/recharging_menu_page';
   static const rechargePage = '/recharge_page';
   static const movingInCells = '/moving_in_cells';
+  static const epicenter = '/epicenter';
 
   static const admissionPage = '/admission_page';
   static const displacementOrderHeadPage = '/displacement_order_head_page';

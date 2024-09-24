@@ -114,11 +114,25 @@ class _NomInputDialogState extends State<NomInputDialog> {
                 SizedBox(
                   height: 45,
                   child: TextField(
+                    keyboardType: TextInputType.none,
                     textAlignVertical: TextAlignVertical.bottom,
                     autofocus: cameraScaner ? false : true,
                     textInputAction: TextInputAction.next,
                     controller: cellController,
                     focusNode: cellFocusNode,
+                    onChanged: (value) {
+                      final bool res = context
+                          .read<SelectionOrderDataCubit>()
+                          .checkCell(
+                              cellController.text,
+                              state.nom.cells.isEmpty
+                                  ? widget.nom.cells
+                                  : state.nom.cells);
+                      if (res == false) {
+                        cellController.clear();
+                        cellFocusNode.requestFocus();
+                      }
+                    },
                     onSubmitted: (value) {
                       final bool res = context
                           .read<SelectionOrderDataCubit>()
@@ -153,9 +167,18 @@ class _NomInputDialogState extends State<NomInputDialog> {
                 SizedBox(
                   height: 45,
                   child: TextField(
+                    keyboardType: TextInputType.none,
                     textAlignVertical: TextAlignVertical.bottom,
                     controller: nomController,
                     focusNode: nomFocusNode,
+                    onChanged: (value) {
+                      context
+                          .read<SelectionOrderDataCubit>()
+                          .scan(value, widget.nom);
+                      nomController.clear();
+                      nomFocusNode.requestFocus();
+                      setState(() {});
+                    },
                     onSubmitted: (value) {
                       context
                           .read<SelectionOrderDataCubit>()

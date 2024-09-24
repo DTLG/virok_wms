@@ -3,6 +3,7 @@ import 'package:virok_wms/feature/admission/kyiv_placement/placement_from_admiss
 import 'package:virok_wms/feature/admission/kyiv_placement/placement_from_return/ui/placement_from_return_page.dart';
 import 'package:virok_wms/feature/admission/placement/ui/placement_data_page.dart';
 import 'package:virok_wms/feature/admission/placement/ui/placement_head_page.dart';
+import 'package:virok_wms/feature/epicenter_page/ui/pages/epicenter_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_cells/task_noms/ui/task_noms.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_cells/tasks/ui/tasks_page.dart';
 import 'package:virok_wms/feature/inventory/inventory_by_nom/task_nom/ui/task_cells.dart';
@@ -70,6 +71,8 @@ class RouteGenerator {
         return buildRoute(const MeestTtnPrint(), settings: settings);
       case AppRoutes.login:
         return buildRoute(const LoginPage(), settings: settings);
+      case AppRoutes.epicenter:
+        return buildRoute(const EpicenterPage(), settings: settings);
       case AppRoutes.storageOperations:
         return buildRoute(const StorageOperationPage(), settings: settings);
       case AppRoutes.homePage:

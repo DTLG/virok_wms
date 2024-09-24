@@ -82,7 +82,7 @@ class CustomTable extends StatelessWidget {
                           ? ''
                           : noms[index].barcode.first.barcode,
                       noms[index]);
-                  context.read<MovingGateOrderDataCubit>().getNoms(docId);
+                  context.read<NomsPageCubit>().getNoms(docId);
                 }
               } else {
                 Alerts(msg: "Товар в зоні іншого користувача", context: context)

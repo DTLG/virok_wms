@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "527829636188",
+    "project_id": "virok-wms-2a767",
+    "storage_bucket": "virok-wms-2a767.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527829636188:android:cccc3d14f3beef06a08299",
+        "android_client_info": {
+          "package_name": "com.dtLogic1.virok_vms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ8G_OLcS7CeshV7rA4khppo9p2GRekS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527829636188:android:075abab8cc39e366a08299",
+        "android_client_info": {
+          "package_name": "mobi.c"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ8G_OLcS7CeshV7rA4khppo9p2GRekS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

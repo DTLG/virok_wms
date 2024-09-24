@@ -10,7 +10,6 @@ import '../widget/param_row.dart';
 import '../widget/print_button.dart';
 import '../widget/status_label.dart' as StatusLabel;
 
-
 String _value = '';
 final _formKey = GlobalKey<FormState>();
 
@@ -21,13 +20,13 @@ class TtnNovaPostPrint extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TtnPrintCubit(),
-      child:  TtnNovaPostPrintView(),
+      child: TtnNovaPostPrintView(),
     );
   }
 }
 
 class TtnNovaPostPrintView extends StatelessWidget {
-   TtnNovaPostPrintView({super.key});
+  TtnNovaPostPrintView({super.key});
 
   final ScrollController _scrollController = ScrollController();
 
@@ -204,10 +203,13 @@ class TtnNovaPostPrintView extends StatelessWidget {
                                                       ttnParams.length);
                                               ttnParams.add(newParam);
                                               _scrollController.animateTo(
-                                              _scrollController.position.maxScrollExtent-120,
-                                              duration: const Duration(milliseconds: 100),
-                                              curve: Curves.easeOut,
-                                            );
+                                                _scrollController.position
+                                                        .maxScrollExtent -
+                                                    120,
+                                                duration: const Duration(
+                                                    milliseconds: 100),
+                                                curve: Curves.easeOut,
+                                              );
                                             },
                                             icon: const Icon(Icons.add),
                                           ),
@@ -301,6 +303,7 @@ class _ArticleInputState extends State<ArticleInput> {
         controller: controller,
         focusNode: focusNode,
         textInputAction: TextInputAction.search,
+        keyboardType: TextInputType.none,
         autofocus: true,
         onSubmitted: (value) {
           context.read<TtnPrintCubit>().getTtnData(value);

@@ -31,9 +31,8 @@ class _MovingBarcodeInputState extends State<MovingBarcodeInput> {
         textAlignVertical: TextAlignVertical.bottom,
         onSubmitted: (value) {
           if (controller.text.isNotEmpty) {
-            context.read<MovingGateOrderDataCubit>().getNoms(widget.docId);
-            final Nom nom =
-                context.read<MovingGateOrderDataCubit>().search(value);
+            context.read<NomsPageCubit>().getNoms(widget.docId);
+            final Nom nom = context.read<NomsPageCubit>().search(value);
             if (nom != Nom.empty) {
               showNomInput(context, nom.codeCell, widget.docId,
                   nom.barcode.first.barcode, nom);
@@ -48,12 +47,9 @@ class _MovingBarcodeInputState extends State<MovingBarcodeInput> {
             suffixIcon: cameraScaner
                 ? CameraScanerButton(
                     scan: (value) {
-                      context
-                          .read<MovingGateOrderDataCubit>()
-                          .getNoms(widget.docId);
-                      final Nom nom = context
-                          .read<MovingGateOrderDataCubit>()
-                          .search(value);
+                      context.read<NomsPageCubit>().getNoms(widget.docId);
+                      final Nom nom =
+                          context.read<NomsPageCubit>().search(value);
                       if (nom != Nom.empty) {
                         showNomInput(context, nom.codeCell, widget.docId,
                             nom.barcode.first.barcode, nom);

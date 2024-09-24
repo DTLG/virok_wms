@@ -69,6 +69,9 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     double count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcode) {
+      if (nomBar == '') {
+        return true;
+      }
       if (barcode.barcode == nomBar) {
         if (count + barcode.ratio > nom.qty) {
           emit(state.copyWith(
@@ -123,7 +126,8 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     double count = state.count - qty;
     try {
       final orders = await SelectionOrderDataRepository().selectionRepo(
-          'send_selection', '$barcode $count $docNum $cell $bascket');
+          'send_selection',
+          '$barcode $count $docNum $cell $taskNumber $bascket');
       emit(state.copyWith(
           status: SelectionOrderDataStatus.success, noms: orders));
       clear();

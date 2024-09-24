@@ -2,14 +2,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'barcodes_noms.g.dart';
 
-
 @JsonSerializable()
-class BarcodesNomsDTO{
+class BarcodesNomsDTO {
   final List<BarcodesNomDTO> noms;
 
   BarcodesNomsDTO({required this.noms});
 
-factory BarcodesNomsDTO.fromJson(Map<String, dynamic> json) =>
+  factory BarcodesNomsDTO.fromJson(Map<String, dynamic> json) =>
       _$BarcodesNomsDTOFromJson(json);
 }
 
@@ -30,8 +29,8 @@ class BarcodesNomDTO {
 @JsonSerializable()
 class BarcodeDTO {
   final String? barcode;
-  final int? count;
-  final int? ratio;
+  final double? count;
+  final double? ratio;
 
   factory BarcodeDTO.fromJson(Map<String, dynamic> json) =>
       _$BarcodeDTOFromJson(json);

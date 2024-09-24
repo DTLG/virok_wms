@@ -19,8 +19,8 @@ class RechargeNom {
   final double qty;
   final String article;
   final List<Barcode> barcodes;
-  final int countTake;
-  final int countPut;
+  final double countTake;
+  final double countPut;
   final String codCellFrom;
   final String nameCellFrom;
   final String codCellTo;

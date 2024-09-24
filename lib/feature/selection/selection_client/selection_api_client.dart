@@ -15,7 +15,6 @@ class SelectionOrderDataClient {
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
 
-
     final url = '$baseUrl$query $body';
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
@@ -46,7 +45,6 @@ class SelectionOrderDataClient {
     String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
-
 
     final url = '$baseUrl$query $body';
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
@@ -79,7 +77,6 @@ class SelectionOrderDataClient {
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
 
-
     final url = '$baseUrl$query $body';
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
@@ -108,7 +105,6 @@ class SelectionOrderDataClient {
     String zone = prefs.getString('zone') ?? '';
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
-
 
     final url = '$baseUrl$query $body';
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
@@ -141,9 +137,7 @@ class SelectionOrderDataClient {
     String baseUrl = prefs.getString('api') ?? '';
     String password = prefs.getString('password') ?? '';
 
-
-    final url =
-        '${baseUrl}set_basket_to_order $body';
+    final url = '${baseUrl}set_basket_to_order $body';
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$zone:$password'))}';
 
     try {
@@ -165,5 +159,4 @@ class SelectionOrderDataClient {
       client.close();
     }
   }
-
 }

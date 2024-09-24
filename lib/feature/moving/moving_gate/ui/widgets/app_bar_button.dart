@@ -72,7 +72,7 @@ class CheckFullScanDialog extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: IconButton(
             onPressed: () {
-              context.read<MovingGateOrderDataCubit>().clear();
+              context.read<NomsPageCubit>().clear();
               Navigator.pop(context);
             },
             icon: const Icon(Icons.close)),

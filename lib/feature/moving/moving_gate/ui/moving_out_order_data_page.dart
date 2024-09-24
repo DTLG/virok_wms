@@ -11,7 +11,7 @@ class MovingGateDataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MovingGateOrderDataCubit(),
+      create: (context) => NomsPageCubit(),
       child: const MovingOutOrderDataView(),
     );
   }
@@ -45,49 +45,50 @@ class MovingOutOrderDataView extends StatelessWidget {
         actions: [
           AppBarButton(
             title: 'Завершити',
-           onPressed: () {
-                      final int checkFullScan =
-              context.read<MovingGateOrderDataCubit>().checkFullOrder();
+            onPressed: () {
+              final int checkFullScan =
+                  context.read<NomsPageCubit>().checkFullOrder();
 
-          if (checkFullScan == 0) {
-            showDialog(
-                context: context,
-                builder: (_) => BlocProvider.value(
-                      value: context.read<MovingGateOrderDataCubit>(),
-                      child: CheckFullScanDialog(
-                        cubit: movingOrderHeadCubit,
-                        docId: docId,
-                      ),
-                    ));
-          } else {
-            context
-                .read<MovingGateOrderDataCubit>()
-                .closeOrder(docId, movingOrderHeadCubit)
-                .whenComplete(() {
-              movingOrderHeadCubit.getOrders();
-              Navigator.pop(context);
-            });
-          }
-           },
+              if (checkFullScan == 0) {
+                showDialog(
+                    context: context,
+                    builder: (_) => BlocProvider.value(
+                          value: context.read<NomsPageCubit>(),
+                          child: CheckFullScanDialog(
+                            cubit: movingOrderHeadCubit,
+                            docId: docId,
+                          ),
+                        ));
+              } else {
+                context
+                    .read<NomsPageCubit>()
+                    .closeOrder(docId, movingOrderHeadCubit)
+                    .whenComplete(() {
+                  movingOrderHeadCubit.getOrders();
+                  Navigator.pop(context);
+                });
+              }
+            },
           )
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<MovingGateOrderDataCubit>().getNoms(docId);
+          context.read<NomsPageCubit>().getNoms(docId);
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 60),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-   
               MovingBarcodeInput(
                 docId: docId,
               ),
-              const SizedBox(height: 5,),
+              const SizedBox(
+                height: 5,
+              ),
               const TableHead(),
-              BlocConsumer<MovingGateOrderDataCubit, MovingGateOrderDataState>(
+              BlocConsumer<NomsPageCubit, MovingGateOrderDataState>(
                 listener: (context, state) {
                   if (state.status.isNotFound) {
                     Alerts(msg: state.errorMassage, context: context)
@@ -96,7 +97,7 @@ class MovingOutOrderDataView extends StatelessWidget {
                 },
                 builder: (context, state) {
                   if (state.status.isInitial) {
-                    context.read<MovingGateOrderDataCubit>().getNoms(docId);
+                    context.read<NomsPageCubit>().getNoms(docId);
                   }
                   if (state.status.isLoading) {
                     return const Expanded(
@@ -126,11 +127,10 @@ class MovingOutOrderDataView extends StatelessWidget {
           GeneralButton(
               lable: 'Оновити',
               onPressed: () {
-                context.read<MovingGateOrderDataCubit>().getNoms(docId);
+                context.read<NomsPageCubit>().getNoms(docId);
               })
         ],
       ),
     );
   }
 }
-

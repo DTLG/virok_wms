@@ -33,7 +33,7 @@ NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
     docNumber: json['DocNumber'] as String?,
     qty: (json['qty'] as num?)?.toDouble(),
     count: (json['count'] as num?)?.toDouble(),
-    itsMyne: double.tryParse((json['its_myne'] as int?)?.toString() ?? ''),
+    itsMyne: double.tryParse((json['its_myne'] as double?)?.toString() ?? ''),
     baskets: (json['baskets'] as List<dynamic>?)
         ?.map((e) => BascketDTO.fromJson(e as Map<String, dynamic>))
         .toList(),

@@ -113,6 +113,7 @@ class HomePage extends StatelessWidget {
                           state.labelPrintButton,
                           state.movingDefectiveButton,
                           state.epicenter,
+                          state.routes,
                           context));
                 },
               )),
@@ -326,11 +327,13 @@ List<Widget> buildButtons(
     labelPrint,
     movingDefective,
     epicenter,
+    routes,
     context) {
   List<Map<String, String>> a = [];
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
   if (selection) a.add({'name': 'ЗАВДАННЯ НА ВІДБІР', 'path': 'selection'});
+  if (routes) a.add({'name': 'Routes page', 'path': 'routes'});
   if (admission) a.add({'name': 'ПОСТУПЛЕННЯ', 'path': 'admission'});
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});
@@ -384,6 +387,8 @@ extension on String {
         return AppRoutes.epicenter;
       case 'admission':
         return AppRoutes.admissionPage;
+      case 'routes':
+        return AppRoutes.routes;
       case 'moving':
         return AppRoutes.movingPage;
       case 'returning':

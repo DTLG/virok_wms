@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
@@ -8,6 +9,8 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
 import '../cubit/moving_out_order_head_cubit.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MovingOutHeadPage extends StatelessWidget {
   const MovingOutHeadPage({super.key});
@@ -60,6 +63,10 @@ class MovingOutOrdersHeadView extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()));
                 }
                 if (state.status.isFailure) {
+                  () async {
+                    await _audioPlayer
+                        .play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>

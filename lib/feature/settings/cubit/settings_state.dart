@@ -19,6 +19,7 @@ class SettingsState extends Equatable {
   final bool writeOffButton;
   final bool selectionButton;
   final bool admissionButton;
+  final bool routes;
   final bool movingButton;
   final bool returningButton;
   final bool rechargeButton;
@@ -60,6 +61,7 @@ class SettingsState extends Equatable {
       this.writeOffButton = false,
       this.selectionButton = false,
       this.admissionButton = false,
+      this.routes = false,
       this.movingButton = false,
       this.rechargeButton = false,
       this.returningButton = false,
@@ -94,6 +96,7 @@ class SettingsState extends Equatable {
       bool? writeOffButton,
       bool? selectionButton,
       bool? admissionButton,
+      bool? routes,
       bool? movingButton,
       bool? returningButton,
       bool? rechargeButton,
@@ -127,6 +130,7 @@ class SettingsState extends Equatable {
         writeOffButton: writeOffButton ?? this.writeOffButton,
         selectionButton: selectionButton ?? this.selectionButton,
         admissionButton: admissionButton ?? this.admissionButton,
+        routes: routes ?? this.routes,
         movingButton: movingButton ?? this.movingButton,
         basketOperation: basketOperation ?? this.basketOperation,
         returningButton: returningButton ?? this.returningButton,
@@ -164,6 +168,7 @@ class SettingsState extends Equatable {
         basketInfoButton,
         selectionButton,
         admissionButton,
+        routes,
         basketOperation,
         movingButton,
         returningButton,

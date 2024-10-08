@@ -50,15 +50,6 @@ class MovingDefectiveView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Список активних документів переміщення браку',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             const _DocsTableHead(),
             const _DocsCustomTable(),
             // const Padding(

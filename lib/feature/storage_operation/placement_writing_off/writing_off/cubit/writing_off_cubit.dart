@@ -9,7 +9,7 @@ part 'writing_off_state.dart';
 class WritingOffCubit extends Cubit<WritingOffState> {
   WritingOffCubit() : super(const WritingOffState());
 
-  Future<double> getCeel(String barcode) async {
+  Future<int> getCeel(String barcode) async {
     try {
       final cell = await PlacementWritingOffRepo().getCeel(barcode);
       if (cell.cell.first.status == 0) {

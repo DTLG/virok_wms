@@ -29,7 +29,7 @@ CellData _$CellDataFromJson(Map<String, dynamic> json) => CellData(
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      status: json['status'] as double?,
+      status: json['status'] as int?,
     );
 
 Map<String, dynamic> _$CellDataToJson(CellData instance) => <String, dynamic>{
@@ -44,7 +44,7 @@ Map<String, dynamic> _$CellDataToJson(CellData instance) => <String, dynamic>{
 
 BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
       barcode: json['barcode'] as String?,
-      ratio: json['ratio'] as double?,
+      ratio: json['ratio'] as int?,
     );
 
 Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>

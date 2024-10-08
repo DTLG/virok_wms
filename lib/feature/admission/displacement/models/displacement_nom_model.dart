@@ -61,7 +61,7 @@ class DisplacementNom extends Equatable {
 
 class Barcode extends Equatable {
   final String barcode;
-  final double ratio;
+  final int ratio;
 
   const Barcode({required this.barcode, required this.ratio});
 

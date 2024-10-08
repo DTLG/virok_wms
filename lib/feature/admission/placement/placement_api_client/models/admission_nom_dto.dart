@@ -28,7 +28,7 @@ class AdmissionNomDTO {
   final String? customer;
   @JsonKey(name: "tovar")
   final String? name;
-  final double? qty;
+  final int? qty;
   final String? article;
   final List<BarcodeDTO> barcodes;
   final double? count;

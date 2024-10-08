@@ -23,7 +23,7 @@ class OrderDTO {
   @JsonKey(name: 'full_order')
   final double? fullOrdfer;
   @JsonKey(name: 'importance_mark')
-  final double? importanceMark;
+  final int? importanceMark;
   @JsonKey(name: 'm_mark')
   final double? mMark;
   @JsonKey(name: 'NovaPoshta_mark')

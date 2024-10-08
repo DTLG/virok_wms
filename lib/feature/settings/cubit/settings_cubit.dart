@@ -28,6 +28,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     final selectionButton = prefs.getBool('selection_button') ?? false;
     final admissionButton = prefs.getBool('admission_button') ?? false;
+    final routes = prefs.getBool('routes') ?? false;
     final epicenterButton = prefs.getBool('epicenter_button') ?? false;
     final movingButton = prefs.getBool('moving_button') ?? false;
     final returningButton = prefs.getBool('returning_button') ?? false;
@@ -58,6 +59,7 @@ class SettingsCubit extends Cubit<SettingsState> {
         writeOffButton: writeOffButton,
         selectionButton: selectionButton,
         admissionButton: admissionButton,
+        routes: routes,
         basketOperation: basketOperation,
         movingButton: movingButton,
         returningButton: returningButton,
@@ -100,6 +102,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         return emit(state.copyWith(selectionButton: value));
       case 'admission_button':
         return emit(state.copyWith(admissionButton: value));
+      case 'routes':
+        return emit(state.copyWith(routes: value));
       case 'moving_button':
         return emit(state.copyWith(movingButton: value));
       case 'recharge_button':
@@ -122,7 +126,6 @@ class SettingsCubit extends Cubit<SettingsState> {
   changeRefreshTime(int newTime) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('refreshTime', newTime);
-
     emit(state.copyWith(autoRefreshTime: newTime));
   }
 

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/route/app_routes.dart';
@@ -7,6 +8,8 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
 import '../cubit/moving_gate_order_head_cubit.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MovingGateHeadPage extends StatelessWidget {
   const MovingGateHeadPage({super.key});
@@ -59,6 +62,10 @@ class MovingOutOrdersHeadView extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()));
                 }
                 if (state.status.isFailure) {
+                  () async {
+                    await _audioPlayer
+                        .play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>
@@ -131,7 +138,6 @@ class _CustomTable extends StatelessWidget {
                     'docId': orders.orders[index].docId,
                     'cubit': context.read<MovingGateOrdersHeadCubit>()
                   });
-              
             },
             color: index % 2 != 0
                 ? myColors.tableDarkColor
@@ -142,8 +148,6 @@ class _CustomTable extends StatelessWidget {
     );
   }
 }
-
-
 
 class _TableHead extends StatelessWidget {
   const _TableHead();

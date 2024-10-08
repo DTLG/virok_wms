@@ -12,6 +12,8 @@ class AppRoutes {
   static const selectionOrderHeadPage = '/selection_order_head_page';
   static const selectionOrderDataPage = '/selection_order_data_page';
 
+  static const routes = '/routes';
+
   static const movingPage = '/moving_page';
   static const movingOutHeadPage = '/moving_out_head_page';
   static const movingOutDataPage = '/moving_out_data_page';

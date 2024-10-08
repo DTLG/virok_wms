@@ -25,7 +25,7 @@ OrderDTO _$OrderDTOFromJson(Map<String, dynamic> json) => OrderDTO(
           .map((e) => BasketDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       fullOrdfer: (json['ratio'] as num?)?.toDouble(),
-      importanceMark: json['importance_mark'] as double?,
+      importanceMark: json['importance_mark'] as int?,
       mMark: (json["m_mark"] as num?)?.toDouble(),
       newPostMark: (json['NovaPoshta_mark'] as num?)?.toDouble(),
       // newPostMark: json['NovaPoshta_mark'] as double?,

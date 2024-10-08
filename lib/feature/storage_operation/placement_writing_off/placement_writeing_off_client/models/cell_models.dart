@@ -26,7 +26,7 @@ class CellData {
   final List<BarcodeDTO> barcodes;
   final String? article;
 
-  final double? status;
+  final int? status;
 
   CellData(
       {required this.nom,
@@ -44,7 +44,7 @@ class CellData {
 @JsonSerializable()
 class BarcodeDTO {
   final String? barcode;
-  final double? ratio;
+  final int? ratio;
 
   BarcodeDTO({required this.barcode, required this.ratio});
 

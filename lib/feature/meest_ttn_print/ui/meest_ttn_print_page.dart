@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +8,7 @@ import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/ttn_print_cubit.dart';
 
 final _formKey = GlobalKey<FormState>();
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MeestTtnPrint extends StatelessWidget {
   const MeestTtnPrint({super.key});
@@ -49,6 +51,8 @@ class MeestTtnPrintView extends StatelessWidget {
                   BlocBuilder<TtnPrintCubit, TtnPrintState>(
                     builder: (context, state) {
                       if (state.status.isFailure) {
+                        _audioPlayer
+                            .play(AssetSource('sounds/error_sound.mp3'));
                         return SizedBox(
                           height: 350,
                           child: WentWrong(
@@ -112,7 +116,9 @@ class MeestTtnPrintView extends StatelessWidget {
                         return const Text("Зіскануйте штрих-код");
                       }
                       if (state.status.isError) {
-                        return const Text("гг");
+                        _audioPlayer
+                            .play(AssetSource('sounds/error_sound.mp3'));
+                        return const Text("Помилка");
                       }
                       return const Center();
                     },
@@ -189,12 +195,13 @@ class PrintButton extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             final state = context.read<TtnPrintCubit>().state;
 
             if (state.status != TtnPrintStatus.failure) {
               context.read<TtnPrintCubit>().printSticker(state.printValue);
             } else {
+              await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
               Fluttertoast.showToast(msg: 'Не вдалося знайти parcelId');
             }
           },

@@ -16,11 +16,11 @@ class RechargeNom {
   final String taskNumber;
   final String date;
   final String tovar;
-  final double qty;
+  final int qty;
   final String article;
   final List<Barcode> barcodes;
-  final double countTake;
-  final double countPut;
+  final int countTake;
+  final int countPut;
   final String codCellFrom;
   final String nameCellFrom;
   final String codCellTo;

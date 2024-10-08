@@ -27,6 +27,7 @@ import 'package:virok_wms/feature/recharging/moving_in_cells/ui/moving_in_cells_
 import 'package:virok_wms/feature/recharging/recharging_menu_page.dart';
 import 'package:virok_wms/feature/return/ui/return_data_page.dart';
 import 'package:virok_wms/feature/return/ui/return_head_page.dart';
+import 'package:virok_wms/feature/routes_page/pages/routes_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/cell_generator.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/harkiv_page.dart';
 import 'package:virok_wms/feature/storage_operation/cell_generator/kyiv_page.dart';
@@ -98,6 +99,9 @@ class RouteGenerator {
       case AppRoutes.movingdefectiveCreate:
         return buildRoute(const CreateDefectiveOrdersPage(),
             settings: settings);
+
+      case AppRoutes.routes:
+        return buildRoute(RoutesPage(), settings: settings);
 
       case AppRoutes.movingGateHeadPage:
         return buildRoute(const MovingGateHeadPage(), settings: settings);

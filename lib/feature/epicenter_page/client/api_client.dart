@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/epicenter_page/model/document.dart';
+import 'package:virok_wms/feature/epicenter_page/model/label_info.dart';
 import 'package:virok_wms/feature/epicenter_page/model/nom.dart';
+import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
 
 class ApiClient {
   // Метод для отримання базового API шляху, авторизації та хедерів
@@ -92,6 +94,29 @@ class ApiClient {
         final data = jsonDecode(utf8.decode(response.bodyBytes));
         print(data);
         return data['ErrorMassage'];
+      } else {
+        throw Exception('Failed to load Noms');
+      }
+    } catch (e) {
+      throw Exception('Error fetching Noms: $e');
+    }
+  }
+
+  Future<LabelInfo> getLabelInfo(String guid) async {
+    try {
+      final headers = await _getCommonHeaders();
+      final String apiUrl = headers['apiUrl'] ?? '';
+      final response = await http.get(
+        Uri.parse('$apiUrl/get_order_label_info?doc_guid=$guid'),
+        headers: {
+          'Authorization': headers['Authorization'] ?? '',
+          'Content-Type': headers['Content-Type'] ?? '',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
+        return LabelInfo.fromJson(data);
       } else {
         throw Exception('Failed to load Noms');
       }

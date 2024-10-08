@@ -16,8 +16,8 @@ class CellInventoryTaskNom {
   final String taskNumber;
   final String codCell;
   final String nameCell;
-  final double count;
-  final double scannedCount;
+  final int count;
+  final int scannedCount;
   final String nomStatus;
 
   static final empty = CellInventoryTaskNom(
@@ -46,8 +46,8 @@ class CellInventoryTaskNom {
 
 class Barcode {
   final String barcode;
-  final double count;
-  final double ratio;
+  final int count;
+  final int ratio;
 
   Barcode({
     required this.barcode,

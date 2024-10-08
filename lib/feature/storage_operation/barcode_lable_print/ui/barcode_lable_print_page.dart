@@ -4,6 +4,9 @@ import 'package:virok_wms/ui/widgets/went_wrong.dart';
 
 import '../barcode_lable_print_repo/models/barcodes_noms.dart';
 import '../cubit/barcode_lable_print_cubit.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class BarcodeLeblePrintPage extends StatelessWidget {
   const BarcodeLeblePrintPage({super.key});
@@ -56,6 +59,10 @@ class BarcodeLeblePrintView extends StatelessWidget {
             BlocBuilder<BarcodeLablePrintCubit, BarcodeLablePrintState>(
               builder: (context, state) {
                 if (state.status.isFailure) {
+                  () async {
+                    await _audioPlayer
+                        .play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return SizedBox(
                     height: 350,
                     child: WentWrong(

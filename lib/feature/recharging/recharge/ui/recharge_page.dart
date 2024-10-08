@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/recharging/recharge/cubit/recharge_cubit.dart';
@@ -7,6 +8,8 @@ import 'package:virok_wms/ui/widgets/went_wrong.dart';
 
 import 'widgets/table.dart';
 import 'widgets/table_head.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class RechargePage extends StatelessWidget {
   const RechargePage({super.key});
@@ -61,6 +64,10 @@ class RechargeView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
                     return Expanded(
                       child: Center(
                         child: WentWrong(

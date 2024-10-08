@@ -517,7 +517,7 @@ class ChangeQuantity extends StatefulWidget {
   const ChangeQuantity(
       {super.key, required this.qty, required this.nom, required this.count});
 
-  final double qty;
+  final int qty;
   final double count;
   final AdmissionNom nom;
 

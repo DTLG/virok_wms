@@ -21,7 +21,7 @@ class Nom {
   final double qty;
   final double count;
   final String table;
-  final double isMyne;
+  final int isMyne;
   final List<Bascket> baskets;
   final String taskNumber;
   final String statusNom;

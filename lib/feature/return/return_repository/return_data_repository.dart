@@ -4,8 +4,7 @@ import 'models/noms_model.dart';
 
 class ReturnDataRepository {
   ReturnDataRepository({ReturnDataClient? returningInDataClient})
-      : _returningInDataClient =
-            returningInDataClient ?? ReturnDataClient();
+      : _returningInDataClient = returningInDataClient ?? ReturnDataClient();
 
   final ReturnDataClient _returningInDataClient;
 
@@ -22,7 +21,8 @@ class ReturnDataRepository {
                       Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
                   .toList(),
               qty: nom.qty ?? 0,
-              count: nom.count ?? 0, nomStatus: nom.nomStatus ?? '',
+              count: nom.count ?? 0,
+              nomStatus: nom.nomStatus ?? '',
             ))
         .toList();
     return ReturnNoms(
@@ -41,7 +41,8 @@ class ReturnDataRepository {
           .map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
           .toList(),
       qty: nom.qty ?? 0,
-      count: nom.count ?? 0, nomStatus: nom.nomStatus ?? '',
+      count: nom.count ?? 0,
+      nomStatus: nom.nomStatus ?? '',
     );
   }
 }

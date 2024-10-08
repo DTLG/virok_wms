@@ -9,6 +9,9 @@ import 'package:virok_wms/models/order.dart';
 import 'package:virok_wms/ui/theme/theme.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class SelectionOrdersHeadPage extends StatelessWidget {
   const SelectionOrdersHeadPage({super.key});
@@ -33,7 +36,7 @@ class SelectionOrdersHeadView extends StatefulWidget {
 class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
   late Timer _timer;
   bool isSelected = false;
-
+  int oldOrdersCount = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +72,24 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                   _timer =
                       Timer.periodic(Duration(seconds: refreshTime), (timer) {
                     context.read<SelectionOrdersHeadCubit>().getOrders();
+                    final newOrdersCount = context
+                        .read<SelectionOrdersHeadCubit>()
+                        .state
+                        .orders
+                        .orders
+                        .length;
+
+                    // Перевіряємо, чи змінилася кількість замовлень
+                    if (oldOrdersCount < newOrdersCount) {
+                      _audioPlayer
+                          .play(AssetSource('sounds/income_notify.mp3'));
+                    }
+                    oldOrdersCount = context
+                        .read<SelectionOrdersHeadCubit>()
+                        .state
+                        .orders
+                        .orders
+                        .length;
                   });
 
                   return const Expanded(
@@ -76,6 +97,9 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                 }
 
                 if (state.status.isFailure) {
+                  () async {
+                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>
@@ -84,6 +108,12 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                     ),
                   );
                 }
+                () async {
+                  _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+
+                  await _audioPlayer
+                      .play(AssetSource('sounds/income_notify.mp3'));
+                };
                 return _CustomTable(
                   orders: state.orders,
                 );
@@ -205,11 +235,13 @@ class _CustomTable extends StatelessWidget {
                     });
               }
             },
-            color: orders.orders[index].fullOrder != 0
-                ? myColors.tableGreen
-                : index % 2 != 0
-                    ? myColors.tableDarkColor
-                    : myColors.tableLightColor,
+            color: orders.orders[index].baskets.isNotEmpty
+                ? Colors.yellow.withOpacity(0.5)
+                : orders.orders[index].fullOrder != 0
+                    ? myColors.tableGreen
+                    : index % 2 != 0
+                        ? myColors.tableDarkColor
+                        : myColors.tableLightColor,
           );
         },
       ),

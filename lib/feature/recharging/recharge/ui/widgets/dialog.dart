@@ -297,7 +297,7 @@ class ChangeQuantity extends StatefulWidget {
     required this.nom,
   });
 
-  final double qty;
+  final int qty;
   final RechargeNom nom;
 
   @override

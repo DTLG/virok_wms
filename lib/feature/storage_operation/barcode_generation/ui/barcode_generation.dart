@@ -4,6 +4,9 @@ import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../cubit/barcode_generation_cubit.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class BarcodeGenerationPage extends StatelessWidget {
   const BarcodeGenerationPage({super.key});
@@ -25,9 +28,14 @@ class BarcodeGenerationView extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Присвосвоєння Штрихкоду',style: TextStyle(fontSize: 16),maxLines: 2,textAlign: TextAlign.center,),
+        title: const Text(
+          'Присвосвоєння Штрихкоду',
+          style: TextStyle(fontSize: 16),
+          maxLines: 2,
+          textAlign: TextAlign.center,
+        ),
         actions: [
-           Padding(
+          Padding(
             padding: const EdgeInsets.all(7),
             child: ElevatedButton(
               style: const ButtonStyle(
@@ -61,6 +69,10 @@ class BarcodeGenerationView extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state.status.isFailure) {
+                  () async {
+                    await _audioPlayer
+                        .play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return SizedBox(
                     height: 350,
                     child: WentWrong(
@@ -98,8 +110,8 @@ class _ArticleInputState extends State<ArticleInput> {
 
   @override
   Widget build(BuildContext context) {
-        final state = context.select((BarcodeGenerationCubit cubit) => cubit.state);
-    state.status.isInitial?controller.clear():controller;
+    final state = context.select((BarcodeGenerationCubit cubit) => cubit.state);
+    state.status.isInitial ? controller.clear() : controller;
     return TextField(
       controller: controller,
       autofocus: true,
@@ -141,7 +153,9 @@ class NomsList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(noms.noms[index].article),
-                    Text(noms.noms[index].barcode.isNotEmpty?noms.noms[index].barcode.first.barcode.trim():'')
+                    Text(noms.noms[index].barcode.isNotEmpty
+                        ? noms.noms[index].barcode.first.barcode.trim()
+                        : '')
                   ],
                 ),
               ),
@@ -241,21 +255,18 @@ class _NewBarcodeInputState extends State<NewBarcodeInput> {
                 if (_switchValue == true) {
                   context.read<BarcodeGenerationCubit>().sendBar('send_barcode',
                       '${widget.nom.article} ${controller.text}');
-                                        Navigator.pop(context);
-
+                  Navigator.pop(context);
                 } else {
-                  if(ratioController.text.isNotEmpty) {
+                  if (ratioController.text.isNotEmpty) {
                     context.read<BarcodeGenerationCubit>().sendBar(
-                      'send_pack_barcode',
-                      '${widget.nom.article} ${controller.text} ${ratioController.text}');
-                                        Navigator.pop(context);
-
-                  }else{
-                Alerts(msg: "Введіть кратність", context: context).showError();
-
+                        'send_pack_barcode',
+                        '${widget.nom.article} ${controller.text} ${ratioController.text}');
+                    Navigator.pop(context);
+                  } else {
+                    Alerts(msg: "Введіть кратність", context: context)
+                        .showError();
                   }
                 }
-                
               }
             },
             child: const SizedBox(

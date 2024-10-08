@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dtLogic1.virok_vms">
+    <uses-permission android:name="android.permission.BIND_REMOTEVIEWS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:label="virok_wms"
         android:name="${applicationName}"

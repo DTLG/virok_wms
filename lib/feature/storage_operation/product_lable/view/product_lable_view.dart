@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/storage_operation/product_lable/cubit/product_lables_cubit.dart';
 import 'package:virok_wms/ui/ui.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class ProductLablesPage extends StatelessWidget {
   const ProductLablesPage({super.key});
@@ -36,6 +39,9 @@ class ProductLablesView extends StatelessWidget {
               );
             }
             if (state.status.isFailure) {
+              () async {
+                await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+              };
               return Center(
                 child: WentWrong(
                   errorDescription: state.errorMassage,
@@ -91,9 +97,7 @@ showPrintPreview(BuildContext context, String text) {
     builder: (_) => BlocProvider.value(
       value: context.read<ProductLablesCubit>(),
       child: PrintAlert(text: text),
-      
     ),
-    
   );
 }
 
@@ -110,13 +114,13 @@ class _PrintAlertState extends State<PrintAlert> {
   bool countButton = false;
   @override
   Widget build(BuildContext context) {
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         countButton ? const Spacer() : const SizedBox(),
         AlertDialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

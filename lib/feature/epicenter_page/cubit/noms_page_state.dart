@@ -23,6 +23,7 @@ final class EpicenterDataState extends Equatable {
       this.basket = '',
       this.cellBarcode = '',
       this.time = 0,
+      this.jumpIndex = 0,
       this.count = 0})
       : barcode = barcode ?? Barcode.empty,
         nom = nom ?? Nom.empty;
@@ -39,6 +40,7 @@ final class EpicenterDataState extends Equatable {
   final String nomBarcode;
   final bool itsMezonine;
   final int time;
+  final int jumpIndex;
 
   EpicenterDataState copyWith(
       {EpicenterDataStatus? status,
@@ -53,6 +55,7 @@ final class EpicenterDataState extends Equatable {
       String? basket,
       double? count,
       bool? itsMezonine,
+      int? jumpIndex,
       int? time}) {
     return EpicenterDataState(
         status: status ?? this.status,
@@ -66,6 +69,7 @@ final class EpicenterDataState extends Equatable {
         cellBarcode: cellBarcode ?? this.cellBarcode,
         count: count ?? this.count,
         itsMezonine: itsMezonine ?? this.itsMezonine,
+        jumpIndex: jumpIndex ?? this.jumpIndex,
         time: time ?? this.time);
   }
 
@@ -82,6 +86,7 @@ final class EpicenterDataState extends Equatable {
         cellBarcode,
         basketStatus,
         basket,
-        time
+        time,
+        jumpIndex
       ];
 }

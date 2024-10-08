@@ -155,9 +155,14 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 suffixIcon: PopupMenuButton<String>(
                   icon: const Icon(Icons.more_vert),
-                  onSelected: (value) {
+                  onSelected: (value) async {
                     pathController.text = value;
-                    context.read<LoginCubit>().getUsers(value);
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setString('api', value);
+                    if (context.mounted) {
+                      context.read<LoginCubit>().getUsers(value);
+                    }
                   },
                   itemBuilder: (context) {
                     return state.pathes.isNotEmpty

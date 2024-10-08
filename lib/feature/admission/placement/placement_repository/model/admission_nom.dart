@@ -16,7 +16,7 @@ class AdmissionNom {
   final String taskNumber;
   final String customer;
   final String name;
-  final double qty;
+  final int qty;
   final String article;
   final List<Barcode> barcodes;
   final double count;

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
@@ -11,7 +12,7 @@ import 'package:virok_wms/models/noms_model.dart';
 import '../../../../ui/widgets/widgets.dart';
 import '../../../returning/returning_out/ui/widgets/table_head.dart';
 
-
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MovingOutDataPage extends StatelessWidget {
   const MovingOutDataPage({super.key});
@@ -38,7 +39,6 @@ class MovingGateOrderDataView extends StatelessWidget {
     final String basket = argument['basket'];
     final bool itsMezonine = context.read<HomePageCubit>().state.itsMezonine;
     //----
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -81,8 +81,7 @@ class MovingGateOrderDataView extends StatelessWidget {
                 ],
               ),
               const TableHead(),
-              BlocConsumer<MovingOutOrderDataCubit,
-                  MovingOutOrderDataState>(
+              BlocConsumer<MovingOutOrderDataCubit, MovingOutOrderDataState>(
                 listener: (context, state) {
                   if (state.status.isNotFound) {
                     Alerts(msg: state.errorMassage, context: context)
@@ -91,11 +90,9 @@ class MovingGateOrderDataView extends StatelessWidget {
                 },
                 builder: (context, state) {
                   if (state.status.isInitial) {
-                    context
-                        .read<MovingOutOrderDataCubit>()
-                        .writeBasket(basket);
+                    context.read<MovingOutOrderDataCubit>().writeBasket(basket);
                     context.read<MovingOutOrderDataCubit>().getNoms(docId);
-                    return  const Expanded(
+                    return const Expanded(
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isLoading) {
@@ -103,6 +100,11 @@ class MovingGateOrderDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
+
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,
@@ -133,8 +135,6 @@ class MovingGateOrderDataView extends StatelessWidget {
     );
   }
 }
-
-
 
 class TableInfo extends StatelessWidget {
   const TableInfo({super.key});
@@ -169,7 +169,8 @@ class TableInfo extends StatelessWidget {
                       state.noms.noms.isNotEmpty
                           ? state.noms.noms.first.table
                           : '',
-                      style: theme.textTheme.titleLarge?.copyWith(color: Colors.black),
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(color: Colors.black),
                     )
                   ],
                 ),
@@ -222,7 +223,8 @@ class BascketInfo extends StatelessWidget {
                   color: const Color.fromARGB(255, 219, 219, 219),
                   margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
                   shape: OutlineInputBorder(
-                      borderSide: index == 0?const BorderSide(): BorderSide.none,
+                      borderSide:
+                          index == 0 ? const BorderSide() : BorderSide.none,
                       borderRadius: BorderRadius.circular(15)),
                   child: Padding(
                     padding:
@@ -239,7 +241,8 @@ class BascketInfo extends StatelessWidget {
                         ),
                         Text(
                           baskets[index].name,
-                          style: theme.textTheme.titleSmall?.copyWith(color: Colors.black),
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(color: Colors.black),
                         ),
                       ],
                     ),

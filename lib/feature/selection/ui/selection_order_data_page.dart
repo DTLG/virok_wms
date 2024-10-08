@@ -7,6 +7,9 @@ import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/selection_order_head_cubit.dart';
 import 'ui.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class SelectionOrderDataPage extends StatelessWidget {
   const SelectionOrderDataPage({super.key});
@@ -113,6 +116,10 @@ class SelectionOrderDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,
@@ -337,37 +344,54 @@ class NewBascketInfo extends StatelessWidget {
               ? [Bascket.empty]
               : state.noms.noms.first.baskets;
 
-          return InkWell(
-            onTap: () {
-              showListDasket(context, docId);
-            },
-            child: Card(
-              color: const Color.fromARGB(255, 219, 219, 219),
-              margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
-              shape: OutlineInputBorder(
-                  borderSide: const BorderSide(),
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/icons/basket_icon.png',
-                      width: 20,
-                      height: 20,
+          return Row(
+            children: [
+              if (baskets.length > 1)
+                Text(
+                  '*',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              SizedBox(
+                width: 8,
+              ),
+              InkWell(
+                onTap: () {
+                  showListDasket(context, docId);
+                },
+                child: Card(
+                  color: const Color.fromARGB(255, 219, 219, 219),
+                  margin: const EdgeInsets.fromLTRB(0, 2, 0, 8),
+                  shape: OutlineInputBorder(
+                      borderSide: const BorderSide(),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/basket_icon.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          baskets[0].name,
+                          style: theme.textTheme.titleSmall!
+                              .copyWith(color: Colors.black),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      baskets[0].name,
-                      style: theme.textTheme.titleSmall!
-                          .copyWith(color: Colors.black),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           );
         });
   }

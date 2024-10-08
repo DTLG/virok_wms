@@ -32,7 +32,7 @@ class NomDTO {
   final double? qty;
   final String? table;
   @JsonKey(name: 'its_myne')
-  final double? itsMyne;
+  final int? itsMyne;
   final List<BascketDTO>? baskets;
   @JsonKey(name: 'task_number')
   final String? taskNumber;

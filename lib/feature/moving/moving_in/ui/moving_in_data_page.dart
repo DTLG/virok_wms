@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +13,8 @@ import '../moving_in_repository/models/order.dart';
 import 'widgets/barcode_input.dart';
 import 'widgets/table.dart';
 import 'widgets/table_head.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class MovingInDataPage extends StatelessWidget {
   const MovingInDataPage({super.key});
@@ -80,6 +83,10 @@ class MovingInDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,

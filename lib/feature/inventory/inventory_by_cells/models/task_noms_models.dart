@@ -31,9 +31,9 @@ class CellInventoryTaskNomModel {
   @JsonKey(name: "name_cell")
   final String? nameCell;
   @JsonKey(name: "count")
-  final double? count;
+  final int? count;
   @JsonKey(name: "scanned_count")
-  final double? scannedCount;
+  final int? scannedCount;
   @JsonKey(name: "nom_status")
   final String? nomStatus;
 
@@ -58,9 +58,9 @@ class Barcode {
   @JsonKey(name: "barcode")
   final String? barcode;
   @JsonKey(name: "count")
-  final double? count;
+  final int? count;
   @JsonKey(name: "ratio")
-  final double? ratio;
+  final int? ratio;
 
   Barcode({
     required this.barcode,

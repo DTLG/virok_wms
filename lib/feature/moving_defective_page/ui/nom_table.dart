@@ -5,6 +5,9 @@ import 'package:virok_wms/ui/theme/app_theme.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_body_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_head.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class NomTablePage extends StatelessWidget {
   const NomTablePage({super.key, required this.barcode});
@@ -23,13 +26,6 @@ class NomTablePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Дані документа переміщення браку',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-              ),
               const _NomTableHead(),
               _NomCustomTable(barcode),
             ],
@@ -200,6 +196,7 @@ class _NomCustomTable extends StatelessWidget {
                 ],
               );
             case MovingDefectiveStatus.error:
+              _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
               Navigator.pop(context);
               return const Center(child: Icon(Icons.error));
             default:

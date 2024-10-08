@@ -2,7 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:virok_wms/feature/storage_operation/check_cell/check_cell_repository/check_cell_repository.dart';
 import 'package:virok_wms/models/check_cell.dart';
-import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart' as chackNom;
+import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart'
+    as chackNom;
 
 part 'check_cell_state.dart';
 

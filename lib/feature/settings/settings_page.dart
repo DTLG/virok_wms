@@ -231,6 +231,14 @@ class HomePageSettingsWidget extends StatelessWidget {
                     }),
               ),
               ListTile(
+                title: const Text('Routes page'),
+                trailing: Switch(
+                    value: state.routes,
+                    onChanged: (value) async {
+                      context.read<SettingsCubit>().writeToSP('routes', value);
+                    }),
+              ),
+              ListTile(
                 title: const Text('Переміщення браку'),
                 trailing: Switch(
                     value: state.movingDefectiveButton,

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scanwedge/models/barcode_plugin.dart';
+import 'package:virok_wms/feature/epicenter_page/client/print_label.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/noms_page_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/epicenter_cubit.dart'; // Import EpicenterCubit
 import 'package:virok_wms/feature/epicenter_page/model/document.dart';
+import 'package:virok_wms/feature/epicenter_page/model/label_info.dart';
 import 'package:virok_wms/feature/epicenter_page/ui/widget/table.dart';
 import 'package:virok_wms/feature/moving/moving_gate/ui/widgets/table_head.dart';
 import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
@@ -10,8 +13,18 @@ import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/app_bar_button.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
 import 'package:virok_wms/ui/widgets/went_wrong.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+import 'package:scanwedge/models/barcode_plugin.dart';
+import 'package:scanwedge/scanwedge.dart';
+import 'package:audioplayers/audioplayers.dart';
 
+final AudioPlayer _audioPlayer = AudioPlayer();
+
+// _audioPlayer
+//                             .play(AssetSource('sounds/error_sound.mp3'));
+// () async {
+//                       await _audioPlayer
+//                           .play(AssetSource('sounds/error_sound.mp3'));
+//                     };
 class NomsPage extends StatelessWidget {
   const NomsPage({super.key, required this.doc});
   final Document doc;
@@ -40,13 +53,25 @@ class NomsDataView extends StatefulWidget {
 class _NomsDataViewState extends State<NomsDataView> {
   final TextEditingController _scanController = TextEditingController();
   final FocusNode _scanFocusNode = FocusNode();
+  Scanwedge? _scanwedgePlugin;
+  String? _deviceInfo;
   String value = '';
+  final ScrollController _scrollController = ScrollController();
+
+  get trimmedValue => null;
   @override
   void initState() {
     super.initState();
     // Задаємо фокус полю введення при ініціалізації
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scanFocusNode.requestFocus();
+    });
+    Scanwedge.initialize().then((scanwedge) {
+      _scanwedgePlugin = scanwedge;
+      setState(() {});
+      scanwedge.getDeviceInfo().then((devInfo) => setState(() {
+            _deviceInfo = devInfo;
+          }));
     });
   }
 
@@ -104,12 +129,46 @@ class _NomsDataViewState extends State<NomsDataView> {
                 keyboardType: TextInputType.none,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Зіскануйте штрихкод',
+                  hintText: 'Зіскануйте штрихкод для пошуку..',
                 ),
-                onSubmitted: (value) {
-                  nomsCubit.docScan(widget.doc.guid, value.trim(), 1);
+                onSubmitted: (value) async {
+                  // nomsCubit.docScan(widget.doc.guid, value, count);
                   _scanController.clear();
                   _scanFocusNode.requestFocus();
+
+                  // Find the item index using nomsCubit
+                  final nom = nomsCubit.getIndexByBarcode(value);
+                  if (nom != null) {
+                    nomInputDialogue(
+                        context,
+                        Theme.of(context),
+                        widget.doc.guid,
+                        context.read<NomsPageCubit>(),
+                        nom,
+                        value);
+                    // showNomInput(context, value, widget.doc.guid, nom);
+                  } else {
+                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                    Alerts(msg: 'Товару не знайдено', context: context)
+                        .showError();
+                  }
+
+                  // if (itemIndex != null) {
+                  //   // Set the jump index if necessary (for other logic in your app)
+                  //   nomsCubit.setJumpIndex(itemIndex);
+
+                  //   // Scroll to the found item
+                  //   // Assuming each item has a fixed height of 60 pixels
+                  //   double itemHeight = 60.0;
+                  //   double scrollPosition = itemIndex * itemHeight;
+
+                  //   // Animate to the calculated position
+                  //   // _scrollController.animateTo(
+                  //   //   scrollPosition,
+                  //   //   duration: const Duration(milliseconds: 300),
+                  //   //   curve: Curves.easeInOut,
+                  //   // );
+                  // }
                 },
               ),
               const SizedBox(height: 8),
@@ -117,7 +176,7 @@ class _NomsDataViewState extends State<NomsDataView> {
               BlocConsumer<NomsPageCubit, EpicenterDataState>(
                 listener: (context, state) {
                   if (state.status.isNotFound) {
-                    FlutterBeep.beep(false);
+                    // FlutterBeep.beep(false);
                     Alerts(msg: state.errorMassage, context: context)
                         .showError();
                   }
@@ -133,11 +192,14 @@ class _NomsDataViewState extends State<NomsDataView> {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
-                    FlutterBeep.beep(false);
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          _audioPlayer
+                              .play(AssetSource('sounds/error_sound.mp3'));
+                          Navigator.pop(context);
+                        },
                       ),
                     );
                   }
@@ -145,6 +207,8 @@ class _NomsDataViewState extends State<NomsDataView> {
                     noms: state.noms,
                     docId: widget.doc.number,
                     guid: widget.doc.guid,
+                    indexJump: state.jumpIndex,
+                    onScrollEnd: _scanFocusNode.requestFocus,
                   );
                 },
               ),
@@ -158,7 +222,9 @@ class _NomsDataViewState extends State<NomsDataView> {
           GeneralButton(
             lable: 'Оновити',
             onPressed: () {
+              print('U pressed');
               nomsCubit.getNoms(widget.doc.guid);
+              _scanFocusNode.requestFocus();
             },
           ),
         ],
@@ -168,45 +234,158 @@ class _NomsDataViewState extends State<NomsDataView> {
 
   void showPlaceCountDialog(BuildContext context, NomsPageCubit cubit,
       String docGuid, EpicenterCubit epicenterCubit) {
-    TextEditingController _placeCountController = TextEditingController();
+    TextEditingController placeCountController = TextEditingController();
+    bool isPrintButtonVisible = false;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Введіть кількість місць'),
-          content: TextField(
-            controller: _placeCountController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(hintText: 'Введіть число'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog without action
-              },
-              child: const Text('Скасувати'),
-            ),
-            TextButton(
-              onPressed: () async {
-                // Validate the input and ensure the place count is > 0
-                final int placeCount =
-                    int.tryParse(_placeCountController.text) ?? 0;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white, // Колір фону діалогу
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0), // Закруглені кути
+              ),
+              title: const Text(
+                'Введіть кількість місць',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold), // Жирний заголовок
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: placeCountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Введіть число',
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(10.0), // Закруглені кути
+                        borderSide:
+                            const BorderSide(color: Colors.grey), // Колір рамки
+                      ),
+                      contentPadding:
+                          const EdgeInsets.all(10.0), // Внутрішній відступ
+                    ),
+                  ),
+                  // if (isPrintButtonVisible)
+                  //   ElevatedButton(
+                  //     onPressed: () async {
+                  //       int count = int.parse(placeCountController.text);
+                  //       LabelInfo? info = await cubit.getLabelInfo(docGuid);
+                  //       if (info != null) {
+                  //         for (var i = 0; i < count; i++) {
+                  //           printLabel(
+                  //             address: info.address,
+                  //             barcode: info.barcode,
+                  //             currentIndex: i + 1,
+                  //             customer: info.customer,
+                  //             customer_group: info.customerGroup,
+                  //             date_number: info.dateNumber,
+                  //             order_date_number: info.orderDateNumber,
+                  //             region_short: info.regionShort,
+                  //             totalAmount: count,
+                  //             comment: info.errorMassage,
+                  //             pickup_type: info.errorMassage,
+                  //           );
+                  //         }
+                  //         Navigator.of(context).pop(); // Закриваємо діалог
+                  //         Navigator.of(context).pop(true); // Закриваємо екран
+                  //       } else {
+                  //         print('Не вдалося отримати інформацію про етикетку');
+                  //       }
+                  //     },
+                  //     style: ElevatedButton.styleFrom(
+                  //       foregroundColor: Colors.blue, // Колір кнопки
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius:
+                  //             BorderRadius.circular(10.0), // Закруглені кути
+                  //       ),
+                  //     ),
+                  //     child: const Text('Друк'),
+                  //   )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Закриваємо діалог без дії
+                  },
+                  child: const Text('Скасувати'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final int placeCount =
+                        int.tryParse(placeCountController.text) ?? 0;
 
-                if (placeCount > 0) {
-                  // Valid input, proceed with finishDoc and fetchDocuments
-                  await cubit.finishDoc(docGuid, placeCount);
-                  await epicenterCubit.fetchDocuments();
+                    if (placeCount > 0) {
+                      try {
+                        LabelInfo? info = await cubit.getLabelInfo(docGuid);
 
-                  Navigator.of(context).pop(); // Close the dialog
-                  Navigator.of(context).pop(true); // Close the screen
-                } else {
-                  showToast('Введіть дійсне число, більше 0!');
-                }
-              },
-              child: const Text('Підтвердити'),
-            ),
-          ],
+                        if (info != null) {
+                          int count = int.parse(placeCountController.text);
+                          List<bool> res = [];
+                          for (var i = 0; i < count; i++) {
+                            res.add(await printLabel(
+                              address: info.address,
+                              barcode: info.barcode,
+                              currentIndex: i + 1,
+                              customer: info.customer,
+                              customer_group: info.customerGroup,
+                              date_number: info.dateNumber,
+                              order_date_number: info.orderDateNumber,
+                              region_short: info.regionShort,
+                              totalAmount: count,
+                              comment: info.errorMassage,
+                              pickup_type: info.errorMassage,
+                            ));
+                          }
+                          if (!res.contains(false)) {
+                            await cubit.finishDoc(context, docGuid, placeCount);
+                            await epicenterCubit.fetchDocuments();
+                            Navigator.of(context).pop(true); // Закриваємо екран
+                          } else {
+                            await _audioPlayer
+                                .play(AssetSource('sounds/error_sound.mp3'));
+                            showToast('Не можливо роздрукувати');
+                          }
+                        } else {
+                          await _audioPlayer
+                              .play(AssetSource('sounds/error_sound.mp3'));
+                          print('Не вдалося отримати інформацію про етикетку');
+                          throw Exception(
+                              'Не вдалося отримати інформацію про етикетку'); // Генеруємо помилку
+                        }
+
+                        setState(() {
+                          isPrintButtonVisible = true;
+                        });
+                      } catch (e) {
+                        // Обробка виключення
+                        await _audioPlayer
+                            .play(AssetSource('sounds/error_sound.mp3'));
+                        showToast('Сталася помилка: ${e.toString()}');
+                      } finally {
+                        // Завжди закриваємо діалог
+                        Navigator.of(context).pop(); // Закриваємо діалог
+                      }
+                    } else {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                      showToast('Введіть дійсне число, більше 0!');
+                      Navigator.of(context).pop(); // Закриваємо діалог
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue, // Колір тексту
+                  ),
+                  child: const Text('Підтвердити та роздрукувати'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

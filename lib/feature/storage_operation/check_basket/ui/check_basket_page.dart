@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/check_basket_cubit.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class ChackBasketPage extends StatelessWidget {
   const ChackBasketPage({super.key});
@@ -55,6 +58,9 @@ class ChackBasketView extends StatelessWidget {
               );
             }
             if (state.status.isFailure) {
+              () async {
+                await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+              };
               return Center(
                 child: WentWrong(
                   errorDescription: state.errorMassage,

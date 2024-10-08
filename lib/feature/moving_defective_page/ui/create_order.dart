@@ -5,6 +5,9 @@ import 'package:virok_wms/ui/theme/app_theme.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_body_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_head.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class CreateDefectiveOrdersPage extends StatelessWidget {
   const CreateDefectiveOrdersPage({super.key});
@@ -196,6 +199,7 @@ class Body extends StatelessWidget {
               },
             );
           case CreateDefectiveOrderPageStatus.error:
+            _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
             return Center(
               child: Icon(Icons.error),
             );

@@ -9,6 +9,9 @@ import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/custom_keyboard/keyboard.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class CheckCellPage extends StatelessWidget {
   const CheckCellPage({super.key});
@@ -73,6 +76,7 @@ class CheckCellView extends StatelessWidget {
                   );
                 }
                 if (state.status.isFailure) {
+                  _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
                   return Expanded(
                     child: Center(
                         child: WentWrong(

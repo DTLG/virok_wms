@@ -15,7 +15,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
 
   Future<void> getTtnData(String value) async {
     try {
-
       if (value.isNotEmpty) {
         emit(state.copyWith(
           ttnData: TtnData.empty,
@@ -26,6 +25,9 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         final ttnData = await fetchTtnData(value);
         try {
           final ttnParams = await fetchTtnParams(value);
+          if (ttnParams.isEmpty) {
+            throw Exception('Не той штрихкод');
+          }
 
           emit(state.copyWith(
               status: TtnPrintStatus.success,
@@ -34,10 +36,10 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
               errorMassage: 'Дані отримано!'));
         } on Exception catch (e) {
           emit(state.copyWith(
-              status: TtnPrintStatus.success,
+              status: TtnPrintStatus.failure,
               ttnData: ttnData,
               ttnParams: [],
-              errorMassage: 'Дані отримано!'));
+              errorMassage: e.toString()));
         }
       }
     } catch (e) {
@@ -52,12 +54,10 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
   }
 
   Future<List<TtnParams>> fetchTtnParams(String value) async {
-
     final prefs = await SharedPreferences.getInstance();
     final path = prefs.getString('api');
     //
-    String apiUrl =
-        '${path}get_ttn_params?DocBarcode=$value';
+    String apiUrl = '${path}get_ttn_params?DocBarcode=$value';
     String username = prefs.getString('zone') ?? '';
     String password = prefs.getString('password') ?? '';
 
@@ -200,7 +200,6 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         print('Дані успішно збережено!');
 
         String saveDocUrl = '${path}save_doc?DocBarcode=$docBarcode';
-
 
         var docResponse = await http.get(
           Uri.parse(saveDocUrl),

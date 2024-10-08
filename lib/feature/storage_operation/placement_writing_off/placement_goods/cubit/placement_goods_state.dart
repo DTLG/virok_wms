@@ -33,7 +33,7 @@ final class PlacementGoodsState extends Equatable {
   final String cellBarcode;
   final String nomBarcode;
   final double count;
-  final double cellStatus;
+  final int cellStatus;
   final String error;
   final int zoneStatus;
   final String name;
@@ -54,7 +54,7 @@ final class PlacementGoodsState extends Equatable {
       String? article,
       BarcodesNom? nom,
       bool? cellIsEmpty,
-      double? cellStatus,
+      int? cellStatus,
       int? zoneStatus}) {
     return PlacementGoodsState(
         status: status ?? this.status,

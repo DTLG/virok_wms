@@ -6,10 +6,12 @@ import 'package:virok_wms/feature/return/cubits/return_head_cubit.dart';
 import 'package:virok_wms/feature/return/return_repository/models/order.dart';
 import 'package:virok_wms/route/app_routes.dart';
 
-
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class ReturnHeadPage extends StatelessWidget {
   const ReturnHeadPage({super.key});
@@ -60,6 +62,9 @@ class ReturnHeadView extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()));
                 }
                 if (state.status.isFailure) {
+                  () async {
+                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                  };
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>
@@ -147,15 +152,11 @@ class _CustomTable extends StatelessWidget {
                     ? myColors.tableDarkColor
                     : myColors.tableLightColor,
           );
-
-      
         },
       ),
     );
   }
 }
-
-
 
 class _TableHead extends StatelessWidget {
   const _TableHead();

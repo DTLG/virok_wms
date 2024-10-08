@@ -51,7 +51,7 @@ class CellData extends Equatable {
   final List<String> barcodes;
   final String article;
 
-  final double status;
+  final int status;
 
   const CellData(
       {required this.name,

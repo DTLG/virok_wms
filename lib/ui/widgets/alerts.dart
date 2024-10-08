@@ -7,6 +7,9 @@ import 'package:virok_wms/ui/widgets/general_button.dart';
 
 import '../../models/noms_model.dart';
 import '../custom_keyboard/keyboard.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class Alerts {
   final String msg;
@@ -31,6 +34,7 @@ class Alerts {
   }
 
   showError() {
+    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
     showDialog(
       context: context,
       builder: (context) {
@@ -184,8 +188,7 @@ class YesOrNoDialog extends StatelessWidget {
       required this.yesButton,
       this.yesLable = 'Так',
       this.noLable = 'Ні',
-      this.buttonTextStyle
-      });
+      this.buttonTextStyle});
 
   final String? massage;
   final VoidCallback yesButton;
@@ -193,7 +196,6 @@ class YesOrNoDialog extends StatelessWidget {
   final String yesLable;
   final String noLable;
   final TextStyle? buttonTextStyle;
-
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +211,18 @@ class YesOrNoDialog extends StatelessWidget {
       actions: [
         Row(
           children: [
-            Expanded(child: GeneralButton(onPressed: yesButton, lable: yesLable, textStyle: buttonTextStyle,)),
-            Expanded(child: GeneralButton(onPressed: noButton, lable:  noLable, textStyle: buttonTextStyle,)),
+            Expanded(
+                child: GeneralButton(
+              onPressed: yesButton,
+              lable: yesLable,
+              textStyle: buttonTextStyle,
+            )),
+            Expanded(
+                child: GeneralButton(
+              onPressed: noButton,
+              lable: noLable,
+              textStyle: buttonTextStyle,
+            )),
           ],
         )
       ],

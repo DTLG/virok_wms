@@ -44,7 +44,7 @@ class ReturnNomDTO {
 @JsonSerializable(createPerFieldToJson: false)
 class BarcodeDTO {
   final String? barcode;
-  final double? ratio;
+  final int? ratio;
 
   BarcodeDTO({required this.barcode, required this.ratio});
 

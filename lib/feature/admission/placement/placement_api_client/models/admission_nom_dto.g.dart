@@ -25,7 +25,7 @@ AdmissionNomDTO _$AdmissionNomDTOFromJson(Map<String, dynamic> json) =>
       taskNumber: json['task_number'] as String?,
       customer: json['Сustomer'] as String?,
       name: json['tovar'] as String?,
-      qty: json['qty'] as double?,
+      qty: json['qty'] as int?,
       article: json['article'] as String?,
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))

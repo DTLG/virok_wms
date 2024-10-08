@@ -12,6 +12,9 @@ import '../../../../ui/theme/app_color.dart';
 import 'widgets/barcode_input.dart';
 import 'widgets/table.dart';
 import 'widgets/table_head.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer _audioPlayer = AudioPlayer();
 
 class ReturnDataPage extends StatelessWidget {
   const ReturnDataPage({super.key});
@@ -84,6 +87,10 @@ class ReturnDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,
@@ -109,39 +116,40 @@ class ReturnDataView extends StatelessWidget {
               return GeneralButton(
                   lable: 'Завершити',
                   onPressed: () {
-                   
                     showDialog(
-                      context: context,
-                      builder: (_) => BlocProvider.value(value: context.read<ReturnDataCubit>(),
-                      child: AlertDialog(
-                        content: const Text('Ви дійсно хочете завершити'),
-                        actions: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: GeneralButton(
-                                      lable: 'Так',
-                                      onPressed: () {
-                                        context
-                                            .read<ReturnDataCubit>()
-                                            .closeOrder(state.noms.invoice);
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      })),
-                              Expanded(
-                                child: GeneralButton(
-                                    lable: 'ні',
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    }),
+                        context: context,
+                        builder: (_) => BlocProvider.value(
+                              value: context.read<ReturnDataCubit>(),
+                              child: AlertDialog(
+                                content:
+                                    const Text('Ви дійсно хочете завершити'),
+                                actions: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: GeneralButton(
+                                              lable: 'Так',
+                                              onPressed: () {
+                                                context
+                                                    .read<ReturnDataCubit>()
+                                                    .closeOrder(
+                                                        state.noms.invoice);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              })),
+                                      Expanded(
+                                        child: GeneralButton(
+                                            lable: 'ні',
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }),
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                    );
-                     final int checkFullScan =
+                            ));
+                    final int checkFullScan =
                         context.read<ReturnDataCubit>().checkFullOrder();
                     if (checkFullScan == 0) {
                       Alerts(

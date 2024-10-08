@@ -24,13 +24,13 @@ class RechargeNomDTO {
   final String? taskNumber;
   final String? date;
   final String? tovar;
-  final double? qty;
+  final int? qty;
   final String? article;
   final List<BarcodeDTO> barcodes;
   @JsonKey(name: "count_take")
-  final double? countTake;
+  final int? countTake;
   @JsonKey(name: "count_put")
-  final double? countPut;
+  final int? countPut;
   @JsonKey(name: "cod_cell_from")
   final String? codCellFrom;
   @JsonKey(name: "name_cell_from")

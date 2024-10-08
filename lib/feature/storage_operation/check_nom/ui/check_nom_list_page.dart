@@ -6,7 +6,9 @@ import 'package:virok_wms/route/route.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../cubit/check_nom_list_cubit.dart';
+import 'package:audioplayers/audioplayers.dart';
 
+final AudioPlayer _audioPlayer = AudioPlayer();
 String _query = byArcticle;
 String _value = '';
 const byArcticle = 'get_from_article';
@@ -71,6 +73,10 @@ class CheckNomListView extends StatelessWidget {
               BlocBuilder<CheckNomListCubit, CheckNomListState>(
                 builder: (context, state) {
                   if (state.status.isFailure) {
+                    () async {
+                      await _audioPlayer
+                          .play(AssetSource('sounds/error_sound.mp3'));
+                    };
                     return SizedBox(
                       height: 350,
                       child: WentWrong(
@@ -87,6 +93,9 @@ class CheckNomListView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isSuccess) {
+                    if (state.noms.noms.isEmpty)
+                      _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+
                     return state.noms.noms.isNotEmpty
                         ? NomsList(
                             noms: state.noms,

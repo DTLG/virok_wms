@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:path/path.dart';
 import 'package:virok_wms/feature/epicenter_page/client/api_client.dart';
+import 'package:virok_wms/feature/epicenter_page/model/label_info.dart';
 import 'package:virok_wms/feature/epicenter_page/model/nom.dart';
 import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
+import 'package:virok_wms/feature/storage_operation/placement_writing_off/placement_goods/ui/ui.dart';
 
 part 'noms_page_state.dart';
 
@@ -22,11 +25,16 @@ class NomsPageCubit extends Cubit<EpicenterDataState> {
     }
   }
 
-  Future<void> finishDoc(String guid, int placeCount) async {
+  Future<void> finishDoc(
+      BuildContext context, String guid, int placeCount) async {
     final client = ApiClient();
     try {
       final res = await client.finishDoc(guid, placeCount);
       showToast(res);
+      if (res != 'OK') {
+        Navigator.of(context).pop(); // Закриваємо діалог
+        Navigator.of(context).pop(true); // Закриваємо екран
+      }
       emit(state.copyWith(status: EpicenterDataStatus.success));
     } catch (error) {
       emit(state.copyWith(
@@ -74,5 +82,34 @@ class NomsPageCubit extends Cubit<EpicenterDataState> {
 
     // If barcode is not found, return an error
     return "Помилка: Штрихкод не знайдено.";
+  }
+
+  Nom? getIndexByBarcode(String barcode) {
+    final noms = state.noms;
+    for (int i = 0; i < noms.length; i++) {
+      var barcodes = noms[i].barcodes;
+
+      for (var b in barcodes) {
+        if (b.barcode == barcode) {
+          return noms[i];
+        }
+      }
+    }
+    return null;
+  }
+
+  void setJumpIndex(int itemIndex) {
+    emit(state.copyWith(jumpIndex: itemIndex));
+  }
+
+  Future<LabelInfo?> getLabelInfo(String guid) async {
+    final client = ApiClient();
+    try {
+      return await client.getLabelInfo(guid);
+    } catch (error) {
+      emit(state.copyWith(
+          errorMassage: "Помилка при отриманні даних: $error",
+          status: EpicenterDataStatus.failure));
+    }
   }
 }

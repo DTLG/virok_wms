@@ -26,6 +26,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     final prefs = await SharedPreferences.getInstance();
     final bool selectionButton = prefs.getBool('selection_button') ?? false;
     final bool admissionButton = prefs.getBool('admission_button') ?? false;
+    final bool routes = prefs.getBool('admission_button') ?? false;
     final bool movingButton = prefs.getBool('moving_button') ?? false;
     final bool returningButton = prefs.getBool('returning_button') ?? false;
     final bool npTtnPrintButton = prefs.getBool('np_ttn_print_button') ?? false;
@@ -41,6 +42,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     emit(state.copyWith(
         selectionButton: selectionButton,
         admissionButton: admissionButton,
+        routes: routes,
         movingButton: movingButton,
         returningButton: returningButton,
         npTtnPrintButton: npTtnPrintButton,

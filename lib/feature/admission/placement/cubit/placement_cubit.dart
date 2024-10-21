@@ -55,7 +55,7 @@ class PlacementCubit extends Cubit<PlacementState> {
   }
 
   bool scan(String nomBar, AdmissionNom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcodes) {
       if (barcode.barcode == nomBar) {
@@ -82,7 +82,7 @@ class PlacementCubit extends Cubit<PlacementState> {
     return false;
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if ((int.tryParse(count) ?? qty) > qty) {
       emit(state.copyWith(status: PlacementStatus.success));
       emit(state.copyWith(
@@ -91,13 +91,13 @@ class PlacementCubit extends Cubit<PlacementState> {
           errorMassage: 'Введена більша кількість'));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count), status: PlacementStatus.success));
+          count: int.tryParse(count), status: PlacementStatus.success));
     }
   }
 
   Future<void> send(String barcode, String cell, String incomingInvoice,
-      double qty, String taskNumber) async {
-    double count = state.count - qty;
+      int qty, String taskNumber) async {
+    int count = state.count - qty;
     try {
       final noms = await PlacementRepository().getNoms(
           'Admision_placement_by_document_scan',

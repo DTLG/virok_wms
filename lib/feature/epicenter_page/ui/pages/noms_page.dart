@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scanwedge/models/barcode_plugin.dart';
 import 'package:virok_wms/feature/epicenter_page/client/print_label.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/noms_page_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/epicenter_cubit.dart'; // Import EpicenterCubit
@@ -12,19 +11,12 @@ import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
 import 'package:virok_wms/ui/widgets/alerts.dart';
 import 'package:virok_wms/ui/widgets/app_bar_button.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/went_wrong.dart';
-import 'package:scanwedge/models/barcode_plugin.dart';
 import 'package:scanwedge/scanwedge.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
-// _audioPlayer
-//                             .play(AssetSource('sounds/error_sound.mp3'));
-// () async {
-//                       await _audioPlayer
-//                           .play(AssetSource('sounds/error_sound.mp3'));
-//                     };
 class NomsPage extends StatelessWidget {
   const NomsPage({super.key, required this.doc});
   final Document doc;
@@ -148,7 +140,7 @@ class _NomsDataViewState extends State<NomsDataView> {
                         value);
                     // showNomInput(context, value, widget.doc.guid, nom);
                   } else {
-                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                    soundInterface.play(Event.error);
                     Alerts(msg: 'Товару не знайдено', context: context)
                         .showError();
                   }
@@ -196,8 +188,7 @@ class _NomsDataViewState extends State<NomsDataView> {
                       child: WentWrong(
                         errorDescription: state.errorMassage,
                         onPressed: () {
-                          _audioPlayer
-                              .play(AssetSource('sounds/error_sound.mp3'));
+                          soundInterface.play(Event.error);
                           Navigator.pop(context);
                         },
                       ),
@@ -347,13 +338,11 @@ class _NomsDataViewState extends State<NomsDataView> {
                             await epicenterCubit.fetchDocuments();
                             Navigator.of(context).pop(true); // Закриваємо екран
                           } else {
-                            await _audioPlayer
-                                .play(AssetSource('sounds/error_sound.mp3'));
+                            soundInterface.play(Event.error);
                             showToast('Не можливо роздрукувати');
                           }
                         } else {
-                          await _audioPlayer
-                              .play(AssetSource('sounds/error_sound.mp3'));
+                          soundInterface.play(Event.error);
                           print('Не вдалося отримати інформацію про етикетку');
                           throw Exception(
                               'Не вдалося отримати інформацію про етикетку'); // Генеруємо помилку
@@ -364,16 +353,14 @@ class _NomsDataViewState extends State<NomsDataView> {
                         });
                       } catch (e) {
                         // Обробка виключення
-                        await _audioPlayer
-                            .play(AssetSource('sounds/error_sound.mp3'));
+                        soundInterface.play(Event.error);
                         showToast('Сталася помилка: ${e.toString()}');
                       } finally {
                         // Завжди закриваємо діалог
                         Navigator.of(context).pop(); // Закриваємо діалог
                       }
                     } else {
-                      await _audioPlayer
-                          .play(AssetSource('sounds/error_sound.mp3'));
+                      soundInterface.play(Event.error);
                       showToast('Введіть дійсне число, більше 0!');
                       Navigator.of(context).pop(); // Закриваємо діалог
                     }

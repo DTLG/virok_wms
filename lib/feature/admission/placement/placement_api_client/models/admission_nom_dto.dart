@@ -31,7 +31,7 @@ class AdmissionNomDTO {
   final int? qty;
   final String? article;
   final List<BarcodeDTO> barcodes;
-  final double? count;
+  final int? count;
   final int? task;
   @JsonKey(name: "name_cell")
   final String? nameCell;

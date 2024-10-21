@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
@@ -8,11 +7,12 @@ import 'package:virok_wms/feature/moving/moving_out/cubit/moving_out_order_head_
 import 'package:virok_wms/feature/moving/moving_out/ui/widgets/app_bar_button.dart';
 import 'package:virok_wms/feature/moving/moving_out/ui/widgets/table.dart';
 import 'package:virok_wms/models/noms_model.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import '../../../../ui/widgets/widgets.dart';
 import '../../../returning/returning_out/ui/widgets/table_head.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class MovingOutDataPage extends StatelessWidget {
   const MovingOutDataPage({super.key});
@@ -100,10 +100,7 @@ class MovingGateOrderDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
-                    () async {
-                      await _audioPlayer
-                          .play(AssetSource('sounds/error_sound.mp3'));
-                    };
+                    _soundInterface.play(Event.error);
 
                     return Expanded(
                       child: WentWrong(

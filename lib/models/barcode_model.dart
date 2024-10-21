@@ -1,6 +1,6 @@
 class Barcode {
   final String barcode;
-  final double ratio;
+  final int ratio;
 
   Barcode({required this.barcode, required this.ratio});
 

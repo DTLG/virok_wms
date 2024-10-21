@@ -20,7 +20,7 @@ final class SelectionOrderDataState extends Equatable {
       this.basketStatus = false,
       this.nomBarcode = '',
       this.itsMezonine = false,
-       this.basket = '',
+      this.basket = '',
       this.cellBarcode = '',
       this.time = 0,
       this.count = 0})
@@ -35,25 +35,28 @@ final class SelectionOrderDataState extends Equatable {
   final String errorMassage;
   final Barcode barcode;
   final String basket;
-  final double count;
+  final int count;
   final String cellBarcode;
   final String nomBarcode;
   final bool itsMezonine;
   final int time;
 
-  SelectionOrderDataState copyWith(
-      {SelectionOrderDataStatus? status,
-      Noms? noms,
-      Nom? nom,
-      String? errorMassage,
-      int? orderStatus,
-      Barcode? barcode,
-      String? nomBarcode,
-      bool? basketStatus,
-      String? cellBarcode,
-      String? basket,
-      double? count,
-      bool? itsMezonine, int? time}) {
+  SelectionOrderDataState copyWith({
+    SelectionOrderDataStatus? status,
+    Noms? noms,
+    Nom? nom,
+    String? errorMassage,
+    int? orderStatus,
+    Barcode? barcode,
+    String? nomBarcode,
+    bool? basketStatus,
+    String? cellBarcode,
+    String? basket,
+    int? count,
+    bool? itsMezonine,
+    int? time,
+    int? oldOrdersCount,
+  }) {
     return SelectionOrderDataState(
         status: status ?? this.status,
         noms: noms ?? this.noms,

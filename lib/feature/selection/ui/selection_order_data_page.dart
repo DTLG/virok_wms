@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/selection_order_head_cubit.dart';
 import 'ui.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class SelectionOrderDataPage extends StatelessWidget {
   const SelectionOrderDataPage({super.key});
@@ -117,8 +117,7 @@ class SelectionOrderDataView extends StatelessWidget {
                   }
                   if (state.status.isFailure) {
                     () async {
-                      await _audioPlayer
-                          .play(AssetSource('sounds/error_sound.mp3'));
+                      soundInterface.play(Event.error);
                     };
                     return Expanded(
                       child: WentWrong(
@@ -347,13 +346,20 @@ class NewBascketInfo extends StatelessWidget {
           return Row(
             children: [
               if (baskets.length > 1)
-                Text(
-                  '*',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
+                Column(
+                  children: [
+                    Text(
+                      '✦',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ],
                 ),
               SizedBox(
                 width: 8,

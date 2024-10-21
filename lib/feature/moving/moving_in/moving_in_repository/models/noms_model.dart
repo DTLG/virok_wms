@@ -15,8 +15,8 @@ class MovingInNom {
   final String article;
   final List<Barcode> barcodes;
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
 
   MovingInNom({
     required this.number,
@@ -39,7 +39,7 @@ class MovingInNom {
 
 class Barcode {
   final String barcode;
-  final double ratio;
+  final int ratio;
 
   Barcode({required this.barcode, required this.ratio});
 

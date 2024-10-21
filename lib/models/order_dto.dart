@@ -21,13 +21,13 @@ class OrderDTO {
   final String? date;
   final List<BasketDTO> baskets;
   @JsonKey(name: 'full_order')
-  final double? fullOrdfer;
+  final int? fullOrdfer;
   @JsonKey(name: 'importance_mark')
   final int? importanceMark;
   @JsonKey(name: 'm_mark')
-  final double? mMark;
+  final int? mMark;
   @JsonKey(name: 'NovaPoshta_mark')
-  final double? newPostMark;
+  final int? newPostMark;
 
   OrderDTO(
       {required this.docId,

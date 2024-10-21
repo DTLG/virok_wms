@@ -23,8 +23,8 @@ class ReturnNomDTO {
   final String? name;
   final String? article;
   final List<BarcodeDTO> barcodes;
-  final double? qty;
-  final double? count;
+  final int? qty;
+  final int? count;
   @JsonKey(name: 'nom_status')
   final String? nomStatus;
 

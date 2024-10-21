@@ -5,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/return/cubits/return_head_cubit.dart';
 import 'package:virok_wms/feature/return/return_repository/models/order.dart';
 import 'package:virok_wms/route/app_routes.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/theme/theme.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class ReturnHeadPage extends StatelessWidget {
   const ReturnHeadPage({super.key});
@@ -63,7 +63,7 @@ class ReturnHeadView extends StatelessWidget {
                 }
                 if (state.status.isFailure) {
                   () async {
-                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                    soundInterface.play(Event.error);
                   };
                   return Expanded(
                     child: WentWrong(

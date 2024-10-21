@@ -23,7 +23,7 @@ CellsByNomModel _$CellsByNomModelFromJson(Map<String, dynamic> json) =>
 Cell _$CellFromJson(Map<String, dynamic> json) => Cell(
       code: json['сell_code'] as String?,
       name: json['сell_name'] as String?,
-      planCount: json['plan_count'] as double?,
+      planCount: json['plan_count'] as int?,
       factCount: json['fact_count'] as int?,
       nomStatus: json['nom_status'] as String?,
     );

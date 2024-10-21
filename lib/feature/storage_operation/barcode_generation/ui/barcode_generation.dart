@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/models/noms_model.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../cubit/barcode_generation_cubit.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class BarcodeGenerationPage extends StatelessWidget {
   const BarcodeGenerationPage({super.key});
@@ -69,10 +69,7 @@ class BarcodeGenerationView extends StatelessWidget {
               },
               builder: (context, state) {
                 if (state.status.isFailure) {
-                  () async {
-                    await _audioPlayer
-                        .play(AssetSource('sounds/error_sound.mp3'));
-                  };
+                  _soundInterface.play(Event.error);
                   return SizedBox(
                     height: 350,
                     child: WentWrong(

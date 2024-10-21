@@ -180,7 +180,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                           context.read<DisplacementOrderDataCubit>().addNom(
                               barcode,
                               widget.invoice,
-                              double.parse(controller.text));
+                              int.parse(controller.text));
                           if (controller.text.length < 6) {
                             Navigator.pop(context);
                             return;

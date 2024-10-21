@@ -95,25 +95,41 @@ class ApiClient {
     String password = prefs.getString('password') ?? '';
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Authorization': basicAuth,
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data =
-          jsonDecode(utf8.decode(response.bodyBytes));
-      final List<dynamic> docsJson =
-          data['service_moving_docs'] as List<dynamic>;
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Authorization': basicAuth,
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-      return docsJson
-          .map((doc) => ServiceMovingDoc.fromJson(doc as Map<String, dynamic>))
-          .toList();
-    } else {
-      throw Exception('Failed to load service moving docs');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data =
+            jsonDecode(utf8.decode(response.bodyBytes));
+
+        if (!data.containsKey('service_moving_docs')) {
+          return null;
+        }
+
+        final List<dynamic>? docsJson =
+            data['service_moving_docs'] as List<dynamic>?;
+
+        if (docsJson == null) {
+          showToast('No documents found');
+          return null;
+        }
+
+        return docsJson
+            .map(
+                (doc) => ServiceMovingDoc.fromJson(doc as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception('Failed to load service moving docs');
+      }
+    } catch (e) {
+      return null;
     }
   }
 

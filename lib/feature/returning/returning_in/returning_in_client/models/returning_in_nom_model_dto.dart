@@ -23,21 +23,19 @@ class ReturningInNomDTO {
   final String? name;
   final String? article;
   final List<BarcodeDTO> barcodes;
-  final double? qty;
-  final double? count;
-    @JsonKey(name: 'nom_status')
-
+  final int? qty;
+  final int? count;
+  @JsonKey(name: 'nom_status')
   final String? nomStatus;
 
-  ReturningInNomDTO({
-    required this.name,
-    required this.article,
-    required this.barcodes,
-    required this.number,
-    required this.qty,
-    required this.count,
-    required this.nomStatus
-  });
+  ReturningInNomDTO(
+      {required this.name,
+      required this.article,
+      required this.barcodes,
+      required this.number,
+      required this.qty,
+      required this.count,
+      required this.nomStatus});
 
   factory ReturningInNomDTO.fromJson(Map<String, dynamic> json) =>
       _$ReturningInNomDTOFromJson(json);
@@ -77,4 +75,3 @@ class CellDTO {
   factory CellDTO.fromJson(Map<String, dynamic> json) =>
       _$CellDTOFromJson(json);
 }
-

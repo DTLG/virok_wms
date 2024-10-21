@@ -16,29 +16,27 @@ class ReturningInNom {
   final String article;
   final List<Barcode> barcode;
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final String nomStatus;
 
-  ReturningInNom({
-    required this.number,
-    required this.name,
-    required this.article,
-    required this.barcode,
-    required this.qty,
-    required this.count,
-    required this.nomStatus
-  });
+  ReturningInNom(
+      {required this.number,
+      required this.name,
+      required this.article,
+      required this.barcode,
+      required this.qty,
+      required this.count,
+      required this.nomStatus});
 
   static final empty = ReturningInNom(
-    number: '',
-    name: '',
-    article: '',
-    barcode: [],
-    qty: 0,
-    count: 0,
-    nomStatus: ''
-  );
+      number: '',
+      name: '',
+      article: '',
+      barcode: [],
+      qty: 0,
+      count: 0,
+      nomStatus: '');
 }
 
 class Barcode {
@@ -49,4 +47,3 @@ class Barcode {
 
   static final empty = Barcode(barcode: '', ratio: 0);
 }
-

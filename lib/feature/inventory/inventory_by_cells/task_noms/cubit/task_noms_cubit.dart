@@ -80,7 +80,7 @@ class InventoryByCellsTaskNomsCubit
 
   void manualCountIncrement(String count) {
     emit(state.copyWith(
-      count: double.parse(count),
+      count: int.parse(count),
       status: InventoryStatus.success,
     ));
   }

@@ -4,7 +4,6 @@ import 'package:virok_wms/feature/return/cubits/return_data_cubit.dart';
 import 'package:virok_wms/feature/return/return_repository/models/noms_model.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-
 void showManualCountIncrementAlert(
   BuildContext context,
   String nomBacode,
@@ -247,7 +246,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                         context.read<ReturnDataCubit>().send(
                             barcode,
                             widget.invoice,
-                            double.parse(controller.text),
+                            int.parse(controller.text),
                             nomStatus);
                         Navigator.pop(context);
                       },

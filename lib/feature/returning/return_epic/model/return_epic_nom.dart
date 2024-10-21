@@ -26,7 +26,7 @@ class ReturnEpicNoms extends Equatable {
 class ReturnEpicNom extends Equatable {
   final String number;
   final String tovar;
-  final double qty;
+  final int qty;
   final String article;
   final List<Barcode> barcodes;
   final int count;
@@ -85,8 +85,8 @@ class ReturnEpicNom extends Equatable {
 
 class Barcode {
   String barcode;
-  double count;
-  double ratio;
+  int count;
+  int ratio;
 
   Barcode({
     required this.barcode,

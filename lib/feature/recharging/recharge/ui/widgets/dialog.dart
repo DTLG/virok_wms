@@ -361,7 +361,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     context
                         .read<RechargeCubit>()

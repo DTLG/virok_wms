@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-
 import '../../../cubits/moving_in_data_cubit.dart';
 import '../../../moving_in_repository/models/noms_model.dart';
 
@@ -47,14 +46,13 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
           iconPadding: const EdgeInsets.all(0),
           contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
           actionsPadding: const EdgeInsets.only(bottom: 5),
-          icon: 
-          
-          DialogHead(title:  widget.nom.article, onPressed: () {
-                  context.read<MovingInDataCubit>().clear();
-                  Navigator.pop(context);
-                },),
-          
-      
+          icon: DialogHead(
+            title: widget.nom.article,
+            onPressed: () {
+              context.read<MovingInDataCubit>().clear();
+              Navigator.pop(context);
+            },
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -77,19 +75,21 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                   children: [
                     Text(
                       'Кількість в замовленні:',
-                      style: theme.textTheme.titleSmall!.copyWith(color:Colors.black),
+                      style: theme.textTheme.titleSmall!
+                          .copyWith(color: Colors.black),
                     ),
                     Text(widget.nom.qty.toString(),
-                        style: theme.textTheme.titleSmall!.copyWith(color:Colors.black)),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black)),
                   ],
                 ),
               ),
-            
+
               const SizedBox(
                 height: 5,
               ),
 
-               Container(
+              Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -99,10 +99,12 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                   children: [
                     Text(
                       'Відскановано:',
-                      style: theme.textTheme.titleSmall!.copyWith(color:Colors.black),
+                      style: theme.textTheme.titleSmall!
+                          .copyWith(color: Colors.black),
                     ),
-                      Text(widget.nom.count.toString(),
-                      style: theme.textTheme.titleSmall!.copyWith(color:Colors.black)),
+                    Text(widget.nom.count.toString(),
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: Colors.black)),
                   ],
                 ),
               ),
@@ -149,7 +151,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                     }
 
                     context.read<MovingInDataCubit>().scan(
-                        barcode, widget.invoice, double.parse(controller.text));
+                        barcode, widget.invoice, int.parse(controller.text));
                     Navigator.pop(context);
                   }
                 },

@@ -16,16 +16,18 @@ class RouteData {
   });
 
   factory RouteData.fromJson(Map<String, dynamic> json) {
-    var dataList = json['data'] as List;
-    List<OrderData> orderDataList =
-        dataList.map((item) => OrderData.fromJson(item)).toList();
+    final List<dynamic>? dataList = json['data'] is List ? json['data'] : null;
+
+    List<OrderData> orderDataList = dataList != null
+        ? dataList.map((item) => OrderData.fromJson(item)).toList()
+        : [];
 
     return RouteData(
-      docId: json['doc_id'],
-      routeGuid: json['route_guid'],
-      routeName: json['route_name'],
-      docGuid: json['doc_guid'],
-      errorMassage: json['ErrorMassage'],
+      docId: json['doc_id'] ?? '',
+      routeGuid: json['route_guid'] ?? '',
+      routeName: json['route_name'] ?? '',
+      docGuid: json['doc_guid'] ?? '',
+      errorMassage: json['ErrorMassage'] ?? '',
       data: orderDataList,
     );
   }
@@ -55,11 +57,13 @@ class OrderData {
   final String orderNumber;
   final int orderPlacesCount;
   final int scannedCount;
+  final String orderBarcode;
 
   OrderData({
     required this.orderNumber,
     required this.orderPlacesCount,
     required this.scannedCount,
+    required this.orderBarcode,
   });
 
   factory OrderData.fromJson(Map<String, dynamic> json) {
@@ -67,6 +71,7 @@ class OrderData {
       orderNumber: json['order_number'],
       orderPlacesCount: json['order_places_count'],
       scannedCount: json['scanned_count'],
+      orderBarcode: json['order_barcode'],
     );
   }
 
@@ -81,6 +86,7 @@ class OrderData {
   static OrderData empty() {
     return OrderData(
       orderNumber: '',
+      orderBarcode: '',
       orderPlacesCount: 0,
       scannedCount: 0,
     );

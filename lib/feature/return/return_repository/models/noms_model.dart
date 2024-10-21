@@ -15,8 +15,8 @@ class ReturnNom {
   final String article;
   final List<Barcode> barcode;
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final String nomStatus;
 
   ReturnNom(

@@ -50,9 +50,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
 
   @override
   void initState() {
-    context
-        .read<MovingOutOrderDataCubit>()
-        .getNom(widget.docId, widget.nomBarcode, widget.cellBarcode, widget.nom.taskNumber);
+    context.read<MovingOutOrderDataCubit>().getNom(widget.docId,
+        widget.nomBarcode, widget.cellBarcode, widget.nom.taskNumber);
     super.initState();
   }
 
@@ -321,8 +320,8 @@ class ChangeQuantity extends StatefulWidget {
       required this.docId,
       required this.count});
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final Nom nom;
   final String docId;
 
@@ -387,7 +386,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     if (inputCount < widget.count) {
                       Alerts(
@@ -402,9 +401,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                           .showError();
                     } else {
                       context.read<MovingOutOrderDataCubit>().changeQty(
-                          double.parse(controller.text),
-                          widget.nom,
-                          widget.docId);
+                          int.parse(controller.text), widget.nom, widget.docId);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     }

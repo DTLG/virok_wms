@@ -14,8 +14,7 @@ final class MovingGateOrderDataState extends Equatable {
   MovingGateOrderDataState(
       {this.status = MovingGateOrderDataStatus.initial,
       Noms? noms,
-            Nom? nom,
-
+      Nom? nom,
       Barcode? barcode,
       this.time = 0,
       this.errorMassage = '',
@@ -28,42 +27,50 @@ final class MovingGateOrderDataState extends Equatable {
 
   final MovingGateOrderDataStatus status;
   final Noms noms;
-    final Nom nom;
+  final Nom nom;
 
   final String errorMassage;
   final Barcode barcode;
-  final double count;
+  final int count;
   final String cellBarcode;
   final String nomBarcode;
   final int time;
 
-
   MovingGateOrderDataState copyWith(
       {MovingGateOrderDataStatus? status,
       Noms? noms,
-       Nom? nom,
+      Nom? nom,
       String? errorMassage,
       int? orderStatus,
       int? time,
       Barcode? barcode,
       String? nomBarcode,
       String? cellBarcode,
-      double? count,
+      int? count,
       bool? itsMezonine}) {
     return MovingGateOrderDataState(
-        status: status ?? this.status,
-        noms: noms ?? this.noms,
-                nom: nom ?? this.nom,
-                time: time ?? this.time,
-
-        errorMassage: errorMassage ?? this.errorMassage,
-        barcode: barcode ?? this.barcode,
-        nomBarcode: nomBarcode ?? this.nomBarcode,
-        cellBarcode: cellBarcode ?? this.cellBarcode,
-        count: count ?? this.count,
+      status: status ?? this.status,
+      noms: noms ?? this.noms,
+      nom: nom ?? this.nom,
+      time: time ?? this.time,
+      errorMassage: errorMassage ?? this.errorMassage,
+      barcode: barcode ?? this.barcode,
+      nomBarcode: nomBarcode ?? this.nomBarcode,
+      cellBarcode: cellBarcode ?? this.cellBarcode,
+      count: count ?? this.count,
     );
   }
 
   @override
-  List<Object?> get props => [status, noms, errorMassage, barcode, time, count, nomBarcode, cellBarcode,nom];
+  List<Object?> get props => [
+        status,
+        noms,
+        errorMassage,
+        barcode,
+        time,
+        count,
+        nomBarcode,
+        cellBarcode,
+        nom
+      ];
 }

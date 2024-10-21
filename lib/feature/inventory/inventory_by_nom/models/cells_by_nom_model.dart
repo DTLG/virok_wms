@@ -32,7 +32,7 @@ class Cell {
   @JsonKey(name: 'сell_name')
   final String? name;
   @JsonKey(name: 'plan_count')
-  final double? planCount;
+  final int? planCount;
   @JsonKey(name: 'fact_count')
   final int? factCount;
   @JsonKey(name: 'nom_status')

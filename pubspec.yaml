@@ -1,8 +1,7 @@
 name: virok_wms
 description: A new Flutter project.
 publish_to: 'none'
-version: 2.4.3
-
+version: 2.5.5
 environment:
   sdk: '>=3.1.0 <4.0.0'
 
@@ -46,6 +45,6 @@ flutter:
   assets:
    - assets/icons/
    - assets/image/
-   - assets/sounds/error_sound.mp3
-   - assets/sounds/income_notify.mp3
+   - assets/sounds/error_sound_default.mp3
+   - assets/sounds/income_notify_default.mp3
 

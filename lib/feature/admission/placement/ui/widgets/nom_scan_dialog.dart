@@ -328,7 +328,7 @@ class _InputCountAlertState extends State<InputCountAlert> {
                 onPressed: () {
                   context.read<PlacementCubit>().manualCountIncrement(
                       controller.text,
-                      widget.nom.qty.toDouble(),
+                      widget.nom.qty.toInt(),
                       widget.nom.count);
                   Navigator.pop(context);
                 },
@@ -515,7 +515,7 @@ class ChangeQuantity extends StatefulWidget {
       {super.key, required this.qty, required this.nom, required this.count});
 
   final int qty;
-  final double count;
+  final int count;
   final AdmissionNom nom;
 
   @override
@@ -575,7 +575,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     if (inputCount > widget.qty) {
                       Alerts(

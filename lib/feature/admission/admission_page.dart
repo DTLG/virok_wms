@@ -37,6 +37,11 @@ class AdmissionPage extends StatelessWidget {
                       context, AppRoutes.admissionOlacementOrderHeadPage);
                   return;
                 }
+                if (value.toStorage.isHarkiv) {
+                  Navigator.pushNamed(
+                      context, AppRoutes.admissionOlacementOrderHeadPage);
+                  return;
+                }
                 if (value.toStorage.isKyiv) {
                   showModal(
                     context: context,

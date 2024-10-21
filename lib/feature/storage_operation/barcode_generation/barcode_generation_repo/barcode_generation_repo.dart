@@ -19,7 +19,7 @@ class BarcodeGenerationRepo {
             article: nom.article ?? '',
             barcode: nom.barcodes
                 .map((e) => Barcode(
-                    barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
+                    barcode: e.barcode ?? '', ratio: e.ratio?.toInt() ?? 1))
                 .toList(),
             baskets: [],
             nameCell: '',

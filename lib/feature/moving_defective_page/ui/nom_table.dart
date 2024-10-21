@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/moving_defective_page/cubit/read_cubit/moving_defective_cubit.dart';
 import 'package:virok_wms/ui/theme/app_theme.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_body_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_head.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class NomTablePage extends StatelessWidget {
   const NomTablePage({super.key, required this.barcode});
@@ -196,7 +196,7 @@ class _NomCustomTable extends StatelessWidget {
                 ],
               );
             case MovingDefectiveStatus.error:
-              _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+              soundInterface.play(Event.error);
               Navigator.pop(context);
               return const Center(child: Icon(Icons.error));
             default:

@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/route/route.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../cubit/check_nom_list_cubit.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
+
 String _query = byArcticle;
 String _value = '';
 const byArcticle = 'get_from_article';
@@ -74,8 +75,7 @@ class CheckNomListView extends StatelessWidget {
                 builder: (context, state) {
                   if (state.status.isFailure) {
                     () async {
-                      await _audioPlayer
-                          .play(AssetSource('sounds/error_sound.mp3'));
+                      soundInterface.play(Event.error);
                     };
                     return SizedBox(
                       height: 350,
@@ -94,7 +94,7 @@ class CheckNomListView extends StatelessWidget {
                   }
                   if (state.status.isSuccess) {
                     if (state.noms.noms.isEmpty)
-                      _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                      soundInterface.play(Event.error);
 
                     return state.noms.noms.isNotEmpty
                         ? NomsList(

@@ -40,7 +40,7 @@ class RechargeNomDTO {
   @JsonKey(name: "name_cell_to")
   final String? nameCellTo;
   @JsonKey(name: "is_started")
-  final double? isStarted;
+  final int? isStarted;
 
   RechargeNomDTO({
     required this.taskNumber,

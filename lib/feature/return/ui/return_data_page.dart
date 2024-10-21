@@ -4,6 +4,7 @@ import 'package:virok_wms/feature/return/cubits/return_data_cubit.dart';
 import 'package:virok_wms/feature/return/cubits/return_head_cubit.dart';
 import 'package:virok_wms/feature/return/return_repository/models/order.dart';
 import 'package:virok_wms/route/app_routes.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
@@ -12,9 +13,8 @@ import '../../../../ui/theme/app_color.dart';
 import 'widgets/barcode_input.dart';
 import 'widgets/table.dart';
 import 'widgets/table_head.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class ReturnDataPage extends StatelessWidget {
   const ReturnDataPage({super.key});
@@ -87,10 +87,7 @@ class ReturnDataView extends StatelessWidget {
                         child: Center(child: CircularProgressIndicator()));
                   }
                   if (state.status.isFailure) {
-                    () async {
-                      await _audioPlayer
-                          .play(AssetSource('sounds/error_sound.mp3'));
-                    };
+                    _soundInterface.play(Event.error);
                     return Expanded(
                       child: WentWrong(
                         errorDescription: state.errorMassage,

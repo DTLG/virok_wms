@@ -51,7 +51,7 @@ class NomsPageCubit extends Cubit<MovingGateOrderDataState> {
   }
 
   void scan(String nomBar, Nom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
     String checkNomBar = '';
 
     for (var barcode in nom.barcode) {
@@ -82,7 +82,7 @@ class NomsPageCubit extends Cubit<MovingGateOrderDataState> {
     }
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if ((int.tryParse(count) ?? qty) > qty
         //  ||
         //     (int.tryParse(count) ?? 0) > qty - nomCount
@@ -93,13 +93,13 @@ class NomsPageCubit extends Cubit<MovingGateOrderDataState> {
           time: DateTime.now().millisecondsSinceEpoch));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count),
+          count: int.tryParse(count),
           status: MovingGateOrderDataStatus.success));
     }
   }
 
-  Future<void> send(String barcode, String docNum, double qty) async {
-    double count = state.count - qty;
+  Future<void> send(String barcode, String docNum, int qty) async {
+    int count = state.count - qty;
     try {
       final orders = await MovingGateOrderDataRepository().movingRepo(
           'send_moving_out_fromIncoming_selection', '$barcode $count $docNum ');
@@ -113,7 +113,7 @@ class NomsPageCubit extends Cubit<MovingGateOrderDataState> {
     }
   }
 
-  Future<void> changeQty(double qty, Nom nom, String docId) async {
+  Future<void> changeQty(int qty, Nom nom, String docId) async {
     try {
       emit(state.copyWith(status: MovingGateOrderDataStatus.loading));
       final newQty = qty > nom.qty ? qty - nom.qty : qty;

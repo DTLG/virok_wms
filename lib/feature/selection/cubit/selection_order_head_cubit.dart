@@ -15,11 +15,45 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
       final orders =
           await SelectionOrderHeadRepository().getOrders('get_orders_list', '');
       emit(state.copyWith(
-          status: SelectioOrdersHeadStatus.success, orders: orders));
+        status: SelectioOrdersHeadStatus.success,
+        orders: orders,
+        oldOrdersCount: orders.orders.length,
+      ));
     } catch (e) {
       emit(state.copyWith(
           status: SelectioOrdersHeadStatus.failure,
           errorMassage: e.toString()));
+    }
+  }
+
+  Future<bool> getUpdatedOrders() async {
+    try {
+      final newOrders =
+          await SelectionOrderHeadRepository().getOrders('get_orders_list', '');
+      final previousOrders = state.orders;
+
+      emit(state.copyWith(
+        status: SelectioOrdersHeadStatus.success,
+        orders: newOrders,
+        oldOrdersCount: newOrders.orders.length,
+      ));
+
+      final uniqueNewOrders = newOrders.orders.where((newOrder) {
+        return !previousOrders.orders
+            .any((oldOrder) => oldOrder.docId == newOrder.docId);
+      }).toList();
+
+      if (uniqueNewOrders.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: SelectioOrdersHeadStatus.failure,
+        errorMassage: e.toString(),
+      ));
+      return false;
     }
   }
 
@@ -63,5 +97,9 @@ class SelectionOrdersHeadCubit extends Cubit<SelectioOrdersHeadState> {
         buskeStatus: false));
   }
 
+  int get oldOrdersCount => state.oldOrdersCount;
 
+  void setOldOrdersCount(int value) {
+    emit(state.copyWith(oldOrdersCount: value));
+  }
 }

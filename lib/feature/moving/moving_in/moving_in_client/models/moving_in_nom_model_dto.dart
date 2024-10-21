@@ -23,8 +23,8 @@ class MovingInNomDTO {
   final String? name;
   final String? article;
   final List<BarcodeDTO> barcodes;
-  final double? qty;
-  final double? count;
+  final int? qty;
+  final int? count;
 
   MovingInNomDTO({
     required this.name,
@@ -42,7 +42,7 @@ class MovingInNomDTO {
 @JsonSerializable()
 class BarcodeDTO {
   final String? barcode;
-  final double? ratio;
+  final int? ratio;
 
   BarcodeDTO({required this.barcode, required this.ratio});
 

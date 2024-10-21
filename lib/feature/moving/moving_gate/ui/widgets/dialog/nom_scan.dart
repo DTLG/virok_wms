@@ -243,8 +243,8 @@ class ChangeQuantity extends StatefulWidget {
       required this.docId,
       required this.count});
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final Nom nom;
   final String docId;
 
@@ -310,7 +310,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
             ElevatedButton(
                 onPressed: () {
                   if (controller.text.isEmpty) return;
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     if (inputCount < widget.count) {
                       Alerts(
@@ -328,9 +328,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
                           .showError();
                     } else {
                       context.read<NomsPageCubit>().changeQty(
-                          double.parse(controller.text),
-                          widget.nom,
-                          widget.docId);
+                          int.parse(controller.text), widget.nom, widget.docId);
                       Navigator.pop(context);
                       Navigator.pop(context);
                     }

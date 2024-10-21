@@ -12,7 +12,8 @@ class ReturnDataCubit extends Cubit<ReturnDataState> {
   Future<void> getNoms(ReturnOrder order) async {
     try {
       final orders = order.invoice == '0'
-          ? await ReturnDataRepository().getNoms('StartReturnInvoice', order.docId)
+          ? await ReturnDataRepository()
+              .getNoms('StartReturnInvoice', order.docId)
           : await ReturnDataRepository()
               .getNoms('Invoice_return_data', order.invoice);
       emit(state.copyWith(status: ReturnDataStatus.success, noms: orders));
@@ -56,7 +57,7 @@ class ReturnDataCubit extends Cubit<ReturnDataState> {
   }
 
   Future<void> send(
-      String barcode, String invoice, double count, String nomStatus) async {
+      String barcode, String invoice, int count, String nomStatus) async {
     try {
       final noms = await ReturnDataRepository().getNoms(
           'Invoice_return_scan', '$barcode $count $invoice $nomStatus');

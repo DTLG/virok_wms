@@ -16,10 +16,10 @@ class Order extends Equatable {
   final String docId;
   final String date;
   final List<Bascet> baskets;
-  final double fullOrder;
+  final int fullOrder;
   final int importanceMark;
-  final double mMark;
-  final double newPostMark;
+  final int mMark;
+  final int newPostMark;
 
   const Order(
       {required this.docId,

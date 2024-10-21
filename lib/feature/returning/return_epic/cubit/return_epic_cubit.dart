@@ -55,7 +55,8 @@ class ReturnEpicCubit extends Cubit<ReturnEpicState> {
     return nom;
   }
 
-  Future<void> scan(String barcode, ReturnEpicNom nom, double count, String nomStatus) async {
+  Future<void> scan(
+      String barcode, ReturnEpicNom nom, int count, String nomStatus) async {
     if (count.toString().length > 6) {
       emit(state.copyWith(
           status: ReturningEpicStatus.notFound,
@@ -81,12 +82,12 @@ class ReturnEpicCubit extends Cubit<ReturnEpicState> {
     }
   }
 
-  Future<void> closeOrder(
-  ) async {
+  Future<void> closeOrder() async {
     try {
       emit(state.copyWith(status: ReturningEpicStatus.loading));
 
-      final orders = await ReturnEpicClient().getNoms('Close_return_epicentr','');
+      final orders =
+          await ReturnEpicClient().getNoms('Close_return_epicentr', '');
       emit(state.copyWith(status: ReturningEpicStatus.success, noms: orders));
     } catch (e) {
       emit(state.copyWith(status: ReturningEpicStatus.success));

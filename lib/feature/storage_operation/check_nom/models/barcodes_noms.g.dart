@@ -55,7 +55,7 @@
 // CellDTO _$CellDTOFromJson(Map<String, dynamic> json) => CellDTO(
 //     codeCell: json['code_cell'] as String?,
 //     nameCell: json['name_cell'] as String?,
-//     count: (json['count'] as num?)?.toDouble(),
+//     count: (json['count'] as num?)?.toInt(),
 //     nomStatus: json['nom_status'] as String?);
 
 // Map<String, dynamic> _$CellDTOToJson(CellDTO instance) => <String, dynamic>{

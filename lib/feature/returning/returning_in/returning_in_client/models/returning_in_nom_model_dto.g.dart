@@ -30,8 +30,8 @@ ReturningInNomDTO _$ReturningInNomDTOFromJson(Map<String, dynamic> json) =>
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       number: json['number'] as String?,
-      qty: (json['qty'] as num?)?.toDouble(),
-      count: (json['count'] as num?)?.toDouble(),
+      qty: (json['qty'] as num?)?.toInt(),
+      count: (json['count'] as num?)?.toInt(),
       nomStatus: json['nom_status'] as String?,
     );
 

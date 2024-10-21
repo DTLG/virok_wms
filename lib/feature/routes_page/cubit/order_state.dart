@@ -34,6 +34,29 @@ class OrderLoaded extends OrderState {
   List<Object> get props => [routeData, orders];
 }
 
+class OrderReview extends OrderState {
+  final RouteData routeData;
+  final List<OrderData> orders;
+
+  const OrderReview({
+    required this.routeData,
+    required this.orders,
+  });
+
+  OrderReview copyWith({
+    RouteData? routeData,
+    List<OrderData>? orders,
+  }) {
+    return OrderReview(
+      routeData: routeData ?? this.routeData,
+      orders: orders ?? this.orders,
+    );
+  }
+
+  @override
+  List<Object> get props => [routeData, orders];
+}
+
 class OrderError extends OrderState {
   final String message;
 

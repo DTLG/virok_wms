@@ -36,7 +36,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
   }
 
   Future<void> addNom(String nomBarcode) async {
-    double count = state.count;
+    int count = state.count;
     final zone = state.cell.zone;
     bool isEqual = false;
 
@@ -101,11 +101,11 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
     } else {
       // zone_2  - - - - - - - - - - - - - - - - - - - -
 
-      double qty = 0;
+      int qty = 0;
       for (final cell in state.cell.cell) {
         for (final barcode in cell.barcodes) {
           if (barcode == nomBarcode) {
-            qty = double.parse(cell.quantity.toString());
+            qty = int.parse(cell.quantity.toString());
             break;
           }
         }
@@ -138,7 +138,7 @@ class PlacementGoodsCubit extends Cubit<PlacementGoodsState> {
 
   void manualAddNom(String nomBarcode, String count) {
     emit(state.copyWith(cellStatus: 1));
-    emit(state.copyWith(count: double.parse(count)));
+    emit(state.copyWith(count: int.parse(count)));
   }
 
   Future<void> sendNom(String ceel, String nom, String count) async {

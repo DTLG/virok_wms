@@ -53,7 +53,7 @@ android {
         applicationId "com.dtLogic1.virok_vms" 
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 240
+        versionCode 2551
         versionName flutterVersionName
     }
 

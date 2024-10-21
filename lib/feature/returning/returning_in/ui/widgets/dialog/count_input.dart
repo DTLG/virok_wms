@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/ui/ui.dart';
 
-
 import '../../../cubits/returning_in_data_cubit.dart';
 import '../../../returning_in_repository/models/noms_model.dart';
 
@@ -50,7 +49,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
     context
         .read<ReturningInDataCubit>()
         .getNom(widget.invoice, widget.nomBarcode);
-            super.initState();
+    super.initState();
   }
 
   @override
@@ -143,26 +142,25 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10
-                      ,
+                      height: 10,
                     ),
                     Column(
-                          children: [
-                            SizedBox(
-                              width: 70,
-                                                            child: TextField(
-                                controller: controller,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
-                                autofocus: true,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Введіть кількість',
-                              style: theme.textTheme.titleMedium,
+                      children: [
+                        SizedBox(
+                          width: 70,
+                          child: TextField(
+                            controller: controller,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            autofocus: true,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Введіть кількість',
+                          style: theme.textTheme.titleMedium,
                         ),
                       ],
                     )
@@ -183,7 +181,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                           }
 
                           context.read<ReturningInDataCubit>().addNom(barcode,
-                              widget.invoice, double.parse(controller.text));
+                              widget.invoice, int.parse(controller.text));
                           Navigator.pop(context);
                         }
                       },
@@ -329,7 +327,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
 //                 ),
 //                 BlocBuilder<ReturningInDataCubit, ReturningInDataState>(
 //                   builder: (context, state) {
-//                     double dialogSize = MediaQuery.of(context).size.height;
+//                     int dialogSize = MediaQuery.of(context).size.height;
 //                     final count = state.nom.count;
 //                     return Text(
 //                       state.count == 0

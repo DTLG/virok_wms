@@ -20,9 +20,8 @@ class ReturningOutOrderDataRepository {
               name: nom.name ?? '',
               article: nom.article ?? '',
               barcode: nom.barcodes
-                  .map((e) => Barcode(
-                      barcode: e.barcode ?? '',
-                      ratio: e.ratio?.toDouble() ?? 1))
+                  .map((e) =>
+                      Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
                   .toList(),
               baskets: (nom.baskets ?? [])
                   .map((b) => Bascket(
@@ -53,8 +52,7 @@ class ReturningOutOrderDataRepository {
         name: nom.name ?? '',
         article: nom.article ?? '',
         barcode: nom.barcodes
-            .map((e) => Barcode(
-                barcode: e.barcode ?? '', ratio: e.ratio?.toDouble() ?? 1))
+            .map((e) => Barcode(barcode: e.barcode ?? '', ratio: e.ratio ?? 1))
             .toList(),
         baskets: (nom.baskets ?? [])
             .map((b) =>

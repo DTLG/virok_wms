@@ -7,11 +7,11 @@ import 'package:virok_wms/route/app_routes.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_head_cubit.dart';
 import 'package:virok_wms/models/order.dart';
 import 'package:virok_wms/ui/theme/theme.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class SelectionOrdersHeadPage extends StatelessWidget {
   const SelectionOrdersHeadPage({super.key});
@@ -36,7 +36,6 @@ class SelectionOrdersHeadView extends StatefulWidget {
 class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
   late Timer _timer;
   bool isSelected = false;
-  int oldOrdersCount = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,27 +68,17 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                   final refreshTime =
                       context.read<HomePageCubit>().state.refreshTime;
 
-                  _timer =
-                      Timer.periodic(Duration(seconds: refreshTime), (timer) {
-                    context.read<SelectionOrdersHeadCubit>().getOrders();
-                    final newOrdersCount = context
+                  _timer = Timer.periodic(Duration(seconds: refreshTime),
+                      (timer) async {
+                    final bool isUpdated = await context
                         .read<SelectionOrdersHeadCubit>()
-                        .state
-                        .orders
-                        .orders
-                        .length;
+                        .getUpdatedOrders();
+                    // context.read<SelectionOrdersHeadCubit>().getOrders();
 
-                    // Перевіряємо, чи змінилася кількість замовлень
-                    if (oldOrdersCount < newOrdersCount) {
-                      _audioPlayer
-                          .play(AssetSource('sounds/income_notify.mp3'));
+                    if (isUpdated) {
+                      soundInterface.play(Event.notification);
                     }
-                    oldOrdersCount = context
-                        .read<SelectionOrdersHeadCubit>()
-                        .state
-                        .orders
-                        .orders
-                        .length;
+                    // print(oldOrdersCount);
                   });
 
                   return const Expanded(
@@ -97,9 +86,8 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                 }
 
                 if (state.status.isFailure) {
-                  () async {
-                    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
-                  };
+                  soundInterface.play(Event.error);
+
                   return Expanded(
                     child: WentWrong(
                       onPressed: () =>
@@ -108,12 +96,7 @@ class _SelectionOrdersHeadViewState extends State<SelectionOrdersHeadView> {
                     ),
                   );
                 }
-                () async {
-                  _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
 
-                  await _audioPlayer
-                      .play(AssetSource('sounds/income_notify.mp3'));
-                };
                 return _CustomTable(
                   orders: state.orders,
                 );
@@ -235,17 +218,26 @@ class _CustomTable extends StatelessWidget {
                     });
               }
             },
-            color: orders.orders[index].baskets.isNotEmpty
-                ? Colors.yellow.withOpacity(0.5)
-                : orders.orders[index].fullOrder != 0
-                    ? myColors.tableGreen
-                    : index % 2 != 0
-                        ? myColors.tableDarkColor
-                        : myColors.tableLightColor,
+            color: getOrderColor(orders.orders[index], index, myColors),
           );
         },
       ),
     );
+  }
+
+  Color getOrderColor(Order order, int index, MyColors? myColors) {
+    // Світло-сірий колір за замовчуванням
+    final Color defaultColor = Colors.grey[300]!;
+
+    if (order.fullOrder != 0) {
+      return myColors?.tableGreen ?? defaultColor;
+    } else if (order.baskets.isNotEmpty) {
+      return myColors?.tableYellow?.withOpacity(0.5) ?? defaultColor;
+    } else if (index % 2 != 0) {
+      return myColors?.tableDarkColor ?? defaultColor;
+    } else {
+      return myColors?.tableLightColor ?? defaultColor;
+    }
   }
 }
 

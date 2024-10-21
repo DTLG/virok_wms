@@ -13,7 +13,7 @@ part 'returning_out_order_data_state.dart';
 class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
   ReturningOutOrderDataCubit() : super(ReturningOutOrderDataState());
 
-    Future<void> getNoms(String docId) async {
+  Future<void> getNoms(String docId) async {
     try {
       final orders = await ReturningOutOrderDataRepository()
           .getNoms('get_orders_data', docId);
@@ -37,7 +37,8 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
     try {
       final nom = await ReturningOutOrderDataRepository().getNom(
           'get_order_sku_data', '$docId $nomBarcode $taskNumber $cellBarcode');
-      emit(state.copyWith(status: ReturningOutOrderDataStatus.success, nom: nom));
+      emit(state.copyWith(
+          status: ReturningOutOrderDataStatus.success, nom: nom));
     } catch (e) {
       emit(state.copyWith(
           status: ReturningOutOrderDataStatus.failure,
@@ -66,7 +67,7 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
   }
 
   bool scan(String nomBar, Nom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcode) {
       if (barcode.barcode == nomBar) {
@@ -95,7 +96,7 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
     return false;
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if (count.length > 6) {
       emit(state.copyWith(
           status: ReturningOutOrderDataStatus.notFound,
@@ -113,17 +114,17 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
           time: DateTime.now().millisecondsSinceEpoch));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count),
+          count: int.tryParse(count),
           status: ReturningOutOrderDataStatus.success));
     }
   }
 
   Future<void> send(String barcode, String docNum, String cell, String bascket,
-      double qty, String taskNumber) async {
-    double count = state.count - qty;
+      int qty, String taskNumber) async {
+    int count = state.count - qty;
     try {
-      final orders = await ReturningOutOrderDataRepository().getNoms(
-          'send_selection', '$barcode $count $docNum $cell $bascket');
+      final orders = await ReturningOutOrderDataRepository()
+          .getNoms('send_selection', '$barcode $count $docNum $cell $bascket');
       emit(state.copyWith(
           status: ReturningOutOrderDataStatus.success, noms: orders));
       clear();
@@ -161,7 +162,8 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
     return 1;
   }
 
-  Future<void> closeOrder(String docId, ReturningOutOrdersHeadCubit cubit) async {
+  Future<void> closeOrder(
+      String docId, ReturningOutOrdersHeadCubit cubit) async {
     final fullScanned = checkFullOrder();
 
     try {
@@ -189,8 +191,8 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
 
   Future<bool> setBasketToOrder(String barcode, String docId) async {
     try {
-      String bascketStatus =
-          await ReturningOutOrderDataClient().setBasketToOrder('$barcode $docId');
+      String bascketStatus = await ReturningOutOrderDataClient()
+          .setBasketToOrder('$barcode $docId');
 
       bool res = false;
       if (bascketStatus == '0') {
@@ -219,4 +221,5 @@ class ReturningOutOrderDataCubit extends Cubit<ReturningOutOrderDataState> {
       emit(state.copyWith(status: ReturningOutOrderDataStatus.failure));
       rethrow;
     }
-  }}
+  }
+}

@@ -18,8 +18,8 @@ class Nom {
   final String codeCell;
   final List<Cell> cells;
   final String docNumber;
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final String table;
   final int isMyne;
   final List<Bascket> baskets;

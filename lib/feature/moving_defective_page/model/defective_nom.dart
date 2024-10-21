@@ -3,7 +3,7 @@ class DefectiveNom {
   final String article;
   final String cell;
   final String statusNom;
-  final double count;
+  final int count;
 
   DefectiveNom({
     required this.nom,
@@ -20,7 +20,7 @@ class DefectiveNom {
       article: json['article'] as String,
       cell: json['cell'] as String,
       statusNom: json['status_nom'] as String,
-      count: (json['count'] as num).toDouble(),
+      count: (json['count'] as num).toInt(),
     );
   }
 }

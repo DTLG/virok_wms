@@ -12,7 +12,7 @@ extension MovingOrderDataStatusX on MovingOutOrderDataStatus {
 
 final class MovingOutOrderDataState extends Equatable {
   MovingOutOrderDataState(
-  {this.status = MovingOutOrderDataStatus.initial,
+      {this.status = MovingOutOrderDataStatus.initial,
       Noms? noms,
       Nom? nom,
       Barcode? barcode,
@@ -20,7 +20,7 @@ final class MovingOutOrderDataState extends Equatable {
       this.basketStatus = false,
       this.nomBarcode = '',
       this.itsMezonine = false,
-       this.basket = '',
+      this.basket = '',
       this.cellBarcode = '',
       this.time = 0,
       this.count = 0})
@@ -35,7 +35,7 @@ final class MovingOutOrderDataState extends Equatable {
   final String errorMassage;
   final Barcode barcode;
   final String basket;
-  final double count;
+  final int count;
   final String cellBarcode;
   final String nomBarcode;
   final bool itsMezonine;
@@ -52,8 +52,9 @@ final class MovingOutOrderDataState extends Equatable {
       bool? basketStatus,
       String? cellBarcode,
       String? basket,
-      double? count,
-      bool? itsMezonine, int? time}) {
+      int? count,
+      bool? itsMezonine,
+      int? time}) {
     return MovingOutOrderDataState(
         status: status ?? this.status,
         noms: noms ?? this.noms,

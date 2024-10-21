@@ -17,6 +17,7 @@ final class SelectioOrdersHeadState extends Equatable {
     this.itsMezonine = false,
     this.errorMassage = '',
     this.time = 0,
+    this.oldOrdersCount = 0,
     Orders? orders,
   }) : orders = orders ?? Orders.empty;
 
@@ -26,24 +27,34 @@ final class SelectioOrdersHeadState extends Equatable {
   final String errorMassage;
   final bool buskeStatus;
   final int time;
+  final int oldOrdersCount;
 
   SelectioOrdersHeadState copyWith(
       {SelectioOrdersHeadStatus? status,
       Orders? orders,
       String? errorMassage,
       int? time,
+      int? oldOrdersCount,
       bool? itsMezonine,
       bool? buskeStatus}) {
     return SelectioOrdersHeadState(
         status: status ?? this.status,
         orders: orders ?? this.orders,
         time: time ?? this.time,
+        oldOrdersCount: oldOrdersCount ?? this.oldOrdersCount,
         errorMassage: errorMassage ?? this.errorMassage,
         buskeStatus: buskeStatus ?? this.buskeStatus,
         itsMezonine: itsMezonine ?? this.itsMezonine);
   }
 
   @override
-  List<Object?> get props =>
-      [status, orders, errorMassage, buskeStatus, itsMezonine, time];
+  List<Object?> get props => [
+        status,
+        orders,
+        errorMassage,
+        buskeStatus,
+        itsMezonine,
+        time,
+        oldOrdersCount,
+      ];
 }

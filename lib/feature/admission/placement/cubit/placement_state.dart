@@ -31,14 +31,14 @@ final class PlacementState extends Equatable {
   final String nomBarcode;
   final int time;
   final String cell;
-  final double count;
+  final int count;
 
   PlacementState copyWith(
       {PlacementStatus? status,
       AdmissionNoms? noms,
       int? time,
       String? cell,
-      double? count,
+      int? count,
       String? nomBarcode,
       String? errorMassage,
       AdmissionNom? nom}) {

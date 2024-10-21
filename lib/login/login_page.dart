@@ -160,9 +160,7 @@ class _LoginViewState extends State<LoginView> {
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString('api', value);
-                    if (context.mounted) {
-                      context.read<LoginCubit>().getUsers(value);
-                    }
+                    context.read<LoginCubit>().getUsers(value);
                   },
                   itemBuilder: (context) {
                     return state.pathes.isNotEmpty

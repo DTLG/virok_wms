@@ -23,7 +23,7 @@ class BarcodeLablePrintCubit extends Cubit<BarcodeLablePrintState> {
     }
   }
 
-  Future<void> printLable(BarcodesNom nom, String barcode, double ratio) async {
+  Future<void> printLable(BarcodesNom nom, String barcode, int ratio) async {
     PrinterConnect().connectToPrinter(barcode.length == 14
         ? PrinterLables.nomLableEAN14(barcode, nom.article, nom.name, 1)
         : PrinterLables.nomLableEAN13(barcode, nom.article, nom.name, 1));

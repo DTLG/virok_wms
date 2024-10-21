@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,12 +5,13 @@ import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart';
 import 'package:virok_wms/feature/np_ttn_print/models/ttn_params.dart';
 import 'package:virok_wms/route/route.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../widget/param_row.dart';
 import '../widget/print_button.dart';
 import '../widget/status_label.dart' as StatusLabel;
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 String _value = '';
 final _formKey = GlobalKey<FormState>();
@@ -64,8 +64,7 @@ class TtnNovaPostPrintView extends StatelessWidget {
                   BlocBuilder<TtnPrintCubit, TtnPrintState>(
                     builder: (context, state) {
                       if (state.status.isFailure) {
-                        _audioPlayer
-                            .play(AssetSource('sounds/error_sound.mp3'));
+                        soundInterface.play(Event.error);
                         return SizedBox(
                           height: 350,
                           child: WentWrong(
@@ -313,6 +312,9 @@ class _ArticleInputState extends State<ArticleInput> {
         onSubmitted: (value) {
           context.read<TtnPrintCubit>().getTtnData(value);
           widget.onSubmitted(value);
+          context
+              .read<TtnPrintCubit>()
+              .printBarcodeLabel(context.read<TtnPrintCubit>().state.ttnData);
           _value = value;
         },
         decoration: InputDecoration(

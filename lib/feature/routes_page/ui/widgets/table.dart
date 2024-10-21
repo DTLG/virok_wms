@@ -24,104 +24,47 @@ class CustomTable extends StatelessWidget {
         itemCount: orders.length,
         itemBuilder: (context, index) {
           final order = orders[index];
-          return TableElement(
-            dataLenght: orders.length,
-            rowElement: [
-              RowElement(
-                flex: 3,
-                value: order.orderNumber,
-                textStyle: theme.textTheme.labelSmall?.copyWith(
-                    letterSpacing: 0.5,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 14),
-              ),
-              RowElement(
-                flex: 2,
-                value: order.orderPlacesCount.toString(),
-                textStyle: theme.textTheme.labelMedium
-                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
-              ),
-              RowElement(
-                flex: 2,
-                value: order.scannedCount.toString(),
-                textStyle: theme.textTheme.labelMedium,
-              ),
-            ],
-            index: index,
-            // color: order.count == order.qty
-            //     ? myColors.tableGreen
-            //     : order.isMyne == 1
-            //         ? myColors.tableYellow
-            //         : index % 2 != 0
-            //             ? myColors.tableDarkColor
-            //             : myColors.tableLightColor,
-            // onTap: () {
-            //   if (orders[index].isMyne == 1) {
-            //     if (orders[index].count < orders[index].qty) {
-            //       final barcode = orders[index].barcode.isEmpty
-            //           ? ''
-            //           : orders[index].barcode.first.barcode;
 
-            //       if (barcode.isEmpty) {
-            //         Alerts(
-            //                 msg: 'Вибраному товару не присвоєний штрихкод',
-            //                 context: context)
-            //             .showError();
-            //         return;
-            //       }
-            // showNomInput(
-            //     context,
-            //     orders[index].codeCell,
-            //     docId,
-            //     orders[index].barcode.isEmpty
-            //         ? ''
-            //         : orders[index].barcode.first.barcode,
-            //     orders[index]);
-            // context.read<NomsPageCubit>().getNoms(docId);
-            //     }
-            //   } else {
-            //     Alerts(msg: "Товар в зоні іншого користувача", context: context)
-            //         .showError();
-            //   }
-            // },
+          // Determine the background color based on conditions
+          Color backgroundColor;
+          if (order.orderPlacesCount == order.scannedCount) {
+            backgroundColor =
+                const Color.fromARGB(171, 76, 175, 79); // All items scanned
+          } else if (order.scannedCount > 0) {
+            backgroundColor =
+                const Color.fromARGB(171, 255, 235, 59); // Some items scanned
+          } else {
+            backgroundColor = Colors.red; // No items scanned
+          }
+
+          return Container(
+            color: backgroundColor, // Set the background color
+            child: TableElement(
+              dataLenght: orders.length,
+              rowElement: [
+                RowElement(
+                  flex: 3,
+                  value: order.orderNumber,
+                  textStyle: theme.textTheme.labelSmall?.copyWith(
+                      letterSpacing: 0.5,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 14),
+                ),
+                RowElement(
+                  flex: 2,
+                  value: order.orderPlacesCount.toString(),
+                  textStyle: theme.textTheme.labelMedium
+                      ?.copyWith(fontWeight: FontWeight.w500, fontSize: 10),
+                ),
+                RowElement(
+                  flex: 2,
+                  value: order.scannedCount.toString(),
+                  textStyle: theme.textTheme.labelMedium,
+                ),
+              ],
+              index: index,
+            ),
           );
-
-          // InkWell(
-          //   onTap: () {
-          //     if (noms[index].isMyne == 1) {
-          //       if (noms[index].count < noms[index].qty) {
-          //         final barcode = noms[index].barcode.isEmpty
-          //             ? ''
-          //             : noms[index].barcode.first.barcode;
-
-          //         if (barcode.isEmpty) {
-          //           Alerts(
-          //                   msg: 'Вибраному товару не присвоєний штрихкод',
-          //                   context: context)
-          //               .showError();
-          //           return;
-          //         }
-          //         showNomInput(
-          //             context,
-          //             noms[index].codeCell,
-          //             docId,
-          //             noms[index].barcode.isEmpty
-          //                 ? ''
-          //                 : noms[index].barcode.first.barcode,
-          //             noms[index]);
-          //             context.read<MovingGateOrderDataCubit>().getNoms(docId);
-          //       }
-          //     } else {
-          //       Alerts(msg: "Товар в зоні іншого користувача", context: context)
-          //           .showError();
-          //     }
-          //   },
-          //   child: CustomTableRow(
-          //     index: index,
-          //     lastIndex: noms.length - 1,
-          //     nom: noms[index],
-          //   ),
-          // );
         },
       ),
     );

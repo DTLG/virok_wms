@@ -36,7 +36,7 @@ RechargeNomDTO _$RechargeNomDTOFromJson(Map<String, dynamic> json) =>
       nameCellFrom: json['name_cell_from'] as String?,
       codCellTo: json['cod_cell_to'] as String?,
       nameCellTo: json['name_cell_to'] as String?,
-      isStarted: (json['is_started'] as num?)?.toDouble(),
+      isStarted: (json['is_started'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$RechargeNomDTOToJson(RechargeNomDTO instance) =>

@@ -20,8 +20,8 @@ class CheckCell {
 class Nom {
   final String name;
   final String article;
-  final double qty;
-  final double minRest;
+  final int qty;
+  final int minRest;
   final List<Barcode> barcodes;
 
   Nom(

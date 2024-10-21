@@ -10,15 +10,14 @@ class CheckCellDTO {
   @JsonKey(name: "name_cell")
   final String? nameCell;
   final List<NomDTO> noms;
-@JsonKey(name: 'ErrorMassage')
+  @JsonKey(name: 'ErrorMassage')
   final String? errorMasssage;
 
-  CheckCellDTO({
-    required this.codCell,
-    required this.nameCell,
-    required this.noms,
-    required this.errorMasssage
-  });
+  CheckCellDTO(
+      {required this.codCell,
+      required this.nameCell,
+      required this.noms,
+      required this.errorMasssage});
 
   factory CheckCellDTO.fromJson(Map<String, dynamic> json) =>
       _$CheckCellDTOFromJson(json);
@@ -28,18 +27,17 @@ class CheckCellDTO {
 class NomDTO {
   final String? name;
   final String? article;
-  final double? qty;
+  final int? qty;
   @JsonKey(name: "min_rest")
-  final double? minRest;
+  final int? minRest;
   final List<BarcodeDTO> barcodes;
 
-  NomDTO({
-    required this.name,
-    required this.article,
-    required this.qty,
-    required this.minRest,
-    required this.barcodes
-  });
+  NomDTO(
+      {required this.name,
+      required this.article,
+      required this.qty,
+      required this.minRest,
+      required this.barcodes});
 
   factory NomDTO.fromJson(Map<String, dynamic> json) => _$NomDTOFromJson(json);
 }

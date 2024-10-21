@@ -7,6 +7,7 @@ part 'nom_model_dto.g.dart';
 class NomsDTO {
   @JsonKey(name: 'noms')
   final List<NomDTO> noms;
+  @JsonKey(name: 'status')
   final int? status;
 
   NomsDTO({required this.noms, required this.status});
@@ -29,14 +30,14 @@ class NomDTO {
   final List<CellDTO>? cells;
   @JsonKey(name: 'DocNumber')
   final String? docNumber;
-  final double? qty;
+  final int? qty;
   final String? table;
   @JsonKey(name: 'its_myne')
   final int? itsMyne;
   final List<BascketDTO>? baskets;
   @JsonKey(name: 'task_number')
   final String? taskNumber;
-  final double? count;
+  final int? count;
   @JsonKey(name: 'status_nom')
   final String? statusNom;
 

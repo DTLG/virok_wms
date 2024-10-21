@@ -32,8 +32,8 @@ MovingInNomDTO _$MovingInNomDTOFromJson(Map<String, dynamic> json) =>
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       number: json['number'] as String?,
-      qty: (json['qty'] as num?)?.toDouble(),
-      count: (json['count'] as num?)?.toDouble(),
+      qty: (json['qty'] as num?)?.toInt(),
+      count: (json['count'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MovingInNomDTOToJson(MovingInNomDTO instance) =>
@@ -48,7 +48,7 @@ Map<String, dynamic> _$MovingInNomDTOToJson(MovingInNomDTO instance) =>
 
 BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
       barcode: json['barcode'] as String?,
-      ratio: (json['ratio'] as num?)?.toDouble(),
+      ratio: (json['ratio'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>

@@ -23,9 +23,8 @@ class PlacementRepository {
                 qty: e.qty ?? 0,
                 article: e.article ?? '',
                 barcodes: e.barcodes
-                    .map((b) => Barcode(
-                        barcode: b.barcode ?? '',
-                        ratio: b.ratio?.toDouble() ?? 1))
+                    .map((b) =>
+                        Barcode(barcode: b.barcode ?? '', ratio: b.ratio ?? 1))
                     .toList(),
                 count: e.count ?? 0,
                 task: e.task ?? 0,
@@ -46,8 +45,7 @@ class PlacementRepository {
         qty: nom.qty ?? 0,
         article: nom.article ?? '',
         barcodes: nom.barcodes
-            .map((b) => Barcode(
-                barcode: b.barcode ?? '', ratio: b.ratio?.toDouble() ?? 1))
+            .map((b) => Barcode(barcode: b.barcode ?? '', ratio: b.ratio ?? 1))
             .toList(),
         count: nom.count ?? 0,
         task: nom.task ?? 0,

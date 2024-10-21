@@ -35,7 +35,7 @@ final class EpicenterDataState extends Equatable {
   final String errorMassage;
   final Barcode barcode;
   final String basket;
-  final double count;
+  final int count;
   final String cellBarcode;
   final String nomBarcode;
   final bool itsMezonine;
@@ -53,7 +53,7 @@ final class EpicenterDataState extends Equatable {
       bool? basketStatus,
       String? cellBarcode,
       String? basket,
-      double? count,
+      int? count,
       bool? itsMezonine,
       int? jumpIndex,
       int? time}) {

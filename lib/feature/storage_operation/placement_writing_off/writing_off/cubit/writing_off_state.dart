@@ -29,8 +29,8 @@ final class WritingOffState extends Equatable {
   final String cellBarcode;
   final String nomBarcode;
   final String name;
-  final double count;
-  final double qty;
+  final int count;
+  final int qty;
   final String article;
   final int cellStatus;
   final String error;
@@ -43,8 +43,8 @@ final class WritingOffState extends Equatable {
       String? name,
       String? article,
       String? error,
-      double? count,
-      double? qty,
+      int? count,
+      int? qty,
       int? cellStatus}) {
     return WritingOffState(
         status: status ?? this.status,
@@ -60,6 +60,16 @@ final class WritingOffState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [status, cell, nomBarcode, count, cellStatus,name, cellBarcode, error, qty,article];
+  List<Object?> get props => [
+        status,
+        cell,
+        nomBarcode,
+        count,
+        cellStatus,
+        name,
+        cellBarcode,
+        error,
+        qty,
+        article
+      ];
 }

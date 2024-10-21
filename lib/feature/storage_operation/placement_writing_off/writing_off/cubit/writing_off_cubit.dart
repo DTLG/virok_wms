@@ -32,7 +32,7 @@ class WritingOffCubit extends Cubit<WritingOffState> {
   }
 
   void addNom(String nomBarcode) {
-    double count = state.count;
+    int count = state.count;
     bool isEqual = false;
 
     if (state.cell.zone == 1) {
@@ -66,13 +66,13 @@ class WritingOffCubit extends Cubit<WritingOffState> {
       //-------------------------------------------------------
 
       String name = '';
-      double qty = 0;
+      int qty = 0;
       String article = '';
       for (final cell in state.cell.cell) {
         for (final barcode in cell.barcodes) {
           if (barcode == nomBarcode) {
             name = cell.name;
-            qty = double.parse(cell.quantity.toString());
+            qty = int.parse(cell.quantity.toString());
             article = cell.article;
             if (state.name.isEmpty) {
               emit(state.copyWith(name: name));
@@ -128,18 +128,18 @@ class WritingOffCubit extends Cubit<WritingOffState> {
         count: 1,
         name: cell.name,
         article: cell.article,
-        qty: double.parse(cell.quantity.toString()),
+        qty: int.parse(cell.quantity.toString()),
         nomBarcode: cell.barcodes.first));
   }
 
   void manualCountIncrement(String nomBarcode, String count) {
     dynamic qty =
         state.cell.zone == 1 ? state.cell.cell.first.quantity : state.qty;
-    if (double.parse(count) > qty) {
+    if (int.parse(count) > qty) {
       emit(state.copyWith(cellStatus: 1));
       emit(state.copyWith(status: WritingOffStatus.notFound, cellStatus: 5));
     } else {
-      emit(state.copyWith(count: double.parse(count), cellStatus: 1));
+      emit(state.copyWith(count: int.parse(count), cellStatus: 1));
     }
   }
 

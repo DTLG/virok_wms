@@ -38,8 +38,8 @@ Map<String, dynamic> _$BarcodesNomDTOToJson(BarcodesNomDTO instance) =>
 
 BarcodeDTO _$BarcodeDTOFromJson(Map<String, dynamic> json) => BarcodeDTO(
       barcode: json['barcode'] as String?,
-      count: json['count'] as double?,
-      ratio: json['ratio'] as double?,
+      count: json['count'] as int?,
+      ratio: json['ratio'] as int?,
     );
 
 Map<String, dynamic> _$BarcodeDTOToJson(BarcodeDTO instance) =>

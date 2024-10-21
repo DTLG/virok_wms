@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/recharging/moving_in_cells/cubit/moving_in_cells_cubit.dart';
 import 'package:virok_wms/models/check_cell.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/custom_keyboard/keyboard.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class MovingInCellsPage extends StatelessWidget {
   const MovingInCellsPage({super.key});
@@ -71,9 +71,8 @@ class MovingInCellsView extends StatelessWidget {
           },
           builder: (context, state) {
             if (state.status.isFailure) {
-              () async {
-                await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
-              };
+              _soundInterface.play(Event.error);
+
               return Center(
                   child: WentWrong(
                 onPressed: () {

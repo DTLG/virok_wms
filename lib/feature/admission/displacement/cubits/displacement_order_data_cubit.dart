@@ -60,7 +60,7 @@ class DisplacementOrderDataCubit extends Cubit<DisplacementOrderDataState> {
     return nom;
   }
 
-  Future<void> addNom(String barcode, String invoice, double count) async {
+  Future<void> addNom(String barcode, String invoice, int count) async {
     if (count.toString().length > 6) {
       emit(state.copyWith(
           status: DisplacementOrderDataStatus.notFound,

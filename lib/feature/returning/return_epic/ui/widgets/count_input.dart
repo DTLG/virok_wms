@@ -262,7 +262,7 @@ class _ManualCountIncrementAlertState extends State<ManualCountIncrementAlert> {
                           context.read<ReturnEpicCubit>().scan(
                               barcode,
                               widget.nom,
-                              double.parse(controller.text),
+                              int.parse(controller.text),
                               nomStatus);
                           if (controller.text.length < 6) {
                             Navigator.pop(context);

@@ -28,8 +28,8 @@ Map<String, dynamic> _$CheckCellDTOToJson(CheckCellDTO instance) =>
 NomDTO _$NomDTOFromJson(Map<String, dynamic> json) => NomDTO(
       name: json['name'] as String?,
       article: json['article'] as String?,
-      qty: json['qty'] as double?,
-      minRest: json['min_rest'] as double?,
+      qty: json['qty'] as int?,
+      minRest: json['min_rest'] as int?,
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),

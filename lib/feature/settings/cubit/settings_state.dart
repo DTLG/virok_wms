@@ -12,6 +12,8 @@ class SettingsState extends Equatable {
   final String dbPath;
   final bool generationButton;
   final bool printButton;
+  final bool soundDif;
+  final bool taskNumber;
   final bool cellInfoButton;
   final bool basketInfoButton;
   final bool cellGeneratorButton;
@@ -54,6 +56,8 @@ class SettingsState extends Equatable {
       this.epicenterButton = false,
       this.generationButton = false,
       this.printButton = false,
+      this.soundDif = false,
+      this.taskNumber = false,
       this.cellInfoButton = false,
       this.basketInfoButton = false,
       this.cellGeneratorButton = false,
@@ -89,6 +93,8 @@ class SettingsState extends Equatable {
       bool? epicenterButton,
       bool? generationButton,
       bool? printButton,
+      bool? soundDif,
+      bool? taskNumber,
       bool? cellInfoButton,
       bool? basketInfoButton,
       bool? cellGeneratorButton,
@@ -123,6 +129,8 @@ class SettingsState extends Equatable {
             movingDefectiveButton ?? this.movingDefectiveButton,
         generationButton: generationButton ?? this.generationButton,
         printButton: printButton ?? this.printButton,
+        soundDif: soundDif ?? this.soundDif,
+        taskNumber: taskNumber ?? this.taskNumber,
         cellInfoButton: cellInfoButton ?? this.cellInfoButton,
         basketInfoButton: basketInfoButton ?? this.basketInfoButton,
         cellGeneratorButton: cellGeneratorButton ?? this.cellGeneratorButton,
@@ -159,6 +167,8 @@ class SettingsState extends Equatable {
         epicenterButton,
         generationButton,
         printButton,
+        soundDif,
+        taskNumber,
         printerHost,
         printerPort,
         cellInfoButton,

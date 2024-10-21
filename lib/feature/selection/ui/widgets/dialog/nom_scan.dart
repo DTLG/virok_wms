@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
+import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/models/noms_model.dart';
 import 'package:virok_wms/ui/ui.dart';
@@ -171,14 +172,14 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     textAlignVertical: TextAlignVertical.bottom,
                     controller: nomController,
                     focusNode: nomFocusNode,
-                    onChanged: (value) {
-                      context
-                          .read<SelectionOrderDataCubit>()
-                          .scan(value, widget.nom);
-                      nomController.clear();
-                      nomFocusNode.requestFocus();
-                      setState(() {});
-                    },
+                    // onChanged: (value) {
+                    //   context
+                    //       .read<SelectionOrderDataCubit>()
+                    //       .scan(value, widget.nom);
+                    //   nomController.clear();
+                    //   nomFocusNode.requestFocus();
+                    //   setState(() {});
+                    // },
                     onSubmitted: (value) {
                       context
                           .read<SelectionOrderDataCubit>()
@@ -342,6 +343,11 @@ class _NomInputDialogState extends State<NomInputDialog> {
                                     widget.nom.taskNumber,
                                   );
                               Navigator.pop(context);
+                            } else {
+                              String msg = cellController.text.isEmpty
+                                  ? 'Введіть штрихкод комірки'
+                                  : 'Введіть штрихкод товару';
+                              showToast(msg);
                             }
                           },
                           child: const Text('Додати'))
@@ -365,8 +371,8 @@ class ChangeQuantity extends StatefulWidget {
       required this.docId,
       required this.count});
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final Nom nom;
   final String docId;
 
@@ -427,7 +433,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     if (inputCount > widget.qty) {
                       Alerts(

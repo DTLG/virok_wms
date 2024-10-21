@@ -17,6 +17,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     final dbPath = prefs.getString('api') ?? '';
     final generationButton = prefs.getBool('generation_bar_button') ?? false;
     final printButton = prefs.getBool('barcode_print_lable_button') ?? false;
+    final soundDif = prefs.getBool('soundDif') ?? false;
+    final taskNumber = prefs.getBool('taskNumber') ?? false;
     final cellInfoButton = prefs.getBool('cell_info_button') ?? false;
     final basketInfoButton = prefs.getBool('basket_info_button') ?? false;
     final basketOperation = prefs.getBool('basketOperation') ?? false;
@@ -52,6 +54,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         dbPath: dbPath,
         generationButton: generationButton,
         printButton: printButton,
+        soundDif: soundDif,
+        taskNumber: taskNumber,
         cellInfoButton: cellInfoButton,
         basketInfoButton: basketInfoButton,
         cellGeneratorButton: cellGeneratorButton,
@@ -82,6 +86,10 @@ class SettingsCubit extends Cubit<SettingsState> {
     switch (key) {
       case 'barcode_print_lable_button':
         return emit(state.copyWith(printButton: value));
+      case 'soundDif':
+        return emit(state.copyWith(soundDif: value));
+      case 'taskNumber':
+        return emit(state.copyWith(taskNumber: value));
       case 'epicenter_button':
         return emit(state.copyWith(epicenterButton: value));
       case 'basketOperation':

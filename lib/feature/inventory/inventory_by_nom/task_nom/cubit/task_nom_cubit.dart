@@ -75,7 +75,7 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
 
   void manualCountIncrement(String count) {
     emit(state.copyWith(
-      count: double.parse(count),
+      count: int.parse(count),
       status: InventoryStatus.success,
     ));
   }
@@ -88,7 +88,7 @@ class InventoryByNomCellsTaskCubit extends Cubit<InventoryByNomCellsTaskState> {
         status: InventoryStatus.success));
   }
 
-  Future<void> sendNom(String nomBarcode, double count, String docNumber,
+  Future<void> sendNom(String nomBarcode, int count, String docNumber,
       String nomStatus, String cellBarcode) async {
     try {
       final cells = await IventoryByNomRepository().getCells(

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
 import 'package:virok_wms/feature/np_ttn_print/models/np_ttn_data.dart';
 import 'package:equatable/equatable.dart';
 import 'package:virok_wms/feature/np_ttn_print/models/ttn_params.dart';
@@ -26,7 +27,13 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
         try {
           final ttnParams = await fetchTtnParams(value);
           if (ttnParams.isEmpty) {
-            throw Exception('Не той штрихкод');
+            showToast('Немає параметрів посилки');
+            // throw Exception('Не той штрихкод');
+            emit(state.copyWith(
+                status: TtnPrintStatus.success,
+                ttnData: ttnData,
+                errorMassage: 'Дані отримано!'));
+            return;
           }
 
           emit(state.copyWith(
@@ -240,8 +247,8 @@ class TtnPrintCubit extends Cubit<TtnPrintState> {
       emit(state.copyWith(
         ttnParams: [],
         ttnData: TtnData.empty,
-        status: TtnPrintStatus.failure,
-        errorMassage: 'Дані не отримано',
+        // status: TtnPrintStatus.failure,
+        // errorMassage: 'Дані не отримано',
         action: MyAction.waiting,
       ));
       return;

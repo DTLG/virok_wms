@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virok_wms/feature/storage_operation/product_lable/cubit/product_lables_cubit.dart';
 import 'package:virok_wms/ui/ui.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class ProductLablesPage extends StatelessWidget {
   const ProductLablesPage({super.key});
@@ -39,9 +39,7 @@ class ProductLablesView extends StatelessWidget {
               );
             }
             if (state.status.isFailure) {
-              () async {
-                await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
-              };
+              _soundInterface.play(Event.error);
               return Center(
                 child: WentWrong(
                   errorDescription: state.errorMassage,

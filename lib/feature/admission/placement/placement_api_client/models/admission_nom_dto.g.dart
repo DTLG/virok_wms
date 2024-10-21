@@ -30,7 +30,7 @@ AdmissionNomDTO _$AdmissionNomDTOFromJson(Map<String, dynamic> json) =>
       barcodes: (json['barcodes'] as List<dynamic>)
           .map((e) => BarcodeDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
-      count: (json['count'] as num?)?.toDouble(),
+      count: (json['count'] as num?)?.toInt(),
       task: json['task'] as int?,
       codeCell: json['cod_cell'] as String?,
       nameCell: json['name_cell'] as String?,

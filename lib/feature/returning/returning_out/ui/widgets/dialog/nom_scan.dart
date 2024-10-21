@@ -75,7 +75,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
             Navigator.pop(context);
           },
         ),
-        content: BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
+        content:
+            BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
           builder: (context, state) {
             return SingleChildScrollView(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -212,7 +213,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
                     ],
                   ),
                 ),
-                BlocBuilder<ReturningOutOrderDataCubit, ReturningOutOrderDataState>(
+                BlocBuilder<ReturningOutOrderDataCubit,
+                    ReturningOutOrderDataState>(
                   builder: (context, state) {
                     double dialogSize = MediaQuery.of(context).size.height;
                     final count = state.nom.count;
@@ -246,7 +248,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
                               barrierColor: const Color.fromARGB(150, 0, 0, 0),
                               context: context,
                               builder: (_) => BlocProvider.value(
-                                value: context.read<ReturningOutOrderDataCubit>(),
+                                value:
+                                    context.read<ReturningOutOrderDataCubit>(),
                                 child: CellListdialog(
                                   cells: state.nom.cells,
                                 ),
@@ -263,7 +266,8 @@ class _NomInputDialogState extends State<NomInputDialog> {
                               barrierColor: const Color.fromARGB(150, 0, 0, 0),
                               context: context,
                               builder: (_) => BlocProvider.value(
-                                value: context.read<ReturningOutOrderDataCubit>(),
+                                value:
+                                    context.read<ReturningOutOrderDataCubit>(),
                                 child: ChangeQuantity(
                                   qty: state.nom.qty,
                                   nom: state.nom,
@@ -297,8 +301,9 @@ class _NomInputDialogState extends State<NomInputDialog> {
                                   ? Colors.green
                                   : Colors.grey)),
                           onPressed: () {
-                            final state =
-                                context.read<ReturningOutOrderDataCubit>().state;
+                            final state = context
+                                .read<ReturningOutOrderDataCubit>()
+                                .state;
                             if (state.nomBarcode.isNotEmpty) {
                               showCountDialog(context, state.nom);
                             }
@@ -344,8 +349,8 @@ class ChangeQuantity extends StatefulWidget {
       required this.docId,
       required this.count});
 
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
   final Nom nom;
   final String docId;
 
@@ -406,7 +411,7 @@ class _ChangeQuantityState extends State<ChangeQuantity> {
           actions: [
             ElevatedButton(
                 onPressed: () {
-                  double inputCount = double.parse(controller.text);
+                  int inputCount = int.parse(controller.text);
                   if (controller.text.isNotEmpty) {
                     if (inputCount > widget.qty) {
                       Alerts(

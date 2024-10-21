@@ -32,11 +32,11 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
     emit(state.copyWith(basket: busket));
   }
 
-  Future<void> getNom(
-      String docId, String nomBarcode, String cellBarcode, String taskNumber) async {
+  Future<void> getNom(String docId, String nomBarcode, String cellBarcode,
+      String taskNumber) async {
     try {
-      final nom = await MovingOutOrderDataRepository()
-          .getNom('get_order_sku_data', '$docId $nomBarcode $taskNumber $cellBarcode');
+      final nom = await MovingOutOrderDataRepository().getNom(
+          'get_order_sku_data', '$docId $nomBarcode $taskNumber $cellBarcode');
       emit(state.copyWith(status: MovingOutOrderDataStatus.success, nom: nom));
     } catch (e) {
       emit(state.copyWith(
@@ -65,7 +65,7 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
   }
 
   void scan(String nomBar, Nom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
     String checkNomBar = '';
 
     for (var barcode in nom.barcode) {
@@ -96,7 +96,7 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
     }
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if ((int.tryParse(count) ?? qty) > qty) {
       emit(state.copyWith(
           status: MovingOutOrderDataStatus.notFound,
@@ -104,14 +104,14 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
           time: DateTime.now().millisecondsSinceEpoch));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count),
+          count: int.tryParse(count),
           status: MovingOutOrderDataStatus.success));
     }
   }
 
   Future<void> send(String barcode, String docNum, String cell, String bascket,
-      double qty) async {
-    double count = state.count - qty;
+      int qty) async {
+    int count = state.count - qty;
     try {
       final orders = await MovingOutOrderDataRepository().movingRepo(
           'send_selection', '$barcode $count $docNum $cell $bascket');
@@ -125,7 +125,7 @@ class MovingOutOrderDataCubit extends Cubit<MovingOutOrderDataState> {
     }
   }
 
-  Future<void> changeQty(double qty, Nom nom, String docId) async {
+  Future<void> changeQty(int qty, Nom nom, String docId) async {
     try {
       emit(state.copyWith(status: MovingOutOrderDataStatus.loading));
       final newQty = qty > nom.qty ? qty - nom.qty : qty;

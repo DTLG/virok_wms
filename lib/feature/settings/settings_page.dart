@@ -73,6 +73,8 @@ class SettingsView extends StatelessWidget {
                     PrinterSettingsWidget(),
                     ThemeSettings(),
                     CameraSettings(),
+                    TaskNumberSettings(),
+                    // SoundPrikolSettings(),
                     AutoRefreshTimeSettings(),
                   ],
                 )),
@@ -231,7 +233,7 @@ class HomePageSettingsWidget extends StatelessWidget {
                     }),
               ),
               ListTile(
-                title: const Text('Routes page'),
+                title: const Text('Маршрути'),
                 trailing: Switch(
                     value: state.routes,
                     onChanged: (value) async {
@@ -557,6 +559,52 @@ class CameraSettings extends StatelessWidget {
     );
   }
 }
+
+class TaskNumberSettings extends StatelessWidget {
+  const TaskNumberSettings({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return SettingsCard(
+          child: ListTile(
+            title: const Text('Номер задачі в замовленні'),
+            contentPadding: const EdgeInsets.only(left: 20),
+            trailing: Switch(
+                value: state.taskNumber,
+                onChanged: (value) async {
+                  context.read<SettingsCubit>().writeToSP('taskNumber', value);
+                }),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// class SoundPrikolSettings extends StatelessWidget {
+//   const SoundPrikolSettings({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<SettingsCubit, SettingsState>(
+//       builder: (context, state) {
+//         return SettingsCard(
+//           child: ListTile(
+//             title: const Text('Звуки Березки'),
+//             contentPadding: const EdgeInsets.only(left: 20),
+//             trailing: Switch(
+//                 value: state.soundDif,
+//                 onChanged: (value) async {
+//                   context.read<SettingsCubit>().writeToSP('soundDif', value);
+//                 }),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 class AutoRefreshTimeSettings extends StatefulWidget {
   const AutoRefreshTimeSettings({super.key});

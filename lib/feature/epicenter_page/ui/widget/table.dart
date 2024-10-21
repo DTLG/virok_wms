@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:virok_wms/feature/epicenter_page/cubit/epicenter_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/noms_page_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/cubit/table_state_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/model/nom.dart';
 import 'package:virok_wms/feature/moving_defective_page/widget/toast.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
-import 'package:virok_wms/ui/theme/theme.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class CustomTable extends StatelessWidget {
   const CustomTable({
@@ -324,8 +322,7 @@ Future<int?> showCountInputDialog(
                   } else {
                     showToast('Невірно введена кількість');
 
-                    await _audioPlayer
-                        .play(AssetSource('sounds/error_sound.mp3'));
+                    _soundInterface.play(Event.error);
                   }
                 },
                 child: const Text('Підтвердити',
@@ -611,8 +608,7 @@ Future<dynamic> nomInputDialogue(BuildContext context, ThemeData theme,
                               counter++;
                             });
                           } else {
-                            await _audioPlayer
-                                .play(AssetSource('sounds/error_sound.mp3'));
+                            _soundInterface.play(Event.error);
 
                             showToast('Кількість перевищує ${nom.countNeed}',
                                 backgroundColor: Colors.red);
@@ -620,8 +616,8 @@ Future<dynamic> nomInputDialogue(BuildContext context, ThemeData theme,
                           FocusScope.of(context).requestFocus(
                               barcodeFocusNode); // Request focus again after submission
                         } else {
-                          await _audioPlayer
-                              .play(AssetSource('sounds/error_sound.mp3'));
+                          _soundInterface.play(Event.error);
+
                           showToast('Не той штрихкод ${nom.countNeed}',
                               backgroundColor: Colors.red);
                         }

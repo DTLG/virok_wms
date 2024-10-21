@@ -23,7 +23,7 @@ final class InventoryNomInCellState extends Equatable {
   final InventoryNomInCellTasks tasks;
   final String errorMassage;
   final int time;
-  final double count;
+  final int count;
   final String nomBarcode;
 
   InventoryNomInCellState copyWith(
@@ -31,7 +31,7 @@ final class InventoryNomInCellState extends Equatable {
       InventoryNomInCellTasks? tasks,
       String? errorMassage,
       int? time,
-      double? count,
+      int? count,
       String? nomBarcode}) {
     return InventoryNomInCellState(
         status: status ?? this.status,

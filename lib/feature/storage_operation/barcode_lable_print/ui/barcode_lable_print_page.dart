@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/went_wrong.dart';
 
 import '../barcode_lable_print_repo/models/barcodes_noms.dart';
 import '../cubit/barcode_lable_print_cubit.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class BarcodeLeblePrintPage extends StatelessWidget {
   const BarcodeLeblePrintPage({super.key});
@@ -59,10 +59,7 @@ class BarcodeLeblePrintView extends StatelessWidget {
             BlocBuilder<BarcodeLablePrintCubit, BarcodeLablePrintState>(
               builder: (context, state) {
                 if (state.status.isFailure) {
-                  () async {
-                    await _audioPlayer
-                        .play(AssetSource('sounds/error_sound.mp3'));
-                  };
+                  _soundInterface.play(Event.error);
                   return SizedBox(
                     height: 350,
                     child: WentWrong(
@@ -225,7 +222,7 @@ class NomsItem extends StatelessWidget {
 }
 
 showPrintAlertAlert(
-    BuildContext context, BarcodesNom nom, String barcode, double ratio) {
+    BuildContext context, BarcodesNom nom, String barcode, int ratio) {
   showDialog(
     context: context,
     builder: (_) {
@@ -250,7 +247,7 @@ class PrintAlert extends StatelessWidget {
 
   final BarcodesNom nom;
   final String barcode;
-  final double ratio;
+  final int ratio;
 
   @override
   Widget build(BuildContext context) {

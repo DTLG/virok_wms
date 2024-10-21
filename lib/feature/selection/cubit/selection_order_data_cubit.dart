@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_head_cubit.dart';
 import 'package:virok_wms/feature/selection/selection_repository/selection_order_data_repository.dart';
 import 'package:virok_wms/models/noms_model.dart';
@@ -66,7 +67,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
   }
 
   bool scan(String nomBar, Nom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcode) {
       if (nomBar == '') {
@@ -98,7 +99,7 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
     return false;
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if (count.length > 6) {
       emit(state.copyWith(
           status: SelectionOrderDataStatus.notFound,
@@ -116,18 +117,51 @@ class SelectionOrderDataCubit extends Cubit<SelectionOrderDataState> {
           time: DateTime.now().millisecondsSinceEpoch));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count),
+          count: int.tryParse(count),
           status: SelectionOrderDataStatus.success));
     }
   }
 
   Future<void> send(String barcode, String docNum, String cell, String bascket,
-      double qty, String taskNumber) async {
-    double count = state.count - qty;
+      int qty, String taskNumber) async {
+    int count = state.count - qty;
     try {
+      final prefs = await SharedPreferences.getInstance();
+      bool includeTaskNumber = prefs.getBool('taskNumber') ?? false;
+
+      String params = includeTaskNumber
+          ? '$barcode ${state.count} $docNum $cell $taskNumber $bascket'
+          : '$barcode ${state.count} $docNum $cell $bascket';
+
       final orders = await SelectionOrderDataRepository().selectionRepo(
-          'send_selection',
-          '$barcode $count $docNum $cell $taskNumber $bascket');
+        'send_selection',
+        params,
+      );
+      switch (orders.status) {
+        case 0:
+          emit(state.copyWith(
+              status: SelectionOrderDataStatus.failure,
+              errorMassage:
+                  'Невірний шк номенклатури або не знайдено задачу відбору'));
+          return;
+        case 3:
+          emit(state.copyWith(
+              status: SelectionOrderDataStatus.failure,
+              errorMassage: 'знайдено комірку з таким штрихкодом'));
+          return;
+        case 4:
+          emit(state.copyWith(
+              status: SelectionOrderDataStatus.failure,
+              errorMassage: 'Кошик не знайдено'));
+          return;
+        case 5:
+          emit(state.copyWith(
+              status: SelectionOrderDataStatus.failure,
+              errorMassage: 'Кошик не належить вказаному замовленню'));
+          return;
+        default:
+      }
+
       emit(state.copyWith(
           status: SelectionOrderDataStatus.success, noms: orders));
       clear();

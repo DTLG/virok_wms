@@ -6,17 +6,14 @@ import 'package:virok_wms/feature/admission/placement/placement_repository/place
 
 part 'placement_state.dart';
 
-class PlacementFromReturnCubit
-    extends Cubit<PlacementFromRetrunState> {
-  PlacementFromReturnCubit()
-      : super(PlacementFromRetrunState());
-
+class PlacementFromReturnCubit extends Cubit<PlacementFromRetrunState> {
+  PlacementFromReturnCubit() : super(PlacementFromRetrunState());
 
   Future<void> getNoms() async {
     try {
       await Future.delayed(const Duration(seconds: 2), () {});
-      final noms = await PlacementRepository().getNoms(
-          'Admision_placement_Return_list', '');
+      final noms = await PlacementRepository()
+          .getNoms('Admision_placement_Return_list', '');
       emit(state.copyWith(status: PlacementStatus.success, noms: noms));
     } catch (e) {
       emit(state.copyWith(
@@ -26,7 +23,7 @@ class PlacementFromReturnCubit
 
   Future<void> getNom(String nomNar, String invoice, String taskNumber) async {
     try {
-      final nom = await  PlacementRepository().getNom(
+      final nom = await PlacementRepository().getNom(
           'Admision_placement_by_document_sku', '$nomNar $invoice $taskNumber');
 
       emit(state.copyWith(status: PlacementStatus.success, nom: nom));
@@ -58,7 +55,7 @@ class PlacementFromReturnCubit
   }
 
   bool scan(String nomBar, AdmissionNom nom) {
-    double count = state.count == 0 ? nom.count : state.count;
+    int count = state.count == 0 ? nom.count : state.count;
 
     for (var barcode in nom.barcodes) {
       if (barcode.barcode == nomBar) {
@@ -85,7 +82,7 @@ class PlacementFromReturnCubit
     return false;
   }
 
-  void manualCountIncrement(String count, double qty, double nomCount) {
+  void manualCountIncrement(String count, int qty, int nomCount) {
     if ((int.tryParse(count) ?? qty) > qty) {
       emit(state.copyWith(status: PlacementStatus.success));
       emit(state.copyWith(
@@ -94,15 +91,15 @@ class PlacementFromReturnCubit
           errorMassage: 'Введена більша кількість'));
     } else {
       emit(state.copyWith(
-          count: double.tryParse(count), status: PlacementStatus.success));
+          count: int.tryParse(count), status: PlacementStatus.success));
     }
   }
 
   Future<void> send(String barcode, String cell, String incomingInvoice,
-      double qty, String taskNumber) async {
-    double count = state.count - qty;
+      int qty, String taskNumber) async {
+    int count = state.count - qty;
     try {
-      final noms = await  PlacementRepository().getNoms(
+      final noms = await PlacementRepository().getNoms(
           'Admision_placement_by_return_scan',
           '$barcode $count $incomingInvoice $taskNumber $cell');
       emit(state.copyWith(status: PlacementStatus.success, noms: noms));
@@ -145,8 +142,8 @@ class PlacementFromReturnCubit
   Future<void> changeQty(String qty, AdmissionNom nom) async {
     try {
       emit(state.copyWith(status: PlacementStatus.loading));
-      final orders = await  PlacementRepository().getNoms(
-          'Change_Admision_placement_task', '${nom.taskNumber} $qty');
+      final orders = await PlacementRepository()
+          .getNoms('Change_Admision_placement_task', '${nom.taskNumber} $qty');
       emit(state.copyWith(status: PlacementStatus.success, noms: orders));
       clear();
     } catch (e) {
@@ -158,8 +155,8 @@ class PlacementFromReturnCubit
   Future<void> cancelTask(AdmissionNom nom) async {
     try {
       emit(state.copyWith(status: PlacementStatus.loading));
-      final orders = await  PlacementRepository().getNoms(
-          'Cancel_Admision_placement_task', nom.taskNumber);
+      final orders = await PlacementRepository()
+          .getNoms('Cancel_Admision_placement_task', nom.taskNumber);
       emit(state.copyWith(status: PlacementStatus.success, noms: orders));
       clear();
     } catch (e) {

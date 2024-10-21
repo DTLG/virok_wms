@@ -13,6 +13,13 @@ class DocsDefectCubit extends Cubit<DocsDefectState> {
     emit(state.copyWith(status: DocsDefectStatus.loading));
     final client = ApiClient();
     final docs = await client.getDocs();
+    if (docs == null) {
+      emit(state.copyWith(
+        status: DocsDefectStatus.error,
+        erorrMessage: 'Схоже тут пусто',
+      ));
+      return;
+    }
     emit(state.copyWith(docs: docs, status: DocsDefectStatus.loaded));
   }
 }

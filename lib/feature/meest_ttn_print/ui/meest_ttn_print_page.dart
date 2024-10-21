@@ -1,14 +1,14 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/route/route.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 import 'package:virok_wms/ui/widgets/widgets.dart';
 import '../cubit/ttn_print_cubit.dart';
 
 final _formKey = GlobalKey<FormState>();
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class MeestTtnPrint extends StatelessWidget {
   const MeestTtnPrint({super.key});
@@ -51,8 +51,7 @@ class MeestTtnPrintView extends StatelessWidget {
                   BlocBuilder<TtnPrintCubit, TtnPrintState>(
                     builder: (context, state) {
                       if (state.status.isFailure) {
-                        _audioPlayer
-                            .play(AssetSource('sounds/error_sound.mp3'));
+                        soundInterface.play(Event.error);
                         return SizedBox(
                           height: 350,
                           child: WentWrong(
@@ -116,8 +115,7 @@ class MeestTtnPrintView extends StatelessWidget {
                         return const Text("Зіскануйте штрих-код");
                       }
                       if (state.status.isError) {
-                        _audioPlayer
-                            .play(AssetSource('sounds/error_sound.mp3'));
+                        soundInterface.play(Event.error);
                         return const Text("Помилка");
                       }
                       return const Center();
@@ -201,7 +199,7 @@ class PrintButton extends StatelessWidget {
             if (state.status != TtnPrintStatus.failure) {
               context.read<TtnPrintCubit>().printSticker(state.printValue);
             } else {
-              await _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+              soundInterface.play(Event.error);
               Fluttertoast.showToast(msg: 'Не вдалося знайти parcelId');
             }
           },

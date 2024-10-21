@@ -11,7 +11,8 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
   ReturningInDataCubit() : super(ReturningInDataState());
 
   Future<void> getNoms(ReturningInOrder order) async {
-    try {      await Future.delayed(const Duration(milliseconds: 500),(){});
+    try {
+      await Future.delayed(const Duration(milliseconds: 500), () {});
 
       emit(state.copyWith(status: ReturningInDataStatus.loading));
 
@@ -20,31 +21,25 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
               .getNoms('StartInvoice', order.docId)
           : await ReturningInDataRepository()
               .getNoms('Invoice_data', order.invoice);
-      emit(state.copyWith(
-          status: ReturningInDataStatus.success, noms: orders));
+      emit(state.copyWith(status: ReturningInDataStatus.success, noms: orders));
     } catch (e) {
       emit(state.copyWith(status: ReturningInDataStatus.success));
 
       emit(state.copyWith(
-          status: ReturningInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: ReturningInDataStatus.failure, errorMassage: e.toString()));
     }
   }
-
 
   Future<void> getNom(String invoice, String barcode) async {
     try {
       final nom = await ReturningInDataRepository()
           .getNom('Invoice_sku_data', '$invoice $barcode');
-      emit(state.copyWith(
-          status: ReturningInDataStatus.success, nom: nom));
+      emit(state.copyWith(status: ReturningInDataStatus.success, nom: nom));
     } catch (e) {
       emit(state.copyWith(
-          status: ReturningInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: ReturningInDataStatus.failure, errorMassage: e.toString()));
     }
   }
-
 
   ReturningInNom scan(String barcode) {
     ReturningInNom nom = ReturningInNom.empty;
@@ -66,9 +61,8 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
     return nom;
   }
 
-
-    //   void scan1(String nomBar, ReturningInNom nom) {
-  //   double count = state.count == 0 ? nom.count : state.count;
+  //   void scan1(String nomBar, ReturningInNom nom) {
+  //   int count = state.count == 0 ? nom.count : state.count;
   //   String checkNomBar = '';
 
   //   for (var barcode in nom.barcode) {
@@ -98,7 +92,7 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
   //   }
   // }
 
-    Future<void> addNom(String barcode, String invoice, double count) async {
+  Future<void> addNom(String barcode, String invoice, int count) async {
     try {
       final noms = await ReturningInDataRepository()
           .getNoms('Invoice_scan', '$barcode $count $invoice');
@@ -111,11 +105,9 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
               status: ReturningInDataStatus.success, noms: noms));
     } catch (e) {
       emit(state.copyWith(
-          status: ReturningInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: ReturningInDataStatus.failure, errorMassage: e.toString()));
     }
   }
-
 
   int checkFullOrder() {
     final noms = state.noms;
@@ -133,27 +125,25 @@ class ReturningInDataCubit extends Cubit<ReturningInDataState> {
     return res;
   }
 
-  Future<void> closeOrder(String invoice,) async {
- try {
+  Future<void> closeOrder(
+    String invoice,
+  ) async {
+    try {
       emit(state.copyWith(status: ReturningInDataStatus.loading));
 
-      final orders = 
-          await ReturningInDataRepository()
-              .getNoms('Close_invoice', invoice);
-      emit(state.copyWith(
-          status: ReturningInDataStatus.success, noms: orders));
+      final orders =
+          await ReturningInDataRepository().getNoms('Close_invoice', invoice);
+      emit(state.copyWith(status: ReturningInDataStatus.success, noms: orders));
     } catch (e) {
       emit(state.copyWith(status: ReturningInDataStatus.success));
 
       emit(state.copyWith(
-          status: ReturningInDataStatus.failure,
-          errorMassage: e.toString()));
+          status: ReturningInDataStatus.failure, errorMassage: e.toString()));
     }
   }
 
   clear() {
     emit(state.copyWith(
-        nom: ReturningInNom.empty,
-        status: ReturningInDataStatus.success));
+        nom: ReturningInNom.empty, status: ReturningInDataStatus.success));
   }
 }

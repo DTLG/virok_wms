@@ -5,6 +5,7 @@ import 'package:virok_wms/ui/theme/app_theme.dart';
 import 'package:virok_wms/ui/widgets/row_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_body_element.dart';
 import 'package:virok_wms/ui/widgets/table_widgets/table_head.dart';
+import 'package:virok_wms/ui/widgets/went_wrong.dart';
 
 import '../cubit/docs_cubit/docs_defect_cubit.dart';
 import 'nom_table.dart';
@@ -162,7 +163,15 @@ class _DocsCustomTable extends StatelessWidget {
                 },
               );
             case DocsDefectStatus.error:
-              return const Center(child: Icon(Icons.error));
+              return Center(
+                child: WentWrong(
+                  errorMassage: state.erorrMessage,
+                  buttonDescription: 'Повернутись',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              );
             default:
               return const SizedBox();
           }

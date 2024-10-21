@@ -4,24 +4,28 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:flutter_beep/flutter_beep.dart';
 import 'package:virok_wms/feature/selection/cubit/selection_order_data_cubit.dart';
 import 'package:virok_wms/ui/widgets/general_button.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import '../../models/noms_model.dart';
 import '../custom_keyboard/keyboard.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+SoundInterface soundInterface = SoundInterface();
 
 class Alerts {
   final String msg;
   final Color color;
   final BuildContext context;
   final bool icon;
+  final Function()? onConfirm; // New parameter for the 'Yes' button action
 
-  Alerts(
-      {required this.msg,
-      this.color = const Color.fromARGB(255, 47, 46, 46),
-      required this.context,
-      this.icon = false});
+  Alerts({
+    required this.msg,
+    this.color = const Color.fromARGB(255, 47, 46, 46),
+    required this.context,
+    this.icon = false,
+    this.onConfirm, // Initialize the new parameter
+  });
+
   showToast() {
     Fluttertoast.showToast(
       msg: msg,
@@ -34,7 +38,7 @@ class Alerts {
   }
 
   showError() {
-    _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+    soundInterface.play(Event.error);
     showDialog(
       context: context,
       builder: (context) {
@@ -52,17 +56,56 @@ class Alerts {
           ),
           actions: [
             ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Продовжити'))
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Продовжити'),
+            ),
           ],
           actionsAlignment: MainAxisAlignment.center,
         );
       },
     );
+  }
 
-    // FlutterBeep.beep(false);
+  // New method for showing a dialog with "Yes" and "Cancel" buttons
+  showDialogue() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          icon: icon == false
+              ? null
+              : SizedBox(
+                  height: 60,
+                  child: Image.asset('assets/icons/basket_256.png')),
+          content: Text(
+            msg,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog on "Cancel"
+              },
+              child: const Text('Скасувати'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                if (onConfirm != null) {
+                  onConfirm!(); // Call the function if it's provided
+                }
+              },
+              child: const Text('Так'),
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.center,
+        );
+      },
+    );
   }
 }
 

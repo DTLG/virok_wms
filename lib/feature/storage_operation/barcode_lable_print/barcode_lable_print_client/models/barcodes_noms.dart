@@ -29,8 +29,8 @@ class BarcodesNomDTO {
 @JsonSerializable()
 class BarcodeDTO {
   final String? barcode;
-  final double? count;
-  final double? ratio;
+  final int? count;
+  final int? ratio;
 
   factory BarcodeDTO.fromJson(Map<String, dynamic> json) =>
       _$BarcodeDTOFromJson(json);

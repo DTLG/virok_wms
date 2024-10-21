@@ -27,7 +27,8 @@ class SelectionOrderDataClient {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(utf8.decode(response.bodyBytes));
-        return NomsDTO.fromJson(json);
+        var res = NomsDTO.fromJson(json);
+        return res;
       } else {
         throw Exception(
             'HTTP request failed with status ${response.statusCode}');

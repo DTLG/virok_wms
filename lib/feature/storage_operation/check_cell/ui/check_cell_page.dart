@@ -5,13 +5,13 @@ import 'package:virok_wms/feature/storage_operation/check_cell/cubit/check_cell_
 import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart';
 import 'package:virok_wms/models/check_cell.dart';
 import 'package:virok_wms/route/app_routes.dart';
+import 'package:virok_wms/ui/widgets/sound_interface.dart';
 
 import 'package:virok_wms/ui/widgets/widgets.dart';
 
 import '../../../../ui/custom_keyboard/keyboard.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final AudioPlayer _audioPlayer = AudioPlayer();
+final SoundInterface _soundInterface = SoundInterface();
 
 class CheckCellPage extends StatelessWidget {
   const CheckCellPage({super.key});
@@ -76,7 +76,7 @@ class CheckCellView extends StatelessWidget {
                   );
                 }
                 if (state.status.isFailure) {
-                  _audioPlayer.play(AssetSource('sounds/error_sound.mp3'));
+                  _soundInterface.play(Event.error);
                   return Expanded(
                     child: Center(
                         child: WentWrong(
@@ -198,7 +198,7 @@ class CellInfo extends StatelessWidget {
                                         .map((e) => Barcode(
                                             barcode: e.barcode,
                                             count: 1,
-                                            ratio: e.ratio.toDouble()))
+                                            ratio: e.ratio.toInt()))
                                         .toList(),
                                     cells: cells),
                               });

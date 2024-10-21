@@ -19,7 +19,7 @@ class AdmissionNom {
   final int qty;
   final String article;
   final List<Barcode> barcodes;
-  final double count;
+  final int count;
   final int task;
   final String nameCell;
   final String codeCell;

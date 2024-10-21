@@ -28,7 +28,7 @@ class MovingInDataCubit extends Cubit<MovingInDataState> {
     }
   }
 
-  Future<void> scan(String barcode, String invoice, double count) async {
+  Future<void> scan(String barcode, String invoice, int count) async {
     if (count.toString().length > 6) {
       emit(state.copyWith(
           errorMassage:

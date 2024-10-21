@@ -4,6 +4,7 @@ import 'package:virok_wms/feature/epicenter_page/cubit/epicenter_cubit.dart';
 import 'package:virok_wms/feature/epicenter_page/ui/pages/noms_page.dart';
 import 'package:virok_wms/feature/epicenter_page/ui/widget/table_widgets/row_element.dart';
 import 'package:virok_wms/feature/epicenter_page/ui/widget/table_widgets/table_widgets.dart';
+import 'package:virok_wms/ui/widgets/went_wrong.dart';
 
 class EpicenterPage extends StatefulWidget {
   const EpicenterPage({super.key});
@@ -29,7 +30,15 @@ class _EpicenterPageState extends State<EpicenterPage> {
             if (state is EpicenterLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is EpicenterError) {
-              return Center(child: Text(state.message));
+              return Center(
+                child: WentWrong(
+                  errorMassage: state.message,
+                  buttonDescription: 'Повернутись',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              );
             } else if (state is EpicenterLoaded) {
               final documents = state.documents;
 

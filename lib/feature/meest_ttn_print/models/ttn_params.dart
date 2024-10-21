@@ -16,14 +16,14 @@ class TtnParams {
   factory TtnParams.fromJson(Map<String, dynamic> json) {
     return TtnParams(
       placeNumber: json['PlaceNumber'],
-      height: _parseDouble(json['height']),
-      width: _parseDouble(json['width']),
-      length: _parseDouble(json['length']),
-      weight: _parseDouble(json['weight']),
+      height: _parseInt(json['height']),
+      width: _parseInt(json['width']),
+      length: _parseInt(json['length']),
+      weight: _parseInt(json['weight']),
     );
   }
 
-  static double _parseDouble(dynamic value) {
+  static double _parseInt(dynamic value) {
     try {
       if (value == null) {
         return 0.0;

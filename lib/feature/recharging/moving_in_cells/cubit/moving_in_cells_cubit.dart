@@ -113,7 +113,7 @@ class MovingInCellsCubit extends Cubit<MovingInCellsState> {
     }
 
     emit(state.copyWith(
-        status: MovingInCellsStatus.success, count: newCount.toDouble()));
+        status: MovingInCellsStatus.success, count: newCount.toInt()));
   }
 
   setNomStatus(String nomStatus) {

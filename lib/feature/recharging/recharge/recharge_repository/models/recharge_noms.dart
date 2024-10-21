@@ -25,7 +25,7 @@ class RechargeNom {
   final String nameCellFrom;
   final String codCellTo;
   final String nameCellTo;
-  final double isStarted;
+  final int isStarted;
 
   RechargeNom({
     required this.taskNumber,

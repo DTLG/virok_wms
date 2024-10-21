@@ -27,7 +27,7 @@ class RechargeState extends Equatable {
   final String nomBarcode;
   final String cell;
   final int time;
-  final double count;
+  final int count;
 
   RechargeState copyWith(
       {RechargeStatus? status,
@@ -35,7 +35,7 @@ class RechargeState extends Equatable {
       int? time,
       String? errorMassage,
       String? cell,
-      double? count,
+      int? count,
       String? nomBarcode}) {
     return RechargeState(
       status: status ?? this.status,

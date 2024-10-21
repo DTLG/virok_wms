@@ -28,8 +28,8 @@ class DisplacementNom extends Equatable {
   final String name;
   final String article;
   final List<Barcode> barcodes;
-  final double qty;
-  final double count;
+  final int qty;
+  final int count;
 
   const DisplacementNom({
     required this.name,
@@ -48,8 +48,8 @@ class DisplacementNom extends Equatable {
             .map((e) => Barcode.fromJson(e as Map<String, dynamic>))
             .toList(),
         number: json['number'] ?? '',
-        qty: ((json['qty'] ?? 0) as num).toDouble(),
-        count: ((json['count'] ?? 0) as num).toDouble(),
+        qty: ((json['qty'] ?? 0) as num).toInt(),
+        count: ((json['count'] ?? 0) as num).toInt(),
       );
 
   static const empty = DisplacementNom(

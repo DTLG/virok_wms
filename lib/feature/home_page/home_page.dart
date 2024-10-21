@@ -121,12 +121,21 @@ class HomePage extends StatelessWidget {
   }
 }
 
-void showPinDialog(BuildContext context) {
-  showDialog(context: context, builder: (context) => const PinDialog());
+void showPinDialog(BuildContext context) async {
+  final String firebeasePin =
+      await context.read<HomePageCubit>().getPass() ?? '1811';
+
+  showDialog(
+      context: context,
+      builder: (context) => PinDialog(
+            firebasePin: firebeasePin,
+          ));
 }
 
 class PinDialog extends StatefulWidget {
-  const PinDialog({super.key});
+  final String firebasePin;
+
+  const PinDialog({super.key, required this.firebasePin});
 
   @override
   State<PinDialog> createState() => _PinDialogState();
@@ -172,12 +181,15 @@ class _PinDialogState extends State<PinDialog> {
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: 8),
               validator: (value) {
-                if (value != settingsPin) {
+                // context.read<HomePageCubit>().getPass();
+
+                // if (value != firebeasePin) {
+                if (value != widget.firebasePin) {
                   Future.delayed(const Duration(milliseconds: 700), () {
                     controller.clear();
                   });
                 }
-                return value == settingsPin ? null : 'Невірний код';
+                return value == widget.firebasePin ? null : 'Невірний код';
               },
               onClipboardFound: (value) {
                 debugPrint('onClipboardFound: $value');
@@ -185,7 +197,7 @@ class _PinDialogState extends State<PinDialog> {
               },
               hapticFeedbackType: HapticFeedbackType.lightImpact,
               onCompleted: (pin) {
-                if (pin == settingsPin) {
+                if (pin == widget.firebasePin) {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, AppRoutes.settings);
                 }
@@ -333,7 +345,7 @@ List<Widget> buildButtons(
 
   a.add({'name': 'CКЛАДСЬКІ ОПЕРАЦІЇ', 'path': 'storage_operation'});
   if (selection) a.add({'name': 'ЗАВДАННЯ НА ВІДБІР', 'path': 'selection'});
-  if (routes) a.add({'name': 'Routes page', 'path': 'routes'});
+  if (routes) a.add({'name': 'МАРШРУТИ', 'path': 'routes'});
   if (admission) a.add({'name': 'ПОСТУПЛЕННЯ', 'path': 'admission'});
   if (moving) a.add({'name': 'ПЕРЕМІЩЕННЯ', 'path': 'moving'});
   if (returning) a.add({'name': 'ПОВЕРНЕННЯ', 'path': 'returning'});

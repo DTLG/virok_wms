@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/feature/np_ttn_print/cubit/np_ttn_print_cubit.dart';
 import 'package:virok_wms/feature/np_ttn_print/models/ttn_params.dart';
@@ -176,15 +176,15 @@ class TtnNovaPostPrintView extends StatelessWidget {
                                                   .read<TtnPrintCubit>()
                                                   .saveTtnParams(
                                                       barcode, ttnParams);
-                                              Fluttertoast.showToast(
-                                                msg: "Дані оновлено!",
-                                                toastLength: Toast.LENGTH_SHORT,
-                                                gravity: ToastGravity.BOTTOM,
-                                                timeInSecForIosWeb: 1,
-                                                backgroundColor: Colors.grey,
-                                                textColor: Colors.white,
-                                                fontSize: 16.0,
-                                              );
+                                              // Fluttertoast.showToast(
+                                              //   msg: "Дані оновлено!",
+                                              //   toastLength: Toast.LENGTH_SHORT,
+                                              //   gravity: ToastGravity.BOTTOM,
+                                              //   timeInSecForIosWeb: 1,
+                                              //   backgroundColor: Colors.grey,
+                                              //   textColor: Colors.white,
+                                              //   fontSize: 16.0,
+                                              // );
                                             }
                                           },
                                           child: const Text('Зберегти зміни'),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:virok_wms/feature/home_page/cubit/home_page_cubit.dart';
 import 'package:virok_wms/route/route.dart';
 import 'package:virok_wms/ui/widgets/sound_interface.dart';
@@ -200,7 +200,7 @@ class PrintButton extends StatelessWidget {
               context.read<TtnPrintCubit>().printSticker(state.printValue);
             } else {
               soundInterface.play(Event.error);
-              Fluttertoast.showToast(msg: 'Не вдалося знайти parcelId');
+              // Fluttertoast.showToast(msg: 'Не вдалося знайти parcelId');
             }
           },
           child: const Text('Друк'),

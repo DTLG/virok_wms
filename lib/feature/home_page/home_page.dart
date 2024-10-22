@@ -122,8 +122,7 @@ class HomePage extends StatelessWidget {
 }
 
 void showPinDialog(BuildContext context) async {
-  final String firebeasePin =
-      await context.read<HomePageCubit>().getPass() ?? '1811';
+  final String firebeasePin = '1811';
 
   showDialog(
       context: context,
@@ -173,7 +172,7 @@ class _PinDialogState extends State<PinDialog> {
               autofocus: true,
               controller: controller,
               focusNode: focusNode,
-              listenForMultipleSmsOnAndroid: false,
+              // listenForMultipleSmsOnAndroid: false,
               closeKeyboardWhenCompleted: false,
               forceErrorState: true,
               obscureText: true,

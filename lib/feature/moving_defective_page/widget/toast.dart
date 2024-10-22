@@ -1,21 +1,21 @@
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
 void showToast(
   String message, {
-  ToastGravity gravity = ToastGravity.BOTTOM,
+  // ToastGravity gravity = ToastGravity.BOTTOM,
   Color backgroundColor = Colors.black,
   Color textColor = Colors.white,
 }) {
-  Fluttertoast.cancel();
+  // Fluttertoast.cancel();
 
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: gravity,
-    timeInSecForIosWeb: 1,
-    backgroundColor: backgroundColor,
-    textColor: textColor,
-    fontSize: 16.0,
-  );
+  // Fluttertoast.showToast(
+  //   msg: message,
+  //   toastLength: Toast.LENGTH_SHORT,
+  //   gravity: gravity,
+  //   timeInSecForIosWeb: 1,
+  //   backgroundColor: backgroundColor,
+  //   textColor: textColor,
+  //   fontSize: 16.0,
+  // );
 }

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:virok_wms/old_my_app.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+
 // //!____________Тип проекту____________________
 // enum ProjectType { lviv, kyiv }
 
@@ -22,9 +21,7 @@ String appVersion = '';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   appVersion = packageInfo.version;

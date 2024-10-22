@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -95,22 +94,6 @@ class LoginCubit extends Cubit<LoginState> {
         ));
       } else {
         // Fetch data from Firestore
-        final CollectionReference pathesCollection =
-            FirebaseFirestore.instance.collection('pathes');
-
-        QuerySnapshot snapshot = await pathesCollection.get();
-
-        List<Map<String, dynamic>> pathes = snapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
-
-        // Save the fetched data to SharedPreferences
-        await prefs.setString('pathes', jsonEncode(pathes));
-
-        emit(state.copyWith(
-          pathes: pathes,
-          status: LoginStatus.succsses,
-        ));
       }
     } catch (e) {
       emit(state.copyWith(
@@ -120,22 +103,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> forceFetchPathesCollection() async {
-    try {
-      emit(state.copyWith(status: LoginStatus.loading));
-      final CollectionReference pathesCollection =
-          FirebaseFirestore.instance.collection('pathes');
-
-      QuerySnapshot snapshot = await pathesCollection.get();
-
-      List<Map<String, dynamic>> pathes = snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-
-      emit(state.copyWith(
-        pathes: pathes,
-        status: LoginStatus.succsses,
-      ));
-    } catch (e) {
+    try {} catch (e) {
       emit(state.copyWith(
           status: LoginStatus.failure,
           time: DateTime.now().millisecondsSinceEpoch));

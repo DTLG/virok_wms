@@ -14,7 +14,6 @@ class CameraScanerButton extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: ((ctx) => AiBarcodeScanner(
-                        onScan: scan,
                         controller: MobileScannerController(
                           detectionTimeoutMs: 1000,
                           detectionSpeed: DetectionSpeed.normal,

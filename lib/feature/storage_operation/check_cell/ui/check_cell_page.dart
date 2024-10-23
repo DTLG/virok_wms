@@ -212,56 +212,97 @@ class CellInfo extends StatelessWidget {
                                 ? ''
                                 : cell.noms[index].barcodes.first.barcode);
                       },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 3, vertical: 10),
-                                child: Text(cell.noms[index].name,
-                                    style: theme.titleMedium),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Артикул:', style: theme.titleSmall),
-                                    Text(cell.noms[index].article,
-                                        style: theme.titleSmall)
-                                  ],
+                      child: Dismissible(
+                        key: ValueKey(cell.noms[index].barcodes.first),
+                        direction: DismissDirection.endToStart,
+
+                        // Use confirmDismiss to show confirmation before dismissing
+                        confirmDismiss: (direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Confirm Deletion"),
+                                content: Text(
+                                    "Are you sure you want to delete this item?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(false); // Return false to cancel
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text("Delete"),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(true); // Return true to confirm
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+
+                        // If the deletion is confirmed, this callback will be called
+                        onDismissed: (direction) {
+                          context.read<CheckCellCubit>().deleteNom(cell.codCell,
+                              cell.noms[index].barcodes.first.barcode);
+                        },
+
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 3, vertical: 10),
+                                  child: Text(cell.noms[index].name,
+                                      style: theme.titleMedium),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Кількість в комірці:',
-                                        style: theme.titleSmall),
-                                    Text(cell.noms[index].qty.toString(),
-                                        style: theme.titleSmall)
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Артикул:', style: theme.titleSmall),
+                                      Text(cell.noms[index].article,
+                                          style: theme.titleSmall),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Мінімальний залишок:',
-                                        style: theme.titleSmall),
-                                    Text(cell.noms[index].minRest.toString(),
-                                        style: theme.titleSmall)
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Кількість в комірці:',
+                                          style: theme.titleSmall),
+                                      Text(cell.noms[index].qty.toString(),
+                                          style: theme.titleSmall),
+                                    ],
+                                  ),
                                 ),
-                              )
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Мінімальний залишок:',
+                                          style: theme.titleSmall),
+                                      Text(cell.noms[index].minRest.toString(),
+                                          style: theme.titleSmall),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

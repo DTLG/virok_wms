@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -89,4 +89,20 @@ class HomePageCubit extends Cubit<HomePageState> {
   //         time: DateTime.now().millisecondsSinceEpoch));
   //   }
   // }
+
+  Future<String?> getPass() async {
+    final CollectionReference passwordsCollection =
+        FirebaseFirestore.instance.collection('passwords');
+
+    // Get all documents from the passwords collection
+    QuerySnapshot snapshot = await passwordsCollection.get();
+
+    if (snapshot.docs.isNotEmpty) {
+      // Assuming each doc contains a map and 'active' is the field we need
+      var data = snapshot.docs.first.data() as Map<String, dynamic>;
+      return data['active'] as String?;
+    } else {
+      return null; // Return null if there are no documents
+    }
+  }
 }

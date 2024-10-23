@@ -122,7 +122,7 @@ class HomePage extends StatelessWidget {
 }
 
 void showPinDialog(BuildContext context) async {
-  final String firebeasePin = '1811';
+  final String firebeasePin = await context.read<HomePageCubit>().getPass()?? '1811';
 
   showDialog(
       context: context,

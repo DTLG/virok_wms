@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:virok_wms/feature/storage_operation/check_cell/check_cell_repository/check_cell_repository.dart';
 import 'package:virok_wms/models/check_cell.dart';
 import 'package:virok_wms/feature/storage_operation/check_nom/models/barcodes_noms.dart'
@@ -63,6 +64,19 @@ class CheckCellCubit extends Cubit<CheckCellState> {
       return [];
     }
   }
+  Future<String> deleteNom(String codCell, String barcode)async {
+    try {
+      final value = '?cell_barcode=$codCell&nom_barcode=$barcode';
+      final res =
+          await CheckCellRepository().sendRequest('delete_selection_cell', value);
+
+      return res;
+    } catch (e) {
+      emit(state.copyWith(
+          status: CheckCellStatus.failure, errorMassage: e.toString()));
+      return 'помилка';
+    }
+  }
 
   void clear() {
     emit(state.copyWith(
@@ -71,4 +85,5 @@ class CheckCellCubit extends Cubit<CheckCellState> {
         time: 0,
         status: CheckCellStatus.initial));
   }
+
 }

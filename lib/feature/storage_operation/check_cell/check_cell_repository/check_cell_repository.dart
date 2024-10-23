@@ -54,4 +54,10 @@ class CheckCellRepository {
         .toList();
     return chackNom.Noms(noms: noms);
   }
+
+  Future<String> sendRequest(String s, String value) async{
+    final res = await _cellClient.sendRequest(s, value);
+    return res;
+
+  }
 }
